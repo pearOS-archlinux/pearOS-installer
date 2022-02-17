@@ -13,7 +13,6 @@
 
   const handleClick = e => {
     const targetTag = e.target.tagName.toLowerCase();
-    
     if (mouseFocusableTags.indexOf(targetTag)  !== -1) {
       return;
     }

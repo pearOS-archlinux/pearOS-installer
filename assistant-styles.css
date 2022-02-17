@@ -10,6 +10,10 @@ input, button, textarea, :focus {
   outline: none; // You should add some other style for :focus to help UX/a11y
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   height: 100%;
   margin: 0;
@@ -189,3 +193,26 @@ option {
 }
 
 
+.column {
+  float: left;
+  width: 30%;
+  padding: 10px;
+}
+
+.row {
+  width: 30%;
+  height: 30%;
+}
+
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.td {
+  border: 1px solid black;
+  text-align: center;
+  padding: 10px;
+}
