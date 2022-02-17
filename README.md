@@ -23,5 +23,4 @@ Run
 
 `screenshots` -- screenshots of the app
 
-![mac os first start wizard](http://i.imgur.com/XkLMMkL.png)
-
+![Work in progress screenshot](https://cdn.discordapp.com/attachments/789069710883815425/943825439925866496/unknown.png)
