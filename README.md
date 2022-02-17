@@ -13,6 +13,7 @@ Required: node **≥v6.9.5**
 Install dependencies
 ```sh
 sudo pacman -S gtk2
+sudo pacman -S appmenu-gtk-module
 npm -i
 ```
 Run
