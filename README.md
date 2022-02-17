@@ -20,6 +20,7 @@ Run
 ### Folders
 
 `resources` -- application's assets
+
 `screenshots` -- screenshots of the app
 
 ![mac os first start wizard](http://i.imgur.com/XkLMMkL.png)
