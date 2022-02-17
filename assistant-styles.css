@@ -17,6 +17,7 @@ body {
   font-family: "Sen";
   font-weight: 400;
   font-size: 14px;
+  background-size: 100%;
   background-image: url(resources/background.png);
 }
 
@@ -32,13 +33,13 @@ html {
 
 h1 {
   font-family: "Sen";
-  font-weight: 400;
+  font-weight: 900;
   letter-spacing: -0.053em;
   font-size: 41px;
   margin-top: 20px;
   margin-bottom: 15px;
   padding: 0px;
-  color: #929292;
+  color: #333333;
   margin-left: -3px;
 }
 
@@ -52,8 +53,8 @@ img, a {
 
 .worldmap {
   margin-left: 0.11em;
-  margin-top: 0.18em;
-  height: 200px;
+  margin-top: 70px;
+  height: 70px;
 }
 
 .flex-container {
@@ -68,7 +69,7 @@ img, a {
   height: 600px;
   background: linear-gradient(to bottom, #f5f5f5, #e5e5e5);
   position: relative;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 .countries {
@@ -76,8 +77,8 @@ img, a {
 }
 
 .list {
-  width: 267px;
-  height: 147px;
+  width: 350px;
+  height: 200px;
   display: block;
   font-size: 14px;
   letter-spacing: -0.01em;
