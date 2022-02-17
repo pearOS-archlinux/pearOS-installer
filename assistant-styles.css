@@ -216,3 +216,10 @@ option {
   text-align: center;
   padding: 10px;
 }
+
+.license {
+  width: 80%;
+  height: 350px;
+  color: #808080;
+  overflow: scroll;
+}
