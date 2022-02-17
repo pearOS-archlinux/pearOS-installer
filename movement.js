@@ -26,7 +26,6 @@ const updateArrows = (tab) => {
   } else {
     backArrow.disabled = false;
   }
-  
   if (isLastTab(tab)) {
     forwardArrow.disabled = true;
   } else {
