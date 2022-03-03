@@ -1,0 +1,217 @@
+#!/bin/bash
+
+  DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  BASE_PACKAGES=('alsa-utils' 'amd-ucode' 'arch-install-scripts' 'b43-fwcutter' 'base' 'bind-tools' 'broadcom-wl' 'btrfs-progs' 'clonezilla' 'cloud-init' 'crda' 'cryptsetup' 'darkhttpd' 'ddrescue' 'dhclient' 'dhcpcd' 'diffutils' 'dmraid' 'dnsmasq' 'dosfstools' 'e2fsprogs' 'edk2-shell' 'efibootmgr' 'espeakup' 'ethtool' 'exfatprogs' 'f2fs-tools' 'fatresize' 'fsarchiver' 'gnu-netcat' 'gpart' 'gpm' 'gptfdisk' 'grml-zsh-config' 'hdparm' 'intel-ucode' 'ipw2100-fw' 'ipw2200-fw' 'irssi' 'iwd' 'jfsutils' 'linux' 'linux-atm' 'linux-firmware' 'livecd-sounds' 'lsscsi' 'lvm2' 'man-db' 'man-pages' 'mc' 'mdadm' 'memtest86+' 'mkinitcpio' 'mkinitcpio-archiso' 'mkinitcpio-nfs-utils' 'modemmanager' 'mtools' 'nano' 'nbd' 'ndisc6' 'nfs-utils' 'nilfs-utils' 'ntfs-3g' 'nvme-cli' 'openssh' 'parted' 'partimage' 'ppp' 'pptpclient' 'reflector' 'reiserfsprogs' 'rp-pppoe' 'rsync' 'sdparm' 'sg3_utils' 'smartmontools' 'sof-firmware' 'squashfs-tools' 'sudo' 'syslinux' 'systemd-resolvconf' 'tcpdump' 'testdisk' 'udftools' 'usb_modeswitch' 'usbmuxd' 'usbutils' 'vpnc' 'wireless-regdb' 'wireless_tools' 'wpa_supplicant' 'wvdial' 'xfsprogs' 'xl2tpd' 'zsh' 'xorg' 'sddm' 'bash-completion' 'networkmanager' 'linux-headers' 'base-devel' 'xf86-input-libinput' 'pacman-contrib' 'plasma' 'konsole' 'kate' 'nautilus' 'xdg-user-dirs' 'ark' 'gnome-software' 'gnome-software-packagekit-plugin' 'appmenu-gtk-module' 'touchegg' 'rhythmbox' 'latte-dock' 'kvantum' 'gambas3-runtime' 'pearos-grub-theme' 'theme-switcher-bin' 'system-overview' 'system-update' 'pearos-livecd-desktop' 'pearos-settings' 'kwin-effects-yet-another-magic-lamp' 'gambas3-gb-image' 'gambas3-gb-form' 'gambas3-gb-qt5' 'gambas3-gb-gtk3' 'system-update' 'python-pip' 'neofetch' 'grub' 'calamares' 'pear-calamares-config' 'os-prober' 'firefox' 'ttf-roboto' 'gvfs' 'pavucontrol' 'pulseaudio' 'pulseaudio-alsa' 'ttf-dejavu' 'xorg-apps' 'xorg-server')
+  UEFI=false
+  bluetooth=false
+  installed=false
+  mounted=false
+  architecture=$(lscpu | grep 'Architecture' | awk '{print $2}')
+  hypervisor=$(systemd-detect-virt)
+
+  # You change project settings here uwu
+  KEYMAP="us"
+  LOCALE="en_US.UTF-8"
+  utc_enabled=true
+  ZONE="Europe/Bucharest"
+  HOST_NAME="default's Pear"
+  user_passwd="pear"
+  root_passwd="pear"
+  FULL_NAME="Default User"
+  USER_NAME="default"
+  SWAP="-"
+  swap_enabled=false
+  block_devices=()
+  PARTITION_LAYOUT="Basic"
+  FILE_SYSTEM="ext4"
+  DISK="/dev/sda"
+  PREFIX=""
+  multilib=true
+  DESKTOP="None"
+  DESKTOP_PACKAGES+=("${DESKTOP_DEFAULTS[@]}")
+  DESKTOP_PACKAGES+=('plasma-nm')
+  # End of project settings. # TODO: add all these in a .config file
+
+  localectl set-keymap "$KEYMAP"
+  loadkeys "$KEYMAP"
+
+  if [ -d /sys/firmware/efi ]; then
+    UEFI=true
+  fi
+
+  if dmesg | grep -iq "blue"; then
+    bluetooth=true
+  fi
+
+  for device in $(lsblk -d -n -p -r -e 7,11 -o NAME); do
+    device_size=$(lsblk -d -n -r -o SIZE "$device")
+    block_devices+=("$device" "$device_size")
+  done
+  check_mountpoints
+
+  if [[ "$DISK" == *"nvme"* ]]; then
+          PREFIX="p"
+  fi
+
+
+  if $UEFI; then
+    parted -s "$DISK" mklabel gpt &> /dev/null
+  else
+    parted -s "$DISK" mklabel msdos &> /dev/null
+  fi
+
+
+  if $UEFI; then
+    BOOT_PART="${DISK}${PREFIX}1"
+    ROOT_PART="${DISK}${PREFIX}2"
+    if $swap_enabled; then
+      SWAP_PART="${DISK}${PREFIX}3"
+      sgdisk -n 1:0:+512M -n 2:0:-"$SWAP" -n 3:-"$SWAP":-0 \
+        -t 1:ef00 -t 2:8300 -t 3:8200 "$DISK" &> /dev/null
+      mkswap "$SWAP_PART" &> /dev/null
+      swapon "$SWAP_PART"
+    else
+      sgdisk -n 1:0:+512M -n 2:0:0 -t 1:ef00 -t 2:8300 "$DISK" &> /dev/null
+    fi
+    mkfs.fat -F32 "$BOOT_PART" &> /dev/null
+  else
+    ROOT_PART="${DISK}${PREFIX}1"
+    if $swap_enabled; then
+      SWAP_PART="${DISK}${PREFIX}2"
+      echo -e "n\np\n1\n\n-${SWAP}\nn\np\n2\n\n\nt\n2\n82\nw" \
+        | fdisk "$DISK" &> /dev/null
+      mkswap "$SWAP_PART" &> /dev/null
+      swapon "$SWAP_PART"
+    else
+      echo -e "n\np\n1\n\n\nw" | fdisk "$DISK" &> /dev/null
+    fi
+  fi
+
+  mkfs."$FILE_SYSTEM" "$ROOT_PART" &> /dev/null
+  mount "$ROOT_PART" /mnt
+  mounted=true
+  if $UEFI; then
+    mkdir /mnt/boot
+    mount "$BOOT_PART" /mnt/boot
+  fi
+
+  bluetooth_enabled=false
+  dm_enabled=false
+  multilib=false
+  DESKTOP_PACKAGES=()
+
+  if $UEFI; then
+    DESKTOP_PACKAGES+=('efibootmgr')
+  fi
+
+  if $bluetooth; then
+        bluetooth_enabled=true
+        DESKTOP_PACKAGES+=('bluez' 'bluez-utils' 'pulseaudio-bluetooth')
+      fi
+
+    if [ "$hypervisor" = "none" ]; then
+      if lspci | grep "VGA" | grep -iq "Intel"; then
+        DESKTOP_PACKAGES+=('xf86-video-intel')
+      fi
+
+      if lspci | grep "VGA" | grep -iq "NVIDIA"; then
+        gpu_driver="NVIDIA"
+        if [ "$gpu_driver" = "NVIDIA" ]; then
+          gpu_pci_id=$(lspci -nn  | grep -ioP 'VGA.*NVIDIA.*\[\K[\w:]+' | sed 's/.*://')
+          if grep -Fq "$gpu_pci_id" "$DIR"/hw-ids/nvidia_390_pci_ids; then
+            DESKTOP_PACKAGES+=('nvidia-390xx' 'nvidia-390xx-utils' 'nvidia-390xx-settings')
+          elif grep -Fq "$gpu_pci_id" "$DIR"/hw-ids/nvidia_340_pci_ids; then
+            DESKTOP_PACKAGES+=('xf86-video-nouveau' 'mesa')
+          else
+            DESKTOP_PACKAGES+=('nvidia' 'nvidia-utils' 'nvidia-settings')
+          fi
+        else
+          DESKTOP_PACKAGES+=('xf86-video-nouveau' 'mesa')
+        fi
+      elif lspci | grep "VGA" | grep -q "ATI\|AMD"; then
+        gpu_driver="ATI"
+        if [ "$gpu_driver" = "ATI" ]; then
+          DESKTOP_PACKAGES+=('xf86-video-ati' 'mesa')
+        else
+          DESKTOP_PACKAGES+=('xf86-video-amdgpu' 'mesa')
+        fi
+      fi
+    else
+      case "$hypervisor" in
+        "vmware") DESKTOP_PACKAGES+=('open-vm-tools' 'xf86-video-vmware' 'xf86-input-vmmouse' 'mesa' 'gtkmm' 'gtkmm3') ;;
+        "oracle") DESKTOP_PACKAGES+=('virtualbox-guest-utils' 'virtualbox-guest-dkms') ;;
+        "parallels") DESKTOP_PACKAGES+=('xf86-video-vesa') ;;
+        *) DESKTOP_PACKAGES+=('xf86-video-fbdev') ;;
+      esac
+    fi
+
+  # INJECT PACMAN CONFIG ##
+  mkdir -p /mnt/etc/
+  cp /etc/pacman.conf /mnt/etc/pacman.conf
+  # END INJECT #
+
+  pacstrap /mnt "${BASE_PACKAGES[@]}"
+  genfstab -U -p /mnt >> /mnt/etc/fstab
+  ln -sf /usr/share/zoneinfo/"$ZONE" /mnt/etc/localtime
+  if $utc_enabled; then
+    arch-chroot /mnt hwclock --systohc --utc
+  else
+    arch-chroot /mnt hwclock --systohc --localtime
+  fi
+  sed -i "s/#en_US.UTF-8/en_US.UTF-8/" /mnt/etc/locale.gen
+  if [ "$LOCALE" != "en_US.UTF-8" ]; then
+    sed -i "s/#$LOCALE/$LOCALE/" /mnt/etc/locale.gen
+  fi
+  echo "LANG=$LOCALE" > /mnt/etc/locale.conf
+  if [ "$KEYMAP" != "us" ]; then
+    echo "KEYMAP=$KEYMAP" > /mnt/etc/vconsole.conf
+    if [ "$DESKTOP" != "None" ]; then
+        echo -e "Section \"InputClass\"\nIdentifier \"system-keyboard\"\nMatchIsKeyboard \"on\"\nOption \"XkbLayout\" \"$KEYMAP\"\nEndSection" > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
+    fi
+  fi
+  arch-chroot /mnt locale-gen &> /dev/null
+  echo "$HOST_NAME" > /mnt/etc/hostname
+  echo -e "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t$HOST_NAME.localdomain\t$HOST_NAME" >> /mnt/etc/hosts
+
+  if [ "$PARTITION_LAYOUT" != "Basic" ]; then
+    arch-chroot /mnt mkinitcpio -p linux &> /dev/null
+  fi
+
+  if $UEFI; then
+    arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB &> /dev/null
+  else
+    arch-chroot /mnt grub-install --target=i386-pc "$DISK" &> /dev/null
+  fi
+  arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg &> /dev/null
+  arch-chroot /mnt chpasswd <<<"root:$root_passwd"
+  arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "default"
+  arch-chroot /mnt chpasswd <<<"$USER_NAME:$user_passwd"
+  sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /mnt/etc/sudoers
+  echo "GRUB_THEME=\"/usr/share/grub/themes/pearOS/theme.txt\"" >> /mnt/etc/default/grub
+  cp /etc/pacman.conf /mnt/etc/pacman.conf
+  arch-chroot /mnt pacman -Sy --quiet --noconfirm &> /dev/null
+  arch-chroot /mnt systemctl enable NetworkManager.service &> /dev/null
+
+  if $bluetooth_enabled; then
+    arch-chroot /mnt systemctl enable bluetooth.service &> /dev/null
+  fi
+    arch-chroot /mnt systemctl enable "$DM".service &> /dev/null
+
+  if [ "$hypervisor" != "none" ]; then
+    if [ "$hypervisor" = "oracle" ]; then
+      arch-chroot /mnt systemctl enable vboxservice.service &> /dev/null
+    elif [ "$hypervisor" = "vmware" ]; then
+      arch-chroot /mnt systemctl enable vmtoolsd.service &> /dev/null
+      arch-chroot /mnt systemctl enable vmware-vmblock-fuse.service &> /dev/null
+    fi
+  fi
+
+check_mountpoints() {
+  if mountpoint -q /mnt; then
+    umount -R /mnt
+  fi
+
+  if free | awk '/^Swap:/ {exit !$2}'; then
+    swapoff -a
+  fi
+}
