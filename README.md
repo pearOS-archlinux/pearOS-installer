@@ -3,7 +3,7 @@
 This is work in progress, it s nothing functional just yet.
 
 # Important:
-put the `list_disk` in `/usr/bin/` and do a `sudo chmod +x /usr/bin/list_disl` in order to make this installer at least show the disks available xD
+put the `list_disk` in `/usr/bin/` and do a `sudo chmod +x /usr/bin/list_disk` in order to make this installer at least show the disks available xD
 
 # How do I run this?
 Do the thing I mentioned in the important step, then:
