@@ -22,12 +22,14 @@ function open_installer() {
 	location.href = "page_install.html";
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+var btn = document.querySelector(".install-button-agreement:nth-of-type(2)")
+var radios = document.getElementsByName("disk");
 
 function list_disk() {
 	//vars:
-	count = 0;
-	i = 1;
-	f = 0;
+	var count = 0;
+	var i = 1;
+	var f = 0;
 	var z = ``;
 	var diskname = "";
 	var disksize = "";
@@ -47,7 +49,7 @@ function list_disk() {
 		  <label class="label_for_disk">
 		    <input type="radio" id="disk` +
 					(i - count) +
-					`" name="disk" value="${stdout}">
+					`" name="disk" value="${stdout}" onclick="enable_button()">
         	    <img class="disk_logo" height=50px src="../../../assets/images/disk.png"></img>
         	    <p id="label_disk` +
 					(i - count) +
@@ -64,8 +66,11 @@ function list_disk() {
 	});
 }
 
+function enable_button() {
+	btn.classList.remove("disabled")
+}
+
 function select_disk() {
-	var radios = document.getElementsByName("disk");
 	for (var i = 0, length = radios.length; i < length; i++) {
 		if (radios[i].checked) {
 			// starting the shell //

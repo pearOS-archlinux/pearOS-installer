@@ -286,6 +286,11 @@ hr {
 	margin-bottom: 10px;
 }
 
+.install-button-agreement.disabled {
+	opacity: 50%;
+	cursor: not-allowed;
+}
+
 .button {
 	background-color: #ffffff;
 	border: none;
