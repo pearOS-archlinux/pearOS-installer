@@ -1,0 +1,27 @@
+#!/bin/bash
+i=1
+f=1
+# Saving each device into it's variable name
+for device in $(lsblk -d -n -p -r -e 7,11 -o NAME); do
+  disk[$i]="$device"
+  ((i=i+1))
+  ((count=count+1))
+done
+
+# Saving each device's size into it's variable name
+for device in $(lsblk -d -n -p -r -e 7,11 -o NAME); do
+  device_size=$(lsblk -d -n -r -o SIZE "$device")
+  size[$f]="$device_size"
+  ((f=f+1))
+done
+
+
+case $1 in
+	"count") echo $count | tr -d '\n'
+	;;
+	"size") if [[ $2 > $count  ]] ; then echo "999" ; else printf '%s\n' "${size[$2]}" | tr -d '\n' ; fi
+	;;
+	"test") echo -e "$1 $2 $3 $4"
+	;;
+	*) if [[ $@ > $count  ]] ; then echo "999" ; else printf '%s\n' "${disk[$@]}" | tr -d '\n' ; fi
+esac
