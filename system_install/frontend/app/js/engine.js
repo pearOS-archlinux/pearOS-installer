@@ -67,7 +67,7 @@ function select_disk() {
           if (radios[i].checked) {
 	  // starting the shell //
 	  const { exec } = require('child_process');
-	  exec("konsole -e '" + radios[i].value + "'", (err, stdout) => {
+	  exec("setup " + radios[i].value, (err, stdout) => {
 	  })
 	// ending the shell //
         break;
