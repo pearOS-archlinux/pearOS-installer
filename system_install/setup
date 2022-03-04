@@ -14,7 +14,7 @@
   LOCALE="en_US.UTF-8"
   utc_enabled=true
   ZONE="Europe/Bucharest"
-  HOST_NAME="default's Pear"
+  HOST_NAME="pearOS-live"
   user_passwd="pear"
   root_passwd="pear"
   FULL_NAME="Default User"
@@ -24,7 +24,7 @@
   block_devices=()
   PARTITION_LAYOUT="Basic"
   FILE_SYSTEM="ext4"
-  DISK="/dev/sda"
+  DISK="$1"
   PREFIX=""
   multilib=true
   DESKTOP="None"
