@@ -7,7 +7,7 @@
 }
 
 input, button, textarea, :focus {
-  outline: none; // You should add some other style for :focus to help UX/a11y
+  outline: none;
 }
 
 * {
@@ -170,7 +170,6 @@ option {
 }
 
 .disk_logo {
-  //padding: auto;
   height: 70px;
   margin-top: 5px;
   margin-bottom: 50px;
@@ -191,7 +190,6 @@ option {
 }
 
 .setup-text {
- //	 margin-top: 10px;
   color: white;
 }
 
@@ -524,6 +522,12 @@ hr {
   padding: 0px 0px 0px 10%;
 }
 
+.grid-container-status {
+  display: grid;
+  grid-template-columns: auto 70px 0px auto;
+  padding: 0px 0px 0px 10%;
+}
+
 li {
   float: left;
 }
@@ -551,7 +555,6 @@ input[type="radio"]{
 }
 
 [type=radio]:checked + img{
- // outline: 3px solid orange;
   background-color: #484f4e;
   border: none;
   color: white;
@@ -561,7 +564,6 @@ input[type="radio"]{
 }
 
 [type=radio]:checked + p{
- // outline: 3px solid orange;
   background-color: #484f4e;
   border: none;
   color: black;
