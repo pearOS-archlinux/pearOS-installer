@@ -53,6 +53,7 @@ fs.readFile("/tmp" + "/disk-to-install", (error, data) => {
 
             if (data.toString() == "Installation finished") {
                 alert("Installation finished");
+		var prog = 'Installation finished. You can close this window (can use ALT+F4) and reboot<br>your new pearintosh, or check the log located on the desktop.'
 		break;
                 } else {
                     var prog = `
