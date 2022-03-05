@@ -53,11 +53,12 @@ fs.readFile("/tmp" + "/disk-to-install", (error, data) => {
 
             if (data.toString() == "Installation finished") {
                 alert("Installation finished");
+		break;
                 } else {
                     var prog = `
-                <br><progress id="file" value="` + data.toString() + `" max="100"> 32% </progress>
-                `
-		document.getElementById("disk_list").innerHTML = disk + prog;
+                	<br><progress id="file" value="` + data.toString() + `" max="100"> 69% </progress>
+                	`
+			document.getElementById("disk_list").innerHTML = disk + prog;
                 };
             });
         }, 1000);
