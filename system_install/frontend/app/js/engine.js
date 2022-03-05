@@ -69,7 +69,7 @@ function select_disk() {
 	  fs.writeFileSync('/tmp/disk-to-install', '' + radios[i].value);
 	  // starting the shell //
 	  const { exec } = require('child_process');
-	  exec("konsole -e echo setup " + radios[i].value, (err, stdout) => {
+	  exec("sudo setup " + radios[i].value + "&> ~/Desktop/install.log", (err, stdout) => {
 	  })
 	// ending the shell //
         break;
