@@ -86,7 +86,7 @@
       echo -e "n\np\n1\n\n\nw" | fdisk "$DISK" &> /dev/null
     fi
   fi
-
+  echo "3" | tr -d '\n' > /tmp/progress
   mkfs."$FILE_SYSTEM" "$ROOT_PART" &> /dev/null
   mount "$ROOT_PART" /mnt
   mounted=true
@@ -148,17 +148,20 @@
   # INJECT PACMAN CONFIG ##
   mkdir -p /mnt/etc/
   cp /etc/pacman.conf /mnt/etc/pacman.conf
+  echo "5" | tr -d '\n' > /tmp/progress
   # END INJECT #
 
   pacstrap /mnt "${BASE_PACKAGES[@]}"
   genfstab -U -p /mnt >> /mnt/etc/fstab
   ln -sf /usr/share/zoneinfo/"$ZONE" /mnt/etc/localtime
+  echo "21" | tr -d '\n' > /tmp/progress
   if $utc_enabled; then
     arch-chroot /mnt hwclock --systohc --utc
   else
     arch-chroot /mnt hwclock --systohc --localtime
   fi
   sed -i "s/#en_US.UTF-8/en_US.UTF-8/" /mnt/etc/locale.gen
+  echo "32" | tr -d '\n' > /tmp/progress
   if [ "$LOCALE" != "en_US.UTF-8" ]; then
     sed -i "s/#$LOCALE/$LOCALE/" /mnt/etc/locale.gen
   fi
@@ -172,11 +175,11 @@
   arch-chroot /mnt locale-gen &> /dev/null
   echo "$HOST_NAME" > /mnt/etc/hostname
   echo -e "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t$HOST_NAME.localdomain\t$HOST_NAME" >> /mnt/etc/hosts
-
+  echo "44" | tr -d '\n' > /tmp/progress
   if [ "$PARTITION_LAYOUT" != "Basic" ]; then
     arch-chroot /mnt mkinitcpio -p linux &> /dev/null
   fi
-
+  echo "46" | tr -d '\n' > /tmp/progress
   if $UEFI; then
     arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB &> /dev/null
   else
@@ -186,26 +189,31 @@
   arch-chroot /mnt chpasswd <<<"root:$root_passwd"
   arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "default"
   arch-chroot /mnt chpasswd <<<"$USER_NAME:$user_passwd"
+  echo "60" | tr -d '\n' > /tmp/progress
   sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /mnt/etc/sudoers
   echo "GRUB_THEME=\"/usr/share/grub/themes/pearOS/theme.txt\"" >> /mnt/etc/default/grub
   cp /etc/pacman.conf /mnt/etc/pacman.conf
   arch-chroot /mnt pacman -Sy --quiet --noconfirm &> /dev/null
   arch-chroot /mnt systemctl enable NetworkManager.service &> /dev/null
-
+  echo "72" | tr -d '\n' > /tmp/progress
   if $bluetooth_enabled; then
     arch-chroot /mnt systemctl enable bluetooth.service &> /dev/null
+    echo "85" | tr -d '\n' > /tmp/progress
   fi
-    arch-chroot /mnt systemctl enable "$DM".service &> /dev/null
-
+    arch-chroot /mnt systemctl enable sddm.service &> /dev/null
+    echo "91" | tr -d '\n' > /tmp/progress
   if [ "$hypervisor" != "none" ]; then
     if [ "$hypervisor" = "oracle" ]; then
       arch-chroot /mnt systemctl enable vboxservice.service &> /dev/null
+      echo "98" | tr -d '\n' > /tmp/progress
     elif [ "$hypervisor" = "vmware" ]; then
       arch-chroot /mnt systemctl enable vmtoolsd.service &> /dev/null
       arch-chroot /mnt systemctl enable vmware-vmblock-fuse.service &> /dev/null
+      echo "98" | tr -d '\n' > /tmp/progress
     fi
   fi
 
+  echo "Installation finished" | tr -d '\n' > /tmp/progress
 check_mountpoints() {
   if mountpoint -q /mnt; then
     umount -R /mnt
