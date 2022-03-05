@@ -201,6 +201,7 @@
     echo "85" | tr -d '\n' > /tmp/progress
   fi
     arch-chroot /mnt systemctl enable sddm.service &> /dev/null
+    echo "GRUB_THEME=\"/usr/share/grub/themes/pearOS/theme.txt\"" >> /mnt/etc/default/grub
     echo "91" | tr -d '\n' > /tmp/progress
   if [ "$hypervisor" != "none" ]; then
     if [ "$hypervisor" = "oracle" ]; then
@@ -212,7 +213,7 @@
       echo "98" | tr -d '\n' > /tmp/progress
     fi
   fi
-
+  echo "GRUB_THEME=\"/usr/share/grub/themes/pearOS/theme.txt\"" >> /mnt/etc/default/grub
   echo "Installation finished" | tr -d '\n' > /tmp/progress
 check_mountpoints() {
   if mountpoint -q /mnt; then
