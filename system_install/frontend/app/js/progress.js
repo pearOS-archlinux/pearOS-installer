@@ -57,8 +57,6 @@ fs.readFile("/tmp" + "/disk-to-install", (error, data) => {
                     var prog = `
                 <br><progress id="file" value="` + data.toString() + `" max="100"> 32% </progress>
                 `
-                //disk += prog;
-                document.getElementById("disk_list").innerHTML = disk;
 		document.getElementById("disk_list").innerHTML = disk + prog;
                 };
             });
