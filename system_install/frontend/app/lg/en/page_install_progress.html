@@ -17,7 +17,8 @@
       <ul id="disk_list" class="ul_menu_disk">
       <form>
 
-	<progress id="file" value="32" max="100"> 32% </progress>
+	<p> Installer was unable to start. Make sure it is run from the pearOS installer utility, or nodeJS/electron is working.<p>
+
       </form>
       </ul>
     <div class="tab">
@@ -28,9 +29,8 @@
 
 
        <div class="movement-buttons">
-        <div class="grid-container-agreement">
-          <button onclick="window.location.href='page_install_agreement.html';" class="install-button-agreement" id="move-forward-btn"> Back </button>
-	  <button onclick="select_disk();" class="install-button-agreement" name="move-forward-btn" id="move-forward-btn select"> Continue </button>
+        <div class="grid-container-status">
+	  <button onclick="select_disk();" class="install-button-agreement" name="move-forward-btn" id="move-forward-btn select"> Cancel </button>
         </div>
 
 
