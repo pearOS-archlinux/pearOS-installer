@@ -65,9 +65,11 @@ function select_disk() {
         var radios = document.getElementsByName('disk');
         for (var i = 0, length = radios.length; i < length; i++) {
           if (radios[i].checked) {
+	  const fs = require('fs');
+	  fs.writeFileSync('/tmp/disk-to-install', '' + radios[i].value);
 	  // starting the shell //
 	  const { exec } = require('child_process');
-	  exec("setup " + radios[i].value, (err, stdout) => {
+	  exec("konsole -e echo setup " + radios[i].value, (err, stdout) => {
 	  })
 	// ending the shell //
         break;
