@@ -64,3 +64,8 @@ fs.readFile("/tmp" + "/disk-to-install", (error, data) => {
         }, 1000);
 	});
 }
+
+document.getElementById("close-btn").addEventListener("click", function (e) {
+       var window = remote.getCurrentWindow();
+       window.close();
+  });

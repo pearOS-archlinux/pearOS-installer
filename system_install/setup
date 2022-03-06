@@ -185,13 +185,13 @@
   else
     arch-chroot /mnt grub-install --target=i386-pc "$DISK" &> /dev/null
   fi
+  echo "GRUB_THEME=\"/usr/share/grub/themes/pearOS/theme.txt\"" >> /mnt/etc/default/grub
   arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg &> /dev/null
   arch-chroot /mnt chpasswd <<<"root:$root_passwd"
   arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "default"
   arch-chroot /mnt chpasswd <<<"$USER_NAME:$user_passwd"
   echo "60" | tr -d '\n' > /tmp/progress
   sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /mnt/etc/sudoers
-  echo "GRUB_THEME=\"/usr/share/grub/themes/pearOS/theme.txt\"" >> /mnt/etc/default/grub
   cp /etc/pacman.conf /mnt/etc/pacman.conf
   arch-chroot /mnt pacman -Sy --quiet --noconfirm &> /dev/null
   arch-chroot /mnt systemctl enable NetworkManager.service &> /dev/null
@@ -201,7 +201,7 @@
     echo "85" | tr -d '\n' > /tmp/progress
   fi
     arch-chroot /mnt systemctl enable sddm.service &> /dev/null
-    echo "GRUB_THEME=\"/usr/share/grub/themes/pearOS/theme.txt\"" >> /mnt/etc/default/grub
+    chmod -R 0777 /mnt/usr/share/extras
     echo "91" | tr -d '\n' > /tmp/progress
   if [ "$hypervisor" != "none" ]; then
     if [ "$hypervisor" = "oracle" ]; then
@@ -213,7 +213,6 @@
       echo "98" | tr -d '\n' > /tmp/progress
     fi
   fi
-  echo "GRUB_THEME=\"/usr/share/grub/themes/pearOS/theme.txt\"" >> /mnt/etc/default/grub
   echo "Installation finished" | tr -d '\n' > /tmp/progress
 check_mountpoints() {
   if mountpoint -q /mnt; then
