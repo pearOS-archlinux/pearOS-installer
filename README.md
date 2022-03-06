@@ -2,7 +2,7 @@
 This is work in progress. Not my fault if your disk gets erased :)
 
 # How do I run this?
-Do the thing I mentioned in the important step, then:
+Open a terminal and:
 ```sh
 cd system-install
 make
@@ -12,11 +12,12 @@ make
 Installs the system on the selected disk.
 Extremly important: it will use the <b>WHOLE</b> disk.
 All the data in the selected disk will be <b>erased</b> in the moment you press `Continue`
-Looks a lot like the macOS's installer :))
+Looks a lot like the macOS's installer
+I added installation progress:)
 
 # Current state
 Various tests are done to this app
-It does not have an `installation progress` <b>yet</b>
+Going to add the POST INSTALL thins(like selecting OS language, username etc.
 
 # License and copyrights:
 This project is released under the PPL v2 License and later, which can be found on https://github.com/Pear-Project
