@@ -244,11 +244,12 @@
   arch-chroot /mnt chpasswd <<<"root:$root_passwd"
   echo "87" | tr -d '\n' > /tmp/progress
 
-  # Add "default" user to wheel and sudoers
+  # Add "default" user to wheel and sudoers, and make the system not to ask sudo password for user 'default'
   arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "default"
   arch-chroot /mnt chpasswd <<<"$USER_NAME:$user_passwd"
   arch-chroot /mnt usermod -aG sudo default
   sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /mnt/etc/sudoers
+  echo "default ALL=(ALL) NOPASSWD:ALL" /mnt/etc/sudoers
   echo "89" | tr -d '\n' > /tmp/progress
 
   # Adding pacman to conf and updating packages list
