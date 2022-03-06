@@ -22,7 +22,7 @@ body {
   font-weight: 400;
   font-size: 14px;
   background-size: 100%;
-  background-image: url(resources/background.png);
+  background-image: url(../resources/background.png);
 }
 
 html {
@@ -32,7 +32,7 @@ html {
 @font-face {
   font-family: "Sen";
   font-weight: 400;
-  src: url(fonts/pearOS-Font-Regular.ttf);
+  src: url(../fonts/pearOS-Font-Regular.ttf);
 }
 
 h1 {
