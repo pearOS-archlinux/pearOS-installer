@@ -31,7 +31,7 @@
   # Check the username
   if printf "%s" "$USER_NAME" | grep -Eoq "^[a-z][a-z0-9-]*$" \
     && [ "${#USER_NAME}" -lt 33 ]; then
-    if grep -Fxq "$USER_NAME" "$DIR"/etc/reserved_usernames; then
+    if grep -Fxq "$USER_NAME" "$DIR"/reserved_usernames; then
       echo "Reserved username. Abort"
       exit 2
     fi
@@ -86,15 +86,14 @@
   sudo useradd -m -g users -G wheel -s /bin/bash "$USER_NAME"
   sudo chpasswd <<<"$USER_NAME:$user_passwd"
   sudo usermod -aG sudo "$USER_NAME"
+  sudo usermod -aG wheel "$USER_NAME"
   sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /etc/sudoers
 
   # Fix extras files permissions (fixes the theme-switcher bug
-  chmod -R 0777 /usr/share/extras
+  chown -R $USER_NAME:$USER_NAME /usr/share/extras
 
   # Remove 'default' user. It can be very dangerous
-  userdel -Z -r -f default
+  sudo userdel -r -f default
 
-  # Remove the 'post install' script from startup
-  
   # Final reboot
   sync && shutdown -r now
