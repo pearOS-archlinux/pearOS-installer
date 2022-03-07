@@ -39,7 +39,7 @@ fs.readFile("/tmp" + "/disk-to-install", (error, data) => {
 	<li>
 	<label class="label_for_disk">
 	<input type="radio" id="disk" name="disk" value="` + data.toString() + `">
-	<img class="disk_logo" height=50px src="../../resources/disk.png"></img>
+	<img class="disk_logo_progress" height=50px src="../../resources/disk.png"></img>
 	<p id="label_disk" class="disk_title">` + data.toString() + `</p>
 	</label>
 	</li>

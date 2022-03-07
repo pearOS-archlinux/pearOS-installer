@@ -39,7 +39,7 @@ function createWindow () {
   })
 
   // !! UNCOMMENT ONLY ON DEBUG !!
-   mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', function () {
     mainWindow = null
@@ -59,10 +59,3 @@ app.on('activate', function () {
     createWindow()
   }
 })
-
-//const { exec } = require('child_process');
-//exec('konsole', (err, stdout) => {
-//    console.log(`${stdout}`);
-//})
-
-//import {Menu, shell, app} from 'electron';

@@ -9,6 +9,7 @@
   "author": "Alexandru Balan",
   "license": "Pear Public License",
   "devDependencies": {
-    "electron": "~1.6.2"
+    "electron": "~1.6.2",
+    "electron-packager": "^15.4.0"
   }
 }
