@@ -1,0 +1,165 @@
+function open_gparted() {
+const { exec } = require('child_process');
+exec('gparted', (err, stdout) => {
+    console.log(`${stdout}`);
+})
+}
+
+function open_browser() {
+const { exec } = require('child_process');
+exec('firefox', (err, stdout) => {
+    console.log(`${stdout}`);
+})
+}
+
+function open_packup() {
+const { exec } = require('child_process');
+exec('', (err, stdout) => {
+    console.log(`${stdout}`);
+})
+}
+
+function open_installer() {
+ location.href = "page_install.html";
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function list_disk() {
+//vars:
+const { exec } = require('child_process');
+count = 0;
+i = 1 ;
+f = 0;
+var z=``;
+var diskname = "";
+var disksize ="";
+
+exec('list_disk count', (err, numberofdisks) => {
+var sCount = `${numberofdisks}`
+count = parseInt(sCount);
+console.log("Available disks are:" + count);
+
+while (i < (count+1)) {
+        console.log("THE VALUE IS " + i);
+		exec("list_disk " +i, (err, stdout) => {
+		var f=1;
+        	var zi=`
+		<li>
+		  <label class="label_for_disk">
+		    <input type="radio" id="disk` +(i-count) + `" name="disk" value="${stdout}">
+        	    <img class="disk_logo" height=50px src="../../resources/disk.png"></img>
+        	    <p id="label_disk` +(i-count) + `" class="disk_title">${stdout}</p>
+		  </label>
+		</li>
+	`;
+	i++;
+        z += zi;
+        document.getElementById("disk_list").innerHTML =z;
+        })
+        i++;
+	}
+	})
+}
+
+function select_disk() {
+        var radios = document.getElementsByName('disk');
+        for (var i = 0, length = radios.length; i < length; i++) {
+          if (radios[i].checked) {
+	  const fs = require('fs');
+	  fs.writeFileSync('/tmp/disk-to-install', '' + radios[i].value);
+	  // starting the shell //
+	  const { exec } = require('child_process');
+	  exec("sudo setup " + radios[i].value + "&> ~/Desktop/install.log", (err, stdout) => {
+	  })
+	// ending the shell //
+        break;
+        }
+    }
+
+}
+
+var p = document.getElementsByTagName("p");
+
+function print_disk(ctrl){
+    //var TextInsideLi = ctrl.getElementsByTagName('p')[0].innerHTML;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+function select_language() {
+  var e = document.getElementById("ddlViewBy");
+  var strUser = e.options[e.selectedIndex].text;
+  const fs = require('fs');
+  if (strUser == "Chinese (Simplified)") {
+      fs.writeFileSync('/tmp/locale', 'zh_CN.UTF-8');
+    window.location.href='lg/zn_CN/page_keymap.html';
+  } else if (strUser == "English (Australia)") {
+      fs.writeFileSync('/tmp/locale', 'en_AU.UTF-8');
+      window.location.href='lg/en_AU/page_examining.html';
+    } else if (strUser == "English (Canada)") {
+        fs.writeFileSync('/tmp/locale', 'en_CA.UTF-8');
+      window.location.href='lg/en_CA/page_examining.html';
+      } else if (strUser == "English (United States)") {
+          fs.writeFileSync('/tmp/locale', 'en_USS.UTF-8');
+        window.location.href='lg/en_US/page_keymap.html';
+        } else if (strUser == "English (United Kingdom)") {
+            fs.writeFileSync('/tmp/locale', 'en_GB.UTF-8');
+            window.location.href='lg/en_GB/page_examining.html';
+          } else if (strUser == "French (France)") {
+              fs.writeFileSync('/tmp/locale', 'fr_FR.UTF-8');
+              window.location.href='lg/fr_FR/page_examining.html';
+            } else if (strUser == "German (Germany)") {
+                fs.writeFileSync('/tmp/locale', 'de_DE.UTF-8');
+                window.location.href='lg/de_DE/page_examining.html';
+              } else if (strUser == "Italian (Italy)") {
+                  fs.writeFileSync('/tmp/locale', 'it_IT.UTF-8');
+                  window.location.href='lg/it_IT/page_examining.html';
+                }  else if (strUser == "Japanese (Japan)") {
+                    fs.writeFileSync('/tmp/locale', 'ja_JP.UTF-8');
+                     window.location.href='lg/ja_JP/page_examining.html';
+                  }  else if (strUser == "Portuguese (Brazil)") {
+                      fs.writeFileSync('/tmp/locale', 'pt_BR.UTF-8');
+                         window.location.href='lg/pt_BR/page_examining.html';
+                    } else if (strUser == "Portuguese (Portugal)") {
+                        fs.writeFileSync('/tmp/locale', 'pt_PT.UTF-8');
+                           window.location.href='lg/pt_PT/page_examining.html';
+                      } else if (strUser == "Russian (Russia)") {
+                          fs.writeFileSync('/tmp/locale', 'ru_RU.UTF-8');
+                             window.location.href='lg/ru_RU/page_examining.html';
+                        } else if (strUser == "Romanian (Romania)") {
+                            fs.writeFileSync('/tmp/locale', 'ro_RO.UTF-8');
+                               window.location.href='lg/ro_RO/page_examining.html';
+                          } else if (strUser == "Spanish (Mexico)") {
+                              fs.writeFileSync('/tmp/locale', 'es_MX.UTF-8');
+                                 window.location.href='lg/es_MX/page_examining.html';
+                            } else if (strUser == "Spanish (Spain)") {
+                                fs.writeFileSync('/tmp/locale', 'es_ES.UTF-8');
+                                   window.location.href='lg/es_ES/page_examining.html';
+                              } else if (strUser == "Swedish (Sweden)") {
+                                  fs.writeFileSync('/tmp/locale', 'sv_SE.UTF-8');
+                                     window.location.href='lg/sv_SE/page_examining.html';
+                                }
+}
+
+function select_keymap() {
+  var e = document.getElementById("keymapList");
+  var strUser = e.options[e.selectedIndex].text;
+  const fs = require('fs');
+  if (strUser == "French") {
+    fs.writeFileSync('/tmp/keymap', 'fr');
+  } else if (strUser == "German") {
+      fs.writeFileSync('/tmp/keymap', 'de');
+    } else if (strUser == "Greek") {
+      fs.writeFileSync('/tmp/keymap', 'gr');
+      } else if (strUser == "Hungarian") {
+        fs.writeFileSync('/tmp/keymap', 'hu');
+        } else if (strUser == "Italian") {
+            fs.writeFileSync('/tmp/keymap', 'it');
+          } else if (strUser == "Polish") {
+              fs.writeFileSync('/tmp/keymap', 'pl');
+            } else if (strUser == "Russian") {
+                fs.writeFileSync('/tmp/keymap', 'ru');
+              } else if (strUser == "Spanish") {
+                  fs.writeFileSync('/tmp/keymap', 'es');
+                }  else if (strUser == "United States") {
+                     fs.writeFileSync('/tmp/keymap', 'us');
+                  }
+}
