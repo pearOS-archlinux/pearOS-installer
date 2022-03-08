@@ -24,7 +24,7 @@ function open_installer() {
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function list_disk() {
+function list_zones() {
 //vars:
 const { exec } = require('child_process');
 count = 0;
@@ -34,28 +34,18 @@ var z=``;
 var diskname = "";
 var disksize ="";
 
-exec('list_disk count', (err, numberofdisks) => {
-var sCount = `${numberofdisks}`
-count = parseInt(sCount);
-console.log("Available disks are:" + count);
+exec('find /usr/share/zoneinfo/posix -type f -or -type l | sort | cut -c27- | wc -l', (err, zone_count) => {
+var sZones = `${zone_count}`
+zones_count = parseInt(sZones);
+console.log("There are " + zones_count + " available time-zones");
 
-while (i < (count+1)) {
-        console.log("THE VALUE IS " + i);
-		exec("list_disk " +i, (err, stdout) => {
-		var f=1;
-        	var zi=`
-		<li>
-		  <label class="label_for_disk">
-		    <input type="radio" id="disk` +(i-count) + `" name="disk" value="${stdout}">
-        	    <img class="disk_logo" height=50px src="../../resources/disk.png"></img>
-        	    <p id="label_disk` +(i-count) + `" class="disk_title">${stdout}</p>
-		  </label>
-		</li>
-	`;
-	i++;
-        z += zi;
-        document.getElementById("disk_list").innerHTML =z;
-        })
+while (i < (zones_count+1)) {
+	exec("find /usr/share/zoneinfo/posix -type f -or -type l | sort | cut -c27- | sed -n "+ i  + "p", (err, stdout) => {
+        	var zi=`<option>${stdout}</option>`;
+		i++;
+        	z += zi;
+        	document.getElementById("time_zones_list").innerHTML =z;
+        	})
         i++;
 	}
 	})
@@ -162,4 +152,13 @@ function select_keymap() {
                 }  else if (strUser == "United States") {
                      fs.writeFileSync('/tmp/keymap', 'us');
                   }
+  window.location.href='page_timezone.html';
+}
+
+function select_timezone() {
+  var e = document.getElementById("time_zones_list");
+  var strUser = e.options[e.selectedIndex].text;
+  const fs = require('fs');
+  fs.writeFileSync('/tmp/timezone', '' + strUser);
+  window.location.href='page_user.html';
 }

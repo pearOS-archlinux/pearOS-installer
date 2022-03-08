@@ -6,14 +6,13 @@
   hypervisor=$(systemd-detect-virt)
 
 
-  if [ "$#" -ne 7 ]; then
+  if [ "$#" -ne 6 ]; then
     echo "KEYMAP=$1"
     echo "LOCALE=$2"
-    echo "utc_enabled=$3"
-    echo "ZONE=$4"
-    echo "user_passwd=$5"
-    echo "FULL_NAME=$6"
-    echo "USER_NAME=$7"
+    echo "ZONE=$3"
+    echo "user_passwd=$4"
+    echo "FULL_NAME=$5"
+    echo "USER_NAME=$6"
     echo " ^ The above list represents your selected configurations."
     exit 2
   fi
@@ -21,12 +20,12 @@
   # Various settings for the installation process
   KEYMAP="$1" # us
   LOCALE="$2" # en_US.UTF-8
-  utc_enabled="$3" # true | false
-  ZONE="$4" # Europe/Bucharest
+  utc_enabled="true" # true | false
+  ZONE="$3" # Europe/Bucharest
   HOST_NAME="pearOS-machine"
-  user_passwd="$5" # user password: pear
-  FULL_NAME="$6" # Full Name
-  USER_NAME="$7" # username (to log into your system)
+  user_passwd="$4" # user password: pear
+  FULL_NAME="$5" # Full Name
+  USER_NAME="$6" # username (to log into your system)
 
   # Check the username
   if printf "%s" "$USER_NAME" | grep -Eoq "^[a-z][a-z0-9-]*$" \
