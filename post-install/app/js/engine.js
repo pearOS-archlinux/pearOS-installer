@@ -1,38 +1,9 @@
-function open_gparted() {
-const { exec } = require('child_process');
-exec('gparted', (err, stdout) => {
-    console.log(`${stdout}`);
-})
-}
-
-function open_browser() {
-const { exec } = require('child_process');
-exec('firefox', (err, stdout) => {
-    console.log(`${stdout}`);
-})
-}
-
-function open_packup() {
-const { exec } = require('child_process');
-exec('', (err, stdout) => {
-    console.log(`${stdout}`);
-})
-}
-
-function open_installer() {
- location.href = "page_install.html";
-}
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
 function list_zones() {
 //vars:
 const { exec } = require('child_process');
 count = 0;
 i = 1 ;
-f = 0;
 var z=``;
-var diskname = "";
-var disksize ="";
 
 exec('find /usr/share/zoneinfo/posix -type f -or -type l | sort | cut -c27- | wc -l', (err, zone_count) => {
 var sZones = `${zone_count}`
@@ -47,33 +18,9 @@ while (i < (zones_count+1)) {
         	document.getElementById("time_zones_list").innerHTML =z;
         	})
         i++;
-	}
+        }
 	})
 }
-
-function select_disk() {
-        var radios = document.getElementsByName('disk');
-        for (var i = 0, length = radios.length; i < length; i++) {
-          if (radios[i].checked) {
-	  const fs = require('fs');
-	  fs.writeFileSync('/tmp/disk-to-install', '' + radios[i].value);
-	  // starting the shell //
-	  const { exec } = require('child_process');
-	  exec("sudo setup " + radios[i].value + "&> ~/Desktop/install.log", (err, stdout) => {
-	  })
-	// ending the shell //
-        break;
-        }
-    }
-
-}
-
-var p = document.getElementsByTagName("p");
-
-function print_disk(ctrl){
-    //var TextInsideLi = ctrl.getElementsByTagName('p')[0].innerHTML;
-}
-///////////////////////////////////////////////////////////////////////////////////////////////////
 function select_language() {
   var e = document.getElementById("ddlViewBy");
   var strUser = e.options[e.selectedIndex].text;
@@ -174,17 +121,14 @@ function validatePassword(){
   }
 }
 
-password.onchange = validatePassword;
-confirm_password.onkeyup = validatePassword;
-
 
 function save_user(){
 	var fullName = document.getElementById("full_name").value;
 	var userName = document.getElementById("account_name").value;
-        var password = document.getElementById("password").value;
-        var confirm_password = document.getElementById("confirm_password").value;
+    var password = document.getElementById("password").value;
+    var confirm_password = document.getElementById("confirm_password").value;
 
 	fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`);
 	fs.writeFileSync('/tmp/keymap', '' + userName);
-        fs.writeFileSync('/tmp/keymap', '' + confirme);
+    fs.writeFileSync('/tmp/keymap', '' + confirme);
 }
