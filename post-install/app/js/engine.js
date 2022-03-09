@@ -162,3 +162,29 @@ function select_timezone() {
   fs.writeFileSync('/tmp/timezone', '' + strUser);
   window.location.href='page_user.html';
 }
+
+var password = document.getElementById("password")
+  , confirm_password = document.getElementById("confirm_password");
+
+function validatePassword(){
+  if(password.value != confirm_password.value) {
+    confirm_password.setCustomValidity("Passwords Don't Match");
+  } else {
+    confirm_password.setCustomValidity('');
+  }
+}
+
+password.onchange = validatePassword;
+confirm_password.onkeyup = validatePassword;
+
+
+function save_user(){
+	var fullName = document.getElementById("full_name").value;
+	var userName = document.getElementById("account_name").value;
+        var password = document.getElementById("password").value;
+        var confirm_password = document.getElementById("confirm_password").value;
+
+	fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`);
+	fs.writeFileSync('/tmp/keymap', '' + userName);
+        fs.writeFileSync('/tmp/keymap', '' + confirme);
+}

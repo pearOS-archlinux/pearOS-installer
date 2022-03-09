@@ -217,15 +217,19 @@ The platform for online dispute resolution of the European Commission can be rea
   <br>
   <h1>Create a Computer Account</h1>
   <p align="center" class="description">Fill out the following informations to create your computer account.</p>
-<form>
-  <label for="fname">Full name:</label>
-  <input type="text" id="pearid" name="pearid"><br><br>
-  <label for="fname">Account name:</label>
-  <input type="text" id="pearid" name="pearid"><br><br>
-  <label for="lname">Password: </label>
-  <input type="password" id="password" name="password"><br><br>
-  <input type="submit" value="Submit">
-</form>
+  <div id="create_user">
+  <form>
+    <label>Full name:</label>
+    <input type="text" id="full_name" name="pearid" class="textbox"><br><br>
+
+    <label>Account name:</label>
+    <input type="text" id="account_name" name="pearid" class="textbox"><br><br>
+
+    <label>Password:</label>
+    <input type="password" id="password" name="password" class="textbox">
+    <input type="confirm_password" id="password_confirm" name="password" class="textbox">
+  </form>
+    </div>
    <br>
    <br>
 </div>
@@ -247,17 +251,6 @@ The platform for online dispute resolution of the European Commission can be rea
    <br>
 </div>
 
-<div class="tab">
-  <br>
-  <br>
-  <h1>Setting Up Your Pearintosh</h1>
-  <br>
-  <br>
-  <br>
-  <img height="300" src="../../resources/finish.png"/>
-   <br>
-</div>
-
        <div class="movement-buttons"> <!-- nu umbla aici in rasa ta -->
        <hr style="color:#ffffff">
 
@@ -266,7 +259,7 @@ The platform for online dispute resolution of the European Commission can be rea
          </div>
 
          <div class="arrow-button-container" >
-          <button class="nav-button button" type="button" id="move-forward-btn">Continue</button>
+          <button onclick="save_user();" class="nav-button button" type="button" id="move-forward-btn">Continue</button>
          </div>
 
         </div>

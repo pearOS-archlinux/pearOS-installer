@@ -14,6 +14,11 @@ input, button, textarea, :focus {
   box-sizing: border-box;
 }
 
+#create_user {
+  margin-top: 100px;
+  margin-right: auto;
+}
+
 body {
   height: 100%;
   margin: 0;
@@ -23,6 +28,18 @@ body {
   font-size: 14px;
   background-size: 100%;
   background-image: url(../resources/background.png);
+}
+
+input{
+        border:none;
+    }
+
+input:focus, textarea:focus
+{
+    border: 1px solid #1670BE;
+    box-shadow: 0 0 3px #1670BE;
+    outline-offset: 0px;
+    outline: none;
 }
 
 html {
@@ -201,4 +218,25 @@ hr {
   height: 350px;
   color: #808080;
   overflow: scroll;
+}
+
+
+input{
+        border:1px solid #000000;
+	margin-left: 5px;
+    }
+
+input:focus, textarea:focus
+{
+    border: 0px solid #1670BE;
+    box-shadow: 0 0 1px 3px #57a2ff;
+    outline-offset: 0px;
+    outline: none;
+}
+
+label {
+  display: inline-block;
+  float: left;
+  width: 200px;
+  text-align: right;
 }
