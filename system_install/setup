@@ -47,12 +47,6 @@
     bluetooth=true
   fi
 
-#  for device in $(lsblk -d -n -p -r -e 7,11 -o NAME); do
-#    device_size=$(lsblk -d -n -r -o SIZE "$device")
-#    block_devices+=("$device" "$device_size")
-#  done
-#  check_mountpoints
-
   # Simple fix for the NVME drives. They are named differently than /dev/sda1 for example
   if [[ "$DISK" == *"nvme"* ]]; then
           PREFIX="p"
