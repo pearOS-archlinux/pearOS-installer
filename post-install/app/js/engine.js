@@ -125,10 +125,29 @@ function validatePassword(){
 function save_user(){
 	var fullName = document.getElementById("full_name").value;
 	var userName = document.getElementById("account_name").value;
-    var password = document.getElementById("password").value;
-    var confirm_password = document.getElementById("confirm_password").value;
+	var password = document.getElementById("password").value;
+	var password_confirm = document.getElementById("password_confirm").value;
+	const fs = require('fs');
 
-	fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`);
-	fs.writeFileSync('/tmp/keymap', '' + userName);
-    fs.writeFileSync('/tmp/keymap', '' + confirme);
+    if(password != '') { check_match();}
+    if(fullName == '') { alert("FullName cannot be empty"); } else { fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`); };
+    if(userName == '') { alert("username cannot be empty"); } else { fs.writeFileSync('/tmp/username', '' + userName); };
+    if(userName == '') { alert("Password cannot be empty"); }
+}
+
+function check_match(){
+  var fullName = document.getElementById("full_name").value;
+  var userName = document.getElementById("account_name").value;
+  var password = document.getElementById("password").value;
+  var password_confirm = document.getElementById("password_confirm").value;
+
+  if( password != password_confirm) {
+    alert("Passwords are not matching!");
+  } else {
+      const fs = require('fs');
+      if(fullName == '') { alert("FullName cannot be empty"); } else { fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`); };
+      if(userName == '') { alert("username cannot be empty"); } else { fs.writeFileSync('/tmp/username', '' + userName); };
+      fs.writeFileSync('/tmp/password', '' + password);
+      window.location.href='page_agreement.html';
+  }
 }
