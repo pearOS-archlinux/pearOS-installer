@@ -129,10 +129,9 @@ function save_user(){
 	var password_confirm = document.getElementById("password_confirm").value;
 	const fs = require('fs');
 
-    if(password != '') { check_match();}
     if(fullName == '') { alert("FullName cannot be empty"); } else { fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`); };
     if(userName == '') { alert("username cannot be empty"); } else { fs.writeFileSync('/tmp/username', '' + userName); };
-    if(userName == '') { alert("Password cannot be empty"); }
+    if(password == '') { alert("Password cannot be empty"); } else if(password != '') { check_match();}
 }
 
 function check_match(){
