@@ -4,6 +4,7 @@ const { exec } = require('child_process');
 count = 0;
 i = 1 ;
 var z=``;
+var fullName='';
 
 exec('find /usr/share/zoneinfo/posix -type f -or -type l | sort | cut -c27- | wc -l', (err, zone_count) => {
 var sZones = `${zone_count}`
@@ -11,18 +12,14 @@ zones_count = parseInt(sZones);
 console.log("There are " + zones_count + " available time-zones");
 
 while (i < (zones_count+1)) {
-	exec("find /usr/share/zoneinfo/posix -type f -or -type l | sort | cut -c27- | sed -n "+ i  + "p", (err, stdout) => {
-        	var zi=`<option>${stdout}</option>`;
-		i++;
-        	z += zi;
-        	document.getElementById("time_zones_list").innerHTML =z;
-        	})
+	exec("find /usr/share/zoneinfo/posix -type f -or -type l | sort | cut -c27- | sed -n "+ i  + "p", (err, stdout) => { var zi=`<option>${stdout}</option>`; i++; z += zi; document.getElementById("time_zones_list").innerHTML =z; })
         i++;
         }
 	})
 }
 function select_language() {
   var e = document.getElementById("ddlViewBy");
+  if (e.options[e.selectedIndex] === undefined) { alert('You must choose one Language from the list'); } else {
   var strUser = e.options[e.selectedIndex].text;
   const fs = require('fs');
   if (strUser == "Chinese (Simplified)") {
@@ -73,57 +70,62 @@ function select_language() {
                               } else if (strUser == "Swedish (Sweden)") {
                                   fs.writeFileSync('/tmp/locale', 'sv_SE.UTF-8');
                                      window.location.href='lg/sv_SE/page_examining.html';
+                                } else if (strUser == '') {
+                                    alert('You must select one language from the list');
                                 }
+  }
 }
 
 function select_keymap() {
   var e = document.getElementById("keymapList");
+   if (e.options[e.selectedIndex] === undefined) { alert('You must choose one Keyboard Layout from the list'); } else {
   var strUser = e.options[e.selectedIndex].text;
   const fs = require('fs');
   if (strUser == "French") {
     fs.writeFileSync('/tmp/keymap', 'fr');
   } else if (strUser == "German") {
       fs.writeFileSync('/tmp/keymap', 'de');
+      window.location.href='page_timezone.html';
     } else if (strUser == "Greek") {
       fs.writeFileSync('/tmp/keymap', 'gr');
+      window.location.href='page_timezone.html';
       } else if (strUser == "Hungarian") {
         fs.writeFileSync('/tmp/keymap', 'hu');
+        window.location.href='page_timezone.html';
         } else if (strUser == "Italian") {
             fs.writeFileSync('/tmp/keymap', 'it');
+            window.location.href='page_timezone.html';
           } else if (strUser == "Polish") {
               fs.writeFileSync('/tmp/keymap', 'pl');
+              window.location.href='page_timezone.html';
             } else if (strUser == "Russian") {
                 fs.writeFileSync('/tmp/keymap', 'ru');
+                window.location.href='page_timezone.html';
               } else if (strUser == "Spanish") {
                   fs.writeFileSync('/tmp/keymap', 'es');
+                  window.location.href='page_timezone.html';
                 }  else if (strUser == "United States") {
                      fs.writeFileSync('/tmp/keymap', 'us');
+                     window.location.href='page_timezone.html';
                   }
-  window.location.href='page_timezone.html';
+   }
 }
 
 function select_timezone() {
   var e = document.getElementById("time_zones_list");
-  var strUser = e.options[e.selectedIndex].text;
-  const fs = require('fs');
-  fs.writeFileSync('/tmp/timezone', '' + strUser);
-  window.location.href='page_user.html';
+   if (e.options[e.selectedIndex] === undefined) { alert('You must choose one Time Zone from the list'); } else {
+       var strUser = e.options[e.selectedIndex].text;
+       const fs = require('fs');
+        fs.writeFileSync('/tmp/timezone', '' + strUser);
+        window.location.href='page_user.html';
+   }
 }
 
 var password = document.getElementById("password")
   , confirm_password = document.getElementById("confirm_password");
 
-function validatePassword(){
-  if(password.value != confirm_password.value) {
-    confirm_password.setCustomValidity("Passwords Don't Match");
-  } else {
-    confirm_password.setCustomValidity('');
-  }
-}
-
-
 function save_user(){
-	var fullName = document.getElementById("full_name").value;
+	fullName = document.getElementById("full_name").value;
 	var userName = document.getElementById("account_name").value;
 	var password = document.getElementById("password").value;
 	var password_confirm = document.getElementById("password_confirm").value;
@@ -135,7 +137,7 @@ function save_user(){
 }
 
 function check_match(){
-  var fullName = document.getElementById("full_name").value;
+  fullName = document.getElementById("full_name").value;
   var userName = document.getElementById("account_name").value;
   var password = document.getElementById("password").value;
   var password_confirm = document.getElementById("password_confirm").value;
@@ -149,4 +151,23 @@ function check_match(){
       fs.writeFileSync('/tmp/password', '' + password);
       window.location.href='page_agreement.html';
   }
+}
+
+function commit(){
+  var fs = require('fs');
+
+    fs.readFile('/tmp/fullname', 'utf-8', (err, fn_data) => { var fullname = fn_data; fs.readFile('/tmp/username', 'utf-8', (err, usr_data) => { var username = usr_data; fs.readFile('/tmp/password', 'utf-8', (err, passwd_data) => { var password = passwd_data; fs.readFile('/tmp/keymap', 'utf-8', (err, kmap_data) => { var keymap = kmap_data; fs.readFile('/tmp/locale', 'utf-8', (err, locale_data) => { var locale = locale_data; fs.readFile('/tmp/timezone', 'utf-8', (err, tzone_data) => { var timezone = tzone_data; const { exec } = require('child_process'); const execSync = require("child_process").execSync;
+        console.log('Keymap is ' + keymap);
+        console.log('Locale is ' + locale);
+        console.log('Timezone is ' + timezone);
+        console.log('');
+        console.log('User passowrd is ' + password);
+        console.log('User Full name is ' + fullname);
+        console.log('username is ' + username);
+        // Comment the above line if you want to enable the debugger mode (must uncomment the line above this).
+        execSync("post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username, (err, stdout) => { console.log(stdout); });
+	window.exit();
+        // Uncomment the above line if you want to enable the debugger mode. It will print the selected stuff in the Developer Tools Console (inspect element).
+        //execSync("post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username + ' ' + 'debug', (err, stdout) => { console.log(stdout); });
+    }) })})});}); });
 }

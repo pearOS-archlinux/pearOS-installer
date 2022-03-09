@@ -20,9 +20,10 @@
   # Various settings for the installation process
   KEYMAP="$1" # us
   LOCALE="$2" # en_US.UTF-8
-  utc_enabled="true" # true | false
+  utc_enabled="false" # true | false
   ZONE="$3" # Europe/Bucharest
   HOST_NAME="pearOS-machine"
+
   user_passwd="$4" # user password: pear
   FULL_NAME="$5" # Full Name
   USER_NAME="$6" # username (to log into your system)

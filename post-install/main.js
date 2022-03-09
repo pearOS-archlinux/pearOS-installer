@@ -39,7 +39,7 @@ function createWindow () {
   })
 
   // !! UNCOMMENT ONLY ON DEBUG !!
-   mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', function () {
     mainWindow = null
@@ -58,4 +58,16 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow()
   }
+})
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
+
+
+const {ipcMain} = require('electron')
+ipcMain.on('close-me', (evt, arg) => {
+  app.quit()
 })
