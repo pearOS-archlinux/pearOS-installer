@@ -86,7 +86,7 @@
   sudo chpasswd <<<"$USER_NAME:$user_passwd"
   sudo usermod -aG wheel "$USER_NAME"
   sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /etc/sudoers
-  echo "$USER_NAME   ALL=(ALL) ALL" >> /etc/sudoers
+  echo "$USER_NAME   ALL=(ALL) ALL" | sudo tee /etc/sudoers
 
   # Fix extras files permissions (fixes the theme-switcher bug
   sudo chmod -R 0777 /usr/share/extras
