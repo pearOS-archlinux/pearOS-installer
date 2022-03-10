@@ -104,5 +104,10 @@
   rm -rf /home/default/*
   rm -rf /home/defaul/
 
+  # Fixing the SDDM theme, finally :))
+  echo "" >> /etc/sddm.conf
+  echo "[THEME]" >> /etc/sddm.conf
+  echo "Current=pearOS" >> /etc/sddm.conf
+
   # Final reboot
   sync && shutdown -r now
