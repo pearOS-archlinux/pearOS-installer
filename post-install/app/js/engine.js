@@ -165,7 +165,7 @@ function commit(){
         console.log('User Full name is ' + fullname);
         console.log('username is ' + username);
         // Comment the above line if you want to enable the debugger mode (must uncomment the line above this).
-        execSync("post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username, (err, stdout) => { console.log(stdout); });
+        execSync("sudo post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username, (err, stdout) => { console.log(stdout); });
 	window.exit();
         // Uncomment the above line if you want to enable the debugger mode. It will print the selected stuff in the Developer Tools Console (inspect element).
         //execSync("post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username + ' ' + 'debug', (err, stdout) => { console.log(stdout); });
