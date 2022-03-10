@@ -100,7 +100,7 @@
   rm -Rf /etc/sddm.conf
 
   # Remove 'default' user. It can be very dangerous
-  userdel -r default
+  userdel -rf default
   rm -rf /home/default/*
   rm -rf /home/defaul/
 
