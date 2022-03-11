@@ -13,7 +13,7 @@
   # Various settings for the installation process
   KEYMAP="us"
   LOCALE="en_US.UTF-8"
-  utc_enabled=true
+  utc_enabled=false
   ZONE="Europe/Bucharest"
   HOST_NAME="pearOS-live"
   user_passwd="pear"
