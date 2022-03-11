@@ -20,7 +20,7 @@
   # Various settings for the installation process
   KEYMAP="$1" # us
   LOCALE="$2" # en_US.UTF-8
-  utc_enabled="false" # true | false
+  utc_enabled=false # true | false
   ZONE="$3" # Europe/Bucharest
   HOST_NAME="pearOS-machine"
 
