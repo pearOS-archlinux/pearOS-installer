@@ -99,6 +99,16 @@
   # Remove sddm.conf > it is set to autologin user 'default', which breaks the system
   rm -Rf /etc/sddm.conf
 
+  # Installing yay helper
+  #git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm
+
+  # Installing plymouth
+  #yay -S plymouth --noconfirm
+
+  # Setting pearOS plymouth theme
+  #plymouth-set-default-theme -R pear-plymouth
+
+
   # Remove 'default' user. It can be very dangerous
   userdel -rf default
   rm -rf /home/default/*
