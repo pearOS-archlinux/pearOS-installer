@@ -27,49 +27,49 @@ function select_language() {
     window.location.href='lg/zn_CN/page_keymap.html';
   } else if (strUser == "English (Australia)") {
       fs.writeFileSync('/tmp/locale', 'en_AU.UTF-8');
-      window.location.href='lg/en_AU/page_examining.html';
+      window.location.href='lg/en_AU/page_keymap.html';
     } else if (strUser == "English (Canada)") {
         fs.writeFileSync('/tmp/locale', 'en_CA.UTF-8');
-      window.location.href='lg/en_CA/page_examining.html';
+      window.location.href='lg/en_CA/page_keymap.html';
       } else if (strUser == "English (United States)") {
           fs.writeFileSync('/tmp/locale', 'en_USS.UTF-8');
         window.location.href='lg/en_US/page_keymap.html';
         } else if (strUser == "English (United Kingdom)") {
             fs.writeFileSync('/tmp/locale', 'en_GB.UTF-8');
-            window.location.href='lg/en_GB/page_examining.html';
+            window.location.href='lg/en_GB/page_keymap.html';
           } else if (strUser == "French (France)") {
               fs.writeFileSync('/tmp/locale', 'fr_FR.UTF-8');
-              window.location.href='lg/fr_FR/page_examining.html';
+              window.location.href='lg/fr_FR/page_keymap.html';
             } else if (strUser == "German (Germany)") {
                 fs.writeFileSync('/tmp/locale', 'de_DE.UTF-8');
-                window.location.href='lg/de_DE/page_examining.html';
+                window.location.href='lg/de_DE/page_keymap.html';
               } else if (strUser == "Italian (Italy)") {
                   fs.writeFileSync('/tmp/locale', 'it_IT.UTF-8');
-                  window.location.href='lg/it_IT/page_examining.html';
+                  window.location.href='lg/it_IT/page_keymap.html';
                 }  else if (strUser == "Japanese (Japan)") {
                     fs.writeFileSync('/tmp/locale', 'ja_JP.UTF-8');
-                     window.location.href='lg/ja_JP/page_examining.html';
+                     window.location.href='lg/ja_JP/page_keymap.html';
                   }  else if (strUser == "Portuguese (Brazil)") {
                       fs.writeFileSync('/tmp/locale', 'pt_BR.UTF-8');
-                         window.location.href='lg/pt_BR/page_examining.html';
+                         window.location.href='lg/pt_BR/page_keymap.html';
                     } else if (strUser == "Portuguese (Portugal)") {
                         fs.writeFileSync('/tmp/locale', 'pt_PT.UTF-8');
-                           window.location.href='lg/pt_PT/page_examining.html';
+                           window.location.href='lg/pt_PT/page_keymap.html';
                       } else if (strUser == "Russian (Russia)") {
                           fs.writeFileSync('/tmp/locale', 'ru_RU.UTF-8');
-                             window.location.href='lg/ru_RU/page_examining.html';
+                             window.location.href='lg/ru_RU/page_keymap.html';
                         } else if (strUser == "Romanian (Romania)") {
                             fs.writeFileSync('/tmp/locale', 'ro_RO.UTF-8');
-                               window.location.href='lg/ro_RO/page_examining.html';
+                               window.location.href='lg/ro_RO/page_keymap.html';
                           } else if (strUser == "Spanish (Mexico)") {
                               fs.writeFileSync('/tmp/locale', 'es_MX.UTF-8');
-                                 window.location.href='lg/es_MX/page_examining.html';
+                                 window.location.href='lg/es_MX/page_keymap.html';
                             } else if (strUser == "Spanish (Spain)") {
                                 fs.writeFileSync('/tmp/locale', 'es_ES.UTF-8');
-                                   window.location.href='lg/es_ES/page_examining.html';
+                                   window.location.href='lg/es_ES/page_keymap.html';
                               } else if (strUser == "Swedish (Sweden)") {
                                   fs.writeFileSync('/tmp/locale', 'sv_SE.UTF-8');
-                                     window.location.href='lg/sv_SE/page_examining.html';
+                                     window.location.href='lg/sv_SE/page_keymap.html';
                                 } else if (strUser == '') {
                                     alert('You must select one language from the list');
                                 }
