@@ -159,7 +159,7 @@ function checkchars() {
 	const checkgex = userName.match(regex);
 
 	if(checkgex == null) {
-  	alert("ILLEGAL CHARS IN THE USERNAME!");
+  	alert("The username you inputed contains illegal characters. The username needs to check the following:\n - start with a lowercase (i.e.: alex)\n - does not start with a number (i.e.: 8alex8)\n - does not start with a character (i.e. -_alex_-)");
 	} else {
 	const fs = require('fs');
       	if(fullName == '') { alert("FullName cannot be empty"); } else { fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`); };
