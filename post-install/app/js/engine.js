@@ -129,10 +129,12 @@ function save_user(){
 	var userName = document.getElementById("account_name").value;
 	var password = document.getElementById("password").value;
 	var password_confirm = document.getElementById("password_confirm").value;
+	const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
+	const checkgex = userName.match(regex);
 	const fs = require('fs');
 
     if(fullName == '') { alert("FullName cannot be empty"); } else { fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`); };
-    if(userName == '') { alert("username cannot be empty"); } else { fs.writeFileSync('/tmp/username', '' + userName); };
+    if(userName == '') { alert("Username cannot be empty"); } else { console.log("Username not empty. Continuing!");};
     if(password == '') { alert("Password cannot be empty"); } else if(password != '') { check_match();}
 }
 
@@ -141,15 +143,29 @@ function check_match(){
   var userName = document.getElementById("account_name").value;
   var password = document.getElementById("password").value;
   var password_confirm = document.getElementById("password_confirm").value;
+  const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
+  const checkgex = userName.match(regex);
 
   if( password != password_confirm) {
     alert("Passwords are not matching!");
   } else {
-      const fs = require('fs');
-      if(fullName == '') { alert("FullName cannot be empty"); } else { fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`); };
-      if(userName == '') { alert("username cannot be empty"); } else { fs.writeFileSync('/tmp/username', '' + userName); };
-      fs.writeFileSync('/tmp/password', '' + password);
-      window.location.href='page_agreement.html';
+	checkchars();
+    }
+}
+
+function checkchars() {
+	var userName = document.getElementById("account_name").value;
+	const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
+	const checkgex = userName.match(regex);
+
+	if(checkgex == null) {
+  	alert("ILLEGAL CHARS IN THE USERNAME!");
+	} else {
+	const fs = require('fs');
+      	if(fullName == '') { alert("FullName cannot be empty"); } else { fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`); };
+	if(userName == '' || checkgex == null) { alert("username cannot be empty"); } else { fs.writeFileSync('/tmp/username', '' + userName); };
+	fs.writeFileSync('/tmp/password', '' + password);
+	window.location.href='page_agreement.html';
   }
 }
 
