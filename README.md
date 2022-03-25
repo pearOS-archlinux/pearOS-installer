@@ -29,7 +29,7 @@ The arch install script was a Terminal UI installer. The number of lines of that
 
 # Contributors:
 - Alexandru Balan (developing and modifying most of the code)
-- equal (cleaning the code, some UI adjustments)
+- ~~equal (cleaning the code, some UI adjustments)~~ I did not commit his work, closed pull request
 - zhovner(base of the UI, made in electron. It is highly modified, not even 10% of zhovner's code is stil present, but *someone* wants me to mention that xd)
 - @jorgeluiscarrillo (the Install script. It is EXTREMLY modified, I used only the coding structure from this, but still, *someone* can report this as *stolen code* :) )
 - GitHub(developing the Electron Framework)
