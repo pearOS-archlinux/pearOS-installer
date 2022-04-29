@@ -121,9 +121,6 @@ function select_timezone() {
    }
 }
 
-var password = document.getElementById("password")
-  , confirm_password = document.getElementById("confirm_password");
-
 function save_user(){
 	fullName = document.getElementById("full_name").value;
 	var userName = document.getElementById("account_name").value;
@@ -157,6 +154,8 @@ function checkchars() {
 	var userName = document.getElementById("account_name").value;
 	const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
 	const checkgex = userName.match(regex);
+
+	var password = document.getElementById("password").value;
 
 	if(checkgex == null) {
   	alert("The username you inputed contains illegal characters. The username needs to check the following:\n - start with a lowercase (i.e.: alex)\n - does not start with a number (i.e.: 8alex8)\n - does not start with a character (i.e. -_alex_-)");
