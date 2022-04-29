@@ -4,7 +4,7 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron11 ."
   },
   "author": "Alexandru Balan",
   "license": "Pear Public License",
