@@ -1,10 +1,11 @@
-# pere os instaler uwu
+# PearOS instaler uwu
 This is work in progress. Not my fault if your disk gets erased :)
 
 # How do I run this?
 Open a terminal and:
 ```sh
-cd system-install
+git clone git@github.com:pearOS-archlinux/pearOS-installer.git
+cd system_install
 make
 ```
 
