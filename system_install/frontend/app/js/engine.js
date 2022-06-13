@@ -62,6 +62,11 @@ while (i < (count+1)) {
 }
 
 function select_disk() {
+
+if(! navigator.onLine){
+	alert('You need an active internet connection to install pearOS NiceCC0re on your device. Please connect to the internet and try again.');
+	window.location.href='';
+	} else {
         var radios = document.getElementsByName('disk');
         for (var i = 0, length = radios.length; i < length; i++) {
           if (radios[i].checked) {
@@ -72,10 +77,11 @@ function select_disk() {
 	  exec("sudo setup " + radios[i].value + "&> ~/Desktop/install.log", (err, stdout) => {
 	  })
 	// ending the shell //
+	window.location.href='page_install_progress.html';
         break;
         }
     }
-
+  }
 }
 
 var p = document.getElementsByTagName("p");
