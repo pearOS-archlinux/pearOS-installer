@@ -100,19 +100,24 @@
   rm -Rf /etc/sddm.conf
 
   # Installing yay helper
-  #git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm
+  git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm
 
   # Installing plymouth
-  #yay -S plymouth --noconfirm
+  yay -S plymouth --noconfirm
 
   # Setting pearOS plymouth theme
-  #plymouth-set-default-theme -R pear-plymouth
-
-
+  plymouth-set-default-theme -R pear-plymouth
+  
+  #Install flatpak
+  sudo pacman -S flatpak
+  
+  #Install pacmac and appimagelauncher
+  yay -S pamac-nosnap appimagelauncher
+  
   # Remove 'default' user. It can be very dangerous
   userdel -rf default
   rm -rf /home/default/*
-  rm -rf /home/defaul/
+  rm -rf /home/default/
 
   # Fixing the SDDM theme, finally :))
   echo "[Autologin]" > /etc/sddm.conf
