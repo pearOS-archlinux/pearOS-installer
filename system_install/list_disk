@@ -31,7 +31,10 @@ f=1
   done
  set +u
  usbToExclude=$usbDevices
-
+ if [ -z $usbToExclude ]
+  then
+       usbToExclude="/dev/null"
+ fi
 
 # Saving each device into it's variable name (step counting the devices, by number)
 for device in $(lsblk -d -n -p -r -e 7,11 -o NAME | grep -v $usbToExclude); do
