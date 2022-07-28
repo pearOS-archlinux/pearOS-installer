@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
+    <title>pearOS NiceC0re</title>
+  </head>
+  <body>
+    <div class="flex-container">
+      <div class="app">
+        <div class="tabs">
+          <!-- 國家/地區 -->
+          <div class="tab active">
+	    <img class="worldmap" src="../../resources/country.png"/>
+            <h1>請選擇您的鍵盤排列方式</h1>
+            <div class="countries">
+              <select class="list" size=9 id="keymapList">
+                <option>法文</option>
+		<option>德文</option>
+		<option>希臘文</option>
+		<option>匈牙利文</option>
+		<option>義大利文</option>
+		<option>波蘭文</option>
+		<option>俄文</option>
+		<option>西班牙文</option>
+		<option>英文（美式）</option>
+              </select>
+            </div>
+          </div>
+
+</div>
+
+       <div class="movement-buttons"> <!-- nu umbla aici in rasa ta -->
+       <hr style="color:#ffffff">
+
+         <div class="arrow-button-container" >
+          <button onclick="window.location.href='../../index.html';"  class="nav-button button" type="button" id="move-back-btn">返回</button>
+         </div>
+
+         <div class="arrow-button-container" >
+          <button onclick="select_keymap();" class="nav-button button" type="button" id="move-forward-btn">繼續</button>
+         </div>
+
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="../../js/engine.js"></script>
+</html>
