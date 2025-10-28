@@ -77,7 +77,7 @@ if(! navigator.onLine){
 	  fs.writeFileSync('/tmp/disk-to-install', '' + radios[i].value);
 	  // starting the shell //
 	  const { exec } = require('child_process');
-	  exec("sudo setup " + radios[i].value + "&> ~/Desktop/install.log", (err, stdout) => {
+	  exec("sudo setup " + radios[i].value + "&> /home/liveuser/Desktop/install.log", (err, stdout) => {
 	  })
 	// ending the shell //
 	window.location.href='page_install_progress.html';
