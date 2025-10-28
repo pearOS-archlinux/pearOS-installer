@@ -4,7 +4,7 @@
   error_exit() {
     local error_message="$1"
     echo "INSTALLATION FAILED: $error_message" | tr -d '\n' > /tmp/progress
-    echo "ERROR: $error_message" >> /tmp/install.log
+    echo "ERROR: $error_message" >> ~/Desktop/install.log
     exit 1
   }
 
@@ -180,6 +180,13 @@
   cp /etc/pacman.conf /mnt/etc/pacman.conf
   echo "17" | tr -d '\n' > /tmp/progress
 
+  # Initialize and update pacman keyring BEFORE installing packages
+  echo "Initializing pacman keyring..." >> ~/Desktop/install.log
+  pacman-key --init &> /dev/null || echo "Warning: keyring init failed" >> ~/Desktop/install.log
+  pacman-key --populate archlinux &> /dev/null || echo "Warning: keyring populate failed" >> ~/Desktop/install.log
+  pacman -Sy --noconfirm archlinux-keyring 2>&1 >> ~/Desktop/install.log || echo "Warning: failed to update keyring package" >> ~/Desktop/install.log
+  echo "18" | tr -d '\n' > /tmp/progress
+
   # installing packages using pacstrap from the BASE_PACKAGES array variable
   # Flag --needed evită reinstalarea pachetelor deja instalate
   # Iterăm prin pachete pentru a continua chiar dacă unele lipsesc
@@ -188,14 +195,14 @@
   
   for package in "${BASE_PACKAGES[@]}"; do
     if ! pacstrap /mnt "$package" 2>/dev/null; then
-      echo "Warning: Failed to install $package" >> /tmp/install.log
+      echo "Warning: Failed to install $package" >> ~/Desktop/install.log
       echo "FAILED: $package" >> /tmp/failed_packages.log
       ((failed_packages++))
     fi
   done
   
   # Scrie statistici în log
-  echo "Installed: $((total_packages - failed_packages))/$total_packages packages" >> /tmp/install.log
+  echo "Installed: $((total_packages - failed_packages))/$total_packages packages" >> ~/Desktop/install.log
   
   echo "21" | tr -d '\n' > /tmp/progress
 
@@ -311,13 +318,13 @@
   echo "90" | tr -d '\n' > /tmp/progress
 
   # Installing yay helper
-  arch-chroot /mnt bash -c "cd /tmp && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm" 2>/dev/null || echo "Warning: Failed to install yay" >> /tmp/install.log
+  arch-chroot /mnt bash -c "cd /tmp && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm" 2>/dev/null || echo "Warning: Failed to install yay" >> ~/Desktop/install.log
 
   # Installing plymouth
-  arch-chroot /mnt yay -S plymouth --noconfirm 2>/dev/null || echo "Warning: Failed to install plymouth" >> /tmp/install.log
+  arch-chroot /mnt yay -S plymouth --noconfirm 2>/dev/null || echo "Warning: Failed to install plymouth" >> ~/Desktop/install.log
 
   # Setting pearOS plymouth theme
-  plymouth-set-default-theme -R pear-plymouth 2>/dev/null || echo "Warning: Failed to set plymouth theme" >> /tmp/install.log
+  plymouth-set-default-theme -R pear-plymouth 2>/dev/null || echo "Warning: Failed to set plymouth theme" >> ~/Desktop/install.log
 
   # Enable Network Manager, vbox additions and SDDM services
   arch-chroot /mnt systemctl enable NetworkManager.service &> /dev/null
