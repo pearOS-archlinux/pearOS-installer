@@ -330,7 +330,7 @@
   arch-chroot /mnt yay -S plymouth --noconfirm 2>/dev/null || echo "Warning: Failed to install plymouth" >> /home/liveuser/Desktop/install.log
 
   # Setting pearOS plymouth theme
-  plymouth-set-default-theme -R pear-plymouth 2>/dev/null || echo "Warning: Failed to set plymouth theme" >> /home/liveuser/Desktop/install.log
+  arch-chroot /mnt plymouth-set-default-theme -R pear-plymouth 2>/dev/null || echo "Warning: Failed to set plymouth theme" >> /home/liveuser/Desktop/install.log
 
   # Enable Network Manager, vbox additions and SDDM services
   arch-chroot /mnt systemctl enable NetworkManager.service &> /dev/null
