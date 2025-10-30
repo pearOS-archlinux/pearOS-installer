@@ -12,7 +12,7 @@
 
   # Setting usefull variables
   DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  BASE_PACKAGES=('archlinux-keyring' 'alsa-utils' 'amd-ucode' 'arch-install-scripts' 'b43-fwcutter' 'base' 'bind-tools' 'broadcom-wl' 'btrfs-progs' 'cloud-init' 'crda' 'cryptsetup' 'darkhttpd' 'dhclient' 'dhcpcd' 'diffutils' 'dnsmasq' 'e2fsprogs' 'edk2-shell' 'efibootmgr' 'espeakup' 'ethtool' 'exfatprogs' 'f2fs-tools' 'fatresize' 'fsarchiver' 'openbsd-netcat' 'gpart' 'gpm' 'gptfdisk' 'grml-zsh-config' 'hdparm' 'intel-ucode' 'iwd' 'jfsutils' 'linux' 'linux-atm' 'linux-firmware' 'livecd-sounds' 'lsscsi' 'lvm2' 'man-db' 'man-pages' 'mc' 'mdadm' 'memtest86+' 'mkinitcpio' 'mkinitcpio-archiso' 'mkinitcpio-nfs-utils' 'modemmanager' 'mtools' 'nano' 'nbd' 'ndisc6' 'nfs-utils' 'nilfs-utils' 'ntfs-3g' 'nvme-cli' 'parted' 'partimage' 'rp-pppoe' 'rsync' 'sdparm' 'sg3_utils' 'smartmontools' 'sof-firmware' 'sudo' 'syslinux' 'systemd-resolvconf' 'tcpdump' 'testdisk' 'udftools' 'usb_modeswitch' 'usbmuxd' 'usbutils' 'vpnc' 'wireless-regdb' 'wireless_tools' 'wpa_supplicant' 'xfsprogs' 'xl2tpd' 'zsh' 'xorg' 'sddm' 'bash-completion' 'networkmanager' 'linux-headers' 'base-devel' 'git' 'xf86-input-libinput' 'pacman-contrib' 'plasma' 'konsole' 'kate' 'nautilus' 'xdg-user-dirs' 'ark' 'gnome-software' 'appmenu-gtk-module' 'touchegg' 'rhythmbox' 'kvantum' 'pearos-grub-theme' 'pearos-settings' 'python-pip' 'neofetch' 'grub' 'os-prober' 'firefox' 'ttf-roboto' 'gvfs' 'pavucontrol' 'pulseaudio' 'pulseaudio-alsa' 'ttf-dejavu' 'xorg-apps' 'xorg-server' 'npm' 'electron')
+  BASE_PACKAGES=('archlinux-keyring' 'alsa-utils' 'amd-ucode' 'arch-install-scripts' 'b43-fwcutter' 'base' 'bind-tools' 'broadcom-wl' 'btrfs-progs' 'cloud-init' 'crda' 'cryptsetup' 'darkhttpd' 'dhclient' 'dhcpcd' 'diffutils' 'dnsmasq' 'e2fsprogs' 'edk2-shell' 'efibootmgr' 'espeakup' 'ethtool' 'exfatprogs' 'f2fs-tools' 'fatresize' 'fsarchiver' 'openbsd-netcat' 'gpart' 'gpm' 'gptfdisk' 'grml-zsh-config' 'hdparm' 'intel-ucode' 'iwd' 'jfsutils' 'linux617' 'linux-atm' 'linux-firmware' 'livecd-sounds' 'lsscsi' 'lvm2' 'man-db' 'man-pages' 'mc' 'mdadm' 'memtest86+' 'mkinitcpio' 'mkinitcpio-archiso' 'mkinitcpio-nfs-utils' 'modemmanager' 'mtools' 'nano' 'nbd' 'ndisc6' 'nfs-utils' 'linux' 'nilfs-utils' 'ntfs-3g' 'nvme-cli' 'parted' 'partimage' 'rp-pppoe' 'rsync' 'sdparm' 'sg3_utils' 'smartmontools' 'sof-firmware' 'sudo' 'syslinux' 'systemd-resolvconf' 'tcpdump' 'testdisk' 'udftools' 'usb_modeswitch' 'usbmuxd' 'usbutils' 'vpnc' 'wireless-regdb' 'wireless_tools' 'wpa_supplicant' 'xfsprogs' 'xl2tpd' 'zsh' 'xorg' 'sddm' 'bash-completion' 'networkmanager' 'linux-headers' 'base-devel' 'git' 'xf86-input-libinput' 'pacman-contrib' 'plasma' 'konsole' 'kate' 'nautilus' 'xdg-user-dirs' 'ark' 'gnome-software' 'appmenu-gtk-module' 'touchegg' 'rhythmbox' 'kvantum' 'pearos-grub-theme' 'pearos-settings' 'python-pip' 'neofetch' 'grub' 'os-prober' 'firefox' 'ttf-roboto' 'gvfs' 'pavucontrol' 'pulseaudio' 'pulseaudio-alsa' 'ttf-dejavu' 'xorg-apps' 'xorg-server' 'npm' 'electron')
   UEFI=false
   bluetooth=false
   installed=false
@@ -199,10 +199,6 @@
   done
   echo "18" | tr -d '\n' > /tmp/progress
 
-  # installing packages using pacstrap from the BASE_PACKAGES array variable
-  # Flag --needed evită reinstalarea pachetelor deja instalate
-  # Iterăm prin pachete pentru a continua chiar dacă unele lipsesc
-  # Dezactivăm temporar trap ERR pentru a permite continuarea dacă un pachet eșuează
   trap - ERR
   failed_packages=0
   total_packages=${#BASE_PACKAGES[@]}
@@ -215,10 +211,8 @@
     fi
   done
   
-  # Reactivează trap ERR pentru pașii critici următori
   trap 'error_exit "Unexpected error at line $LINENO"' ERR
   
-  # Scrie statistici în log
   echo "Installed: $((total_packages - failed_packages))/$total_packages packages" >> /home/liveuser/Desktop/install.log
   
   echo "21" | tr -d '\n' > /tmp/progress
@@ -289,11 +283,6 @@
   fi
   echo "81" | tr -d '\n' > /tmp/progress
 
-  # Add the grub theme to the configuration file
-  echo "GRUB_THEME=\"/usr/share/grub/themes/pearOS/theme.txt\"" >> /mnt/etc/default/grub
-  if ! arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg &> /dev/null; then
-    error_exit "Failed to generate GRUB configuration"
-  fi
   echo "85" | tr -d '\n' > /tmp/progress
 
   # Change root password to "pear"
@@ -324,7 +313,7 @@
   arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "default"
   arch-chroot /mnt chpasswd <<<"$USER_NAME:$user_passwd"
   arch-chroot /mnt usermod -aG wheel default
-  arch-chroot /mnt usermod -aG sudo default
+  # arch-chroot /mnt usermod -aG sudo default
   sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /mnt/etc/sudoers
   echo "default ALL=(ALL) NOPASSWD:ALL" >> /mnt/etc/sudoers
   echo "89" | tr -d '\n' > /tmp/progress
@@ -377,6 +366,14 @@
     fi
   fi
   echo "98" | tr -d '\n' > /tmp/progress
+
+    # Add the grub theme to the configuration file
+  echo "GRUB_THEME=\"/usr/share/grub/themes/pearOS/theme.txt\"" >> /mnt/etc/default/grub
+  if ! arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg &> /dev/null; then
+    error_exit "Failed to generate GRUB configuration"
+  fi
+
+  echo "99" | tr -d '\n' > /tmp/progress
 
   # Sends the install finished messages to the frontend
   if [ -f /tmp/failed_packages.log ]; then
