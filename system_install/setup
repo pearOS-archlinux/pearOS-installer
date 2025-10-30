@@ -354,6 +354,12 @@
   chmod -R 0777 /mnt/usr/share/extras
   echo "95" | tr -d '\n' > /tmp/progress
 
+  # Install pearOS boot chime
+  arch-chroot /mnt git clone https://github.com/Pear-Project/pearos-boot-sound.git
+  arch-chroot /mnt chmod +x pearos-boot-sound/install.sh
+  arch-chroot /mnt ./pearos-boot-sound/install.sh
+  echo "96" | tr -d '\n' > /tmp/progress
+
   # Check if the user installs pearOS in a VM, if yes, which, then enabled corresponding services
   if [ "$hypervisor" != "none" ]; then
     if [ "$hypervisor" = "oracle" ]; then
