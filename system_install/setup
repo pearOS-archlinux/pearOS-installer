@@ -202,6 +202,8 @@
   # installing packages using pacstrap from the BASE_PACKAGES array variable
   # Flag --needed evită reinstalarea pachetelor deja instalate
   # Iterăm prin pachete pentru a continua chiar dacă unele lipsesc
+  # Dezactivăm temporar trap ERR pentru a permite continuarea dacă un pachet eșuează
+  trap - ERR
   failed_packages=0
   total_packages=${#BASE_PACKAGES[@]}
   
@@ -213,13 +215,16 @@
     fi
   done
   
+  # Reactivează trap ERR pentru pașii critici următori
+  trap 'error_exit "Unexpected error at line $LINENO"' ERR
+  
   # Scrie statistici în log
   echo "Installed: $((total_packages - failed_packages))/$total_packages packages" >> /home/liveuser/Desktop/install.log
   
   echo "21" | tr -d '\n' > /tmp/progress
 
-  # Generating fstab
-  if ! genfstab -U -p /mnt >> /mnt/etc/fstab; then
+  # Generating fstab (without deprecated -p) and logging stderr to desktop
+  if ! genfstab -U /mnt >> /mnt/etc/fstab 2>> /home/liveuser/Desktop/install.log; then
     error_exit "Failed to generate fstab"
   fi
   echo "58" | tr -d '\n' > /tmp/progress
