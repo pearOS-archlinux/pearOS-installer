@@ -3,12 +3,15 @@
   # Error handler - trimite mesaj de eroare către frontend
   error_exit() {
     local error_message="$1"
-    echo "INSTALLATION FAILED: $error_message" | tr -d '\n' > /tmp/progress
+    # Pentru progress, înlocuim newline-urile cu spații pentru a păstra pe o linie
+    local progress_message=$(echo "$error_message" | tr '\n' ' ')
+    echo "INSTALLATION FAILED: $progress_message" | tr -d '\n' > /tmp/progress
+    # Pentru log, păstrăm formatarea originală
     echo "ERROR: $error_message" >> /home/liveuser/Desktop/install.log
     exit 1
   }
 
-  trap 'error_exit "Unexpected error at line $LINENO"' ERR
+  trap 'line_no=$LINENO; error_line=$(sed -n "${line_no}p" "${BASH_SOURCE[0]}" | sed "s/^[[:space:]]*//"); error_exit "Unexpected error at line $line_no:\n\n    $error_line"' ERR
 
   # Setting usefull variables
   DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -225,7 +228,7 @@
     update_progress "$progress"
   done
   
-  trap 'error_exit "Unexpected error at line $LINENO"' ERR
+  trap 'line_no=$LINENO; error_line=$(sed -n "${line_no}p" "${BASH_SOURCE[0]}" | sed "s/^[[:space:]]*//"); error_exit "Unexpected error at line $line_no:\n\n    $error_line"' ERR
   
   echo "Installed: $installed_packages/$total_packages packages" >> /home/liveuser/Desktop/install.log
   
