@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
+    <title>Instalátor pearOS NiceC0re</title>
+  </head>
+  <body onload="list_disk();">
+    <div class="flex-container">
+      <div class="app">
+        <div class="tabs">
+          <div class="tab active">
+	    <img class="release-logo-agreement" height="350px" src="../../resources/nicec0re-logo.png"/>
+	    <h1><b>pearOS NiceC0re</b></h1>
+	    <p align="center" class="setup-text" id="disk-install-text">pearOS NiceC0re bude nainstalován na vybraný disk:</p>
+	    <p align="center" class="setup-text" style="color:red;">Upozornění: Tato operace vymaže všechna data na vybraném disku.</p>
+
+      <ul id="disk_list" class="ul_menu_disk">
+      <form>
+
+      </form>
+      </ul>
+    <div class="tab">
+      <img class="release-logo" height="200px" src="../../resources/nicec0re-logo.png"/>
+      <h1>pearOS NiceC0re</h1>
+      <p align="center" class="setup-text">Vyberte disk, na který chcete nainstalovat pearOS NiceC0re.</p>
+      <p align="center" class="setup-text" style="color:red;">Upozornění: Tato operace vymaže všechna data na vybraném disku.</p>
+
+    </div>
+
+
+       <div class="movement-buttons">
+        <div class="grid-container-agreement">
+          <button onclick="window.location.href='page_install_agreement.html';" class="install-button-agreement" id="move-forward-btn">Zpět</button>
+	  <button onclick="select_disk();" class="install-button-agreement" name="move-forward-btn" id="move-forward-btn select">Pokračovat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+  <script src="../../js/engine.js"></script>
+  <script src="../../js/navbar.js"></script>
+</html>

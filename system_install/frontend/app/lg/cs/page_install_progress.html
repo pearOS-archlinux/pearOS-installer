@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
+    <title>Instalátor pearOS NiceC0re</title>
+  </head>
+  <body onload="print_disk();">
+    <div class="flex-container">
+      <div class="app">
+        <div class="tabs">
+          <div class="tab active">
+	    <img class="release-logo-agreement" height="350px" src="../../resources/nicec0re-logo.png"/>
+	    <h1><b>pearOS NiceC0re</b></h1>
+	    <p align="center" class="setup-text" id="disk-install-text">pearOS NiceC0re bude nainstalován na disk:</p>
+
+      <ul id="disk_list" class="ul_menu_disk">
+      <form>
+
+	<p>Instalátor se nepodařilo spustit. Ujistěte se, že je spuštěn z instalačního nástroje pearOS nebo že NodeJS/Electron funguje správně.</p>
+
+      </form>
+      </ul>
+    <div class="tab">
+      <img class="release-logo" height="200px" src="../../resources/nicec0re-logo.png"/>
+      <h1>pearOS NiceC0re</h1>
+      <p align="center" class="setup-text">Vyberte disk, na který chcete nainstalovat pearOS NiceC0re.</p>
+    </div>
+
+
+       <div class="movement-buttons">
+        <div class="grid-container-status">
+	  <button onclick="window.exit();" class="install-button-agreement" name="move-forward-btn" id="move-forward-btn select close-btn">Zavřít</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/navbar.js"></script>
+</html>
