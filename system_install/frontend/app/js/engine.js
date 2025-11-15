@@ -33,6 +33,27 @@ f = 0;
 var z=``;
 var diskname = "";
 var disksize ="";
+var eventListenerAdded = false;
+
+// Adaugă event listener o singură dată folosind event delegation
+function addDiskSelectionListener() {
+	if (eventListenerAdded) return;
+	eventListenerAdded = true;
+	
+	// Folosește event delegation pe elementul părinte
+	var diskList = document.getElementById("disk_list");
+	if (diskList) {
+		diskList.addEventListener('change', function(e) {
+			if (e.target && e.target.type === 'radio' && e.target.name === 'disk' && e.target.checked) {
+				var selectedDiskName = e.target.getAttribute('data-disk-name');
+				var diskInstallText = document.getElementById("disk-install-text");
+				if (diskInstallText && selectedDiskName) {
+					diskInstallText.textContent = 'pearOS NiceC0re will be installed on the disk "' + selectedDiskName + '":';
+				}
+			}
+		});
+	}
+}
 
 exec('list_disk count', (err, numberofdisks) => {
 var sCount = `${numberofdisks}`
@@ -45,18 +66,21 @@ while (i < (count+1)) {
         
 		exec("list_disk " + currentIndex, (err, diskPath) => {
 			exec("list_disk name " + currentIndex, (err, diskName) => {
+				var diskPathTrimmed = diskPath.trim();
+				var diskNameTrimmed = diskName.trim();
 				var zi=`
 				<li>
 				  <label class="label_for_disk">
-				    <input type="radio" id="disk${currentIndex}" name="disk" value="${diskPath.trim()}">
+				    <input type="radio" id="disk${currentIndex}" name="disk" value="${diskPathTrimmed}" data-disk-name="${diskNameTrimmed}">
         	    		<img class="disk_logo" height=50px src="../../resources/disk.png"></img>
-        	    		<p id="label_disk${currentIndex}" class="disk_title"><b>${diskName.trim()}</b></p>
-        	    		<p class="disk_title" style="font-size: 0.8em; color: #999;">${diskPath.trim()}</p>
+        	    		<p id="label_disk${currentIndex}" class="disk_title"><b>${diskNameTrimmed}</b></p>
+        	    		<p class="disk_title" style="font-size: 0.8em; color: #999;">${diskPathTrimmed}</p>
 				  </label>
 				</li>
 				`;
 				z += zi;
 				document.getElementById("disk_list").innerHTML = z;
+				addDiskSelectionListener();
 			});
         });
         i++;

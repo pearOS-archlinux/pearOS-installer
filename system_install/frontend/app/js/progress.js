@@ -28,6 +28,7 @@
 
 function print_disk() {
 const fs = require("fs");
+const { exec } = require('child_process');
 var disk="";
 var prog="";
 
@@ -35,23 +36,110 @@ fs.readFile("/tmp" + "/disk-to-install", (error, data) => {
     if(error) {
         throw error;
     }
-	var disk=`
-	<li>
-	<label class="label_for_disk">
-	<input type="radio" id="disk" name="disk" value="` + data.toString() + `">
-	<img class="disk_logo_progress" height=50px src="../../resources/disk.png"></img>
-	<p id="label_disk" class="disk_title">` + data.toString() + `</p>
-	</label>
-	</li>
-	`;
+	var diskPath = data.toString().trim();
+	
+	// Găsește index-ul diskului și obține numele formal
+	exec('list_disk count', (err, numberOfDisks) => {
+		var count = parseInt(numberOfDisks);
+		var found = false;
+		var diskIndex = 0;
+		
+		// Iterează prin toate diskurile pentru a găsi index-ul
+		var checkDisk = function(index) {
+			if (index > count) {
+				// Dacă nu găsim diskul, folosește device path-ul
+				// Actualizează textul din pagină cu device path-ul
+				var diskInstallText = document.getElementById("disk-install-text");
+				if (diskInstallText) {
+					diskInstallText.textContent = 'pearOS NiceC0re will be installed on the disk "' + diskPath + '":';
+				}
+				
+				var disk = `
+				<li>
+				<label class="label_for_disk">
+				<input type="radio" id="disk" name="disk" value="` + diskPath + `">
+				<img class="disk_logo_progress" height=50px src="../../resources/disk.png"></img>
+				<p id="label_disk" class="disk_title">` + diskPath + `</p>
+				</label>
+				</li>
+				`;
+				startProgressInterval(disk);
+				return;
+			}
+			
+			exec("list_disk " + index, (err, currentDiskPath) => {
+				if (currentDiskPath.trim() === diskPath) {
+					// Găsit! Obține numele formal
+					exec("list_disk name " + index, (err, diskName) => {
+						var diskNameTrimmed = diskName.trim();
+						// Actualizează textul din pagină cu numele diskului
+						var diskInstallText = document.getElementById("disk-install-text");
+						if (diskInstallText) {
+							diskInstallText.textContent = 'pearOS NiceC0re will be installed on the disk "' + diskNameTrimmed + '":';
+						}
+						
+						var disk = `
+						<li>
+						<label class="label_for_disk">
+						<input type="radio" id="disk" name="disk" value="` + diskPath + `">
+						<img class="disk_logo_progress" height=50px src="../../resources/disk.png"></img>
+						<p id="label_disk" class="disk_title">` + diskNameTrimmed + `</p>
+						</label>
+						</li>
+						`;
+						startProgressInterval(disk);
+					});
+				} else {
+					// Continuă căutarea
+					checkDisk(index + 1);
+				}
+			});
+		};
+		
+		checkDisk(1);
+	});
+	});
+}
 
+// Variabile globale pentru calcularea timpului estimat
+var startTime = null;
+var lastProgress = 0;
+
+function formatTimeRemaining(seconds) {
+	if (seconds < 0) return "Calculating...";
+	if (seconds < 60) {
+		return seconds + " second" + (seconds !== 1 ? "s" : "");
+	}
+	var minutes = Math.floor(seconds / 60);
+	var remainingSeconds = Math.floor(seconds % 60);
+	if (remainingSeconds === 0) {
+		return minutes + " minute" + (minutes !== 1 ? "s" : "");
+	}
+	return minutes + " minute" + (minutes !== 1 ? "s" : "") + " " + remainingSeconds + " second" + (remainingSeconds !== 1 ? "s" : "");
+}
+
+function startProgressInterval(disk) {
 	setInterval(function() {
+		const fs = require("fs");
                 fs.readFile("/tmp" + "/progress", (error, data) => {
 	            if(error) {
 		    throw error;
             	}
 
             var progressText = data.toString();
+            var progressPercent = 0;
+            
+            // Extrage procentajul de progres
+            try {
+            	progressPercent = parseFloat(progressText);
+            } catch(e) {
+            	progressPercent = 0;
+            }
+            
+            // Inițializează timpul de start la primul progress > 0
+            if (startTime === null && progressPercent > 0) {
+            	startTime = Date.now();
+            }
             
             // Verifică dacă instalarea a eșuat complet
             if (progressText.startsWith("INSTALLATION FAILED")) {
@@ -63,6 +151,7 @@ fs.readFile("/tmp" + "/disk-to-install", (error, data) => {
             }
             // Verifică dacă instalarea s-a terminat (cu sau fără warnings)
             else if (progressText.startsWith("Installation finished")) {
+            	startTime = null; // Reset pentru următoarea instalare
                 var prog = '';
                 
                 // Verifică dacă sunt warnings
@@ -80,15 +169,28 @@ fs.readFile("/tmp" + "/disk-to-install", (error, data) => {
                 
                 document.getElementById("disk_list").innerHTML = prog;
             } else {
-                // Afișează progress bar
+                // Calculează timpul estimat rămas
+                var timeRemainingText = "";
+                if (startTime !== null && progressPercent > 0 && progressPercent < 100) {
+                	var elapsedTime = (Date.now() - startTime) / 1000; // în secunde
+                	var progressDecimal = progressPercent / 100;
+                	
+                	if (progressDecimal > 0 && elapsedTime > 0) {
+                		var totalEstimatedTime = elapsedTime / progressDecimal;
+                		var remainingTime = totalEstimatedTime - elapsedTime;
+                		timeRemainingText = '<p align="center" class="setup-text" style="font-size: 0.9em; color: #888; margin-top: 10px;">Estimated time remaining: <b>' + formatTimeRemaining(Math.ceil(remainingTime)) + '</b></p>';
+                	}
+                }
+                
+                // Afișează progress bar cu timpul estimat rămas
                 var prog = `
                 	<br><progress id="file" value="` + progressText + `" max="100"> ` + progressText + `% </progress>
+                	` + timeRemainingText + `
                 	`
 		document.getElementById("disk_list").innerHTML = disk + prog;
-            };
+            }
             });
         }, 1000);
-	});
 }
 
 document.getElementById("close-btn").addEventListener("click", function (e) {
