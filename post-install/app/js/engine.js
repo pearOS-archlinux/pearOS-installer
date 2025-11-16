@@ -58,9 +58,12 @@ function select_language() {
                       } else if (strUser == "Russian (Russia)") {
                           fs.writeFileSync('/tmp/locale', 'ru_RU.UTF-8');
                              window.location.href='lg/ru_RU/page_keymap.html';
-                        } else if (strUser == "Romanian (Romania)") {
+                        } else if (strUser == "Czech (Czech Republic)") {
+                            fs.writeFileSync('/tmp/locale', 'cs_CZ.UTF-8');
+                            window.location.href='lg/cs/page_keymap.html';
+                          } else if (strUser == "Romanian (Romania)") {
                             fs.writeFileSync('/tmp/locale', 'ro_RO.UTF-8');
-                               window.location.href='lg/ro_RO/page_keymap.html';
+                              window.location.href='lg/ro_RO/page_keymap.html';
                           } else if (strUser == "Spanish (Mexico)") {
                               fs.writeFileSync('/tmp/locale', 'es_MX.UTF-8');
                                  window.location.href='lg/es_MX/page_keymap.html';
@@ -70,7 +73,9 @@ function select_language() {
                               } else if (strUser == "Swedish (Sweden)") {
                                   fs.writeFileSync('/tmp/locale', 'sv_SE.UTF-8');
                                      window.location.href='lg/sv_SE/page_keymap.html';
-                                } else if (strUser == '') {
+                                }
+                                
+                                 else if (strUser == '') {
                                     alert('You must select one language from the list');
                                 }
   }

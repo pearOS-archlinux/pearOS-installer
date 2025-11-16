@@ -142,4 +142,7 @@ function select_language() {
   } else if (strUser == "Romanian") {
       window.location.href='lg/ro/page_examining.html';
     }
+    else if (strUser == "Czech") {
+      window.location.href='lg/cs/page_examining.html';
+    }
 }

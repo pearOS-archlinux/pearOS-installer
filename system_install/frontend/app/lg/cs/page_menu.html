@@ -1,0 +1,45 @@
+<?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
+    <title>Instalátor pearOS NiceC0re</title>
+  </head>
+
+  <body>
+    <div class="flex-container">
+      <div class="menu">
+      <ul class="ul_menu">
+
+	<button onclick="open_packup()" class="menu_button">
+	<img class="menu_logo" height=50px src="../../resources/packup-logo.png"></img>
+	<p class="menu_title"><b>Obnovit ze zálohy Packup</b></p>
+	<p class="menu_description">Pokud jste před vymazáním dat vytvořili zálohu systému</p>
+	</button><br>
+
+        <button onclick="open_installer()" class="menu_button">
+	<img class="menu_logo" height=50px src="../../resources/nicec0re-logo.png"></img>
+	<p class="menu_title"><b>Nainstalovat pearOS NiceC0re</b></p>
+	<p class="menu_description">Nainstaluje pearOS trvale na disk</p>
+	</button><br>
+
+	<button onclick="open_browser()" class="menu_button">
+	<img class="menu_logo" height="50px" src="../../resources/firefox-logo.png"></img>
+	<p class="menu_title"><b>Prohlížeč</b></p>
+	<p class="menu_description">Otevře prohlížeč Firefox na tomto počítači</p>
+	</button>
+
+	<button onclick="open_gparted()" class="menu_button">
+	<img class="menu_logo" height="50px" src="../../resources/gparted.svg"></img>
+	<p class="menu_title"><b>GParted</b></p>
+	<p class="menu_description">Spravujte nebo vymažte disk pomocí GParted</p>
+	</button>
+
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="../../js/engine.js"></script>
+  <script src="../../js/navbar.js"></script>
+</html>
