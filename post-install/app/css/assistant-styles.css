@@ -7,7 +7,7 @@
 }
 
 input, button, textarea, :focus {
-  outline: none; // You should add some other style for :focus to help UX/a11y
+  outline: none; /* You should add some other style for :focus to help UX/a11y */
 }
 
 * {
@@ -61,7 +61,6 @@ body::after {
   transition: background 0.8s ease-in-out;
 }
 
-/* Clasa pentru hello fără blur */
 body.hello-page::before {
   filter: blur(0px);
 }
@@ -70,7 +69,6 @@ body.hello-page::after {
   background: rgba(0, 0, 0, 0.1);
 }
 
-/* Clasa pentru blur când se navighează din hello */
 body.blur-transition::before {
   filter: blur(8px);
 }
@@ -105,12 +103,15 @@ h1 {
   font-family: "Sen";
   font-weight: 900;
   letter-spacing: -0.053em;
-  font-size: 41px;
+  font-size: 20px;
   margin-top: 20px;
-  margin-bottom: 15px;
+  margin-bottom: 0px;
   padding: 0px;
   color: #333333;
   margin-left: -3px;
+  text-align: left;
+  width: 100%;
+  margin-left: 20%;
 }
 
 p, span {
@@ -137,13 +138,107 @@ img, a {
 .app {
   width: 800px;
   height: 600px;
-  background: linear-gradient(to bottom, #f5f5f5, #e5e5e5);
+  /* background: linear-gradient(to bottom, #ffffff, #ebebeb); */
+  background-color: #ffffff;
   position: relative;
   border-radius: 10px;
 }
 
 .countries {
   margin-top: 10px;
+}
+
+#create_user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  width: 100%;
+  max-width: 400px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 100%);
+}
+
+/* Aliniere la stânga pentru titlul din pagina de user */
+.tab.active h1 {
+  text-align: left;
+  align-self: flex-start;
+  width: 100%;
+  padding-left: 20px;
+  padding-top: 50px;
+}
+
+#create_user form {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  gap: 10px;
+  width: 100%;
+}
+
+#create_user .textbox {
+  width: 300px;
+  padding: 8px 15px;
+  font-size: 14px;
+  border: 1px solid #c5c5c5;
+  border-radius: 8px;
+  background-color: #fbfbfb;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  height: 26px;
+}
+
+#create_user .textbox:focus {
+  border-color: #57a2ff;
+  box-shadow: 0 0 0 3px rgba(87, 162, 255, 0.1);
+  outline: none;
+}
+
+#create_user .textbox::placeholder {
+  color: #999;
+}
+
+#create_user .account-name-hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: -5px;
+  margin-bottom: 5px;
+  text-align: left;
+  width: 300px;
+}
+
+.password-row {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.password-row .textbox {
+  width: 142px;
+}
+
+.password-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  font-size: 13px;
+  min-height: 20px;
+}
+
+.password-check.match {
+  color: #28a745;
+}
+
+.password-check.mismatch {
+  color: #dc3545;
+}
+
+.password-check-icon {
+  margin-right: 5px;
+  font-size: 16px;
 }
 
 .list {
@@ -157,6 +252,7 @@ img, a {
   border: 1px solid #c5c5c5;
   border-radius: 1px;
   overflow-y: auto;
+  text-align: center;
 }
 
 .list:focus {
@@ -192,10 +288,14 @@ img, a {
 option {
   padding-left: 4px;
   padding-top: 2px;
+  text-align: center;
 }
 
 .description {
   margin-top: 0px;
+  font-size: 15px;
+  color: #818181;
+  margin-left: 1%;
 }
 
 .tab {
@@ -206,6 +306,10 @@ option {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100%;
+  flex: 1;
+  position: relative;
 }
 
 hr {
@@ -219,6 +323,43 @@ hr {
   color: white;
 }
 
+/* Butonul Back ca săgeată SVG în colțul din stânga sus */
+#move-back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: transparent;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: none;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#move-back-btn:hover {
+  background: transparent;
+  opacity: 0.7;
+}
+
+#move-back-btn svg {
+  width: 40px;
+  height: 40px;
+}
+
+#move-back-btn svg path {
+  fill: #0570fb;
+  stroke: none;
+}
+
+/* Ascunde butonul Back pe pagina de selecție a limbii */
+#language-selection-page .movement-buttons #move-back-btn {
+  display: none;
+}
 
 .movement-buttons {
   margin-top: auto;
@@ -290,7 +431,6 @@ label {
   text-align: right;
 }
 
-/* Stiluri pentru pagina Hello */
 .hello__div {
   display: flex;
   justify-content: center;
@@ -338,22 +478,22 @@ label {
 }
 
 .nav-button {
-  background-color: #1d7adc;
+  background-color: #ffffff;
   border: none;
-  color: white;
-  border-radius: 8px;
+  color: rgb(43, 43, 43);
+  border-radius: 50px;
   text-align: center;
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  box-shadow: -1px 11px 20px 1px rgb(0 0 0 / 24%);
 }
 
 .nav-button:hover {
-  background-color: #0f5bb8;
+  opacity: 0.8;
 }
 
-/* Efect de transparență și distorsiune pentru stroke-ul animat */
 .hello-stroke {
   filter: 
     blur(0.5px)
@@ -367,7 +507,6 @@ label {
   opacity: 0.6;
 }
 
-/* Eliminat efectul de hover pentru a evita tremurarea */
 
 @keyframes liquidDistortion {
   0% {

@@ -8,6 +8,11 @@
   <body>
     <div class="flex-container">
       <div class="app">
+        <button onclick="window.location.href='page_timezone.html';" type="button" id="move-back-btn">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          </svg>
+        </button>
         <div class="tabs">
 
 <div class="tab active">
@@ -16,15 +21,14 @@
   <p align="center" class="description">Fill out the following informations to create your computer account.</p>
   <div id="create_user">
   <form>
-    <label>Full name:</label>
-    <input type="text" id="full_name" name="pearid" class="textbox"><br><br>
-
-    <label>Account name:</label>
-    <input type="text" id="account_name" name="pearid" class="textbox"><br><br>
-
-    <label>Password:</label>
-    <input type="password" id="password" name="password" class="textbox">
-    <input type="password" id="password_confirm" name="password" class="textbox">
+    <input type="text" id="full_name" name="full_name" class="textbox" placeholder="Full Name">
+    <input type="text" id="account_name" name="account_name" class="textbox" placeholder="Account Name">
+    <p class="account-name-hint">This will be the name of your home folder</p>
+    <div class="password-row">
+      <input type="password" id="password" name="password" class="textbox" placeholder="Password">
+      <input type="password" id="password_confirm" name="password_confirm" class="textbox" placeholder="Verify Password">
+    </div>
+    <div id="password_check" class="password-check"></div>
   </form>
     </div>
    <br>
@@ -35,16 +39,12 @@
        <hr style="color:#ffffff">
 
          <div class="arrow-button-container" >
-          <button onclick="window.location.href='page_timezone.html';" class="nav-button button" type="button" id="move-back-btn">Back</button>
-         </div>
-
-         <div class="arrow-button-container" >
           <button onclick="save_user();" class="nav-button button" type="button" id="move-forward-btn">Continue</button>
          </div>
 
         </div>
       </div>
     </div>
- </div>
+  </div>
   <script src="../../js/engine.js"></script>
 </html>

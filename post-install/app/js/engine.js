@@ -1,21 +1,76 @@
+function check_passwords_match() {
+  const password = document.getElementById("password");
+  const password_confirm = document.getElementById("password_confirm");
+  const passwordCheck = document.getElementById("password_check");
+  
+  if (password && password_confirm && passwordCheck) {
+    const checkMatch = () => {
+      const pass1 = password.value;
+      const pass2 = password_confirm.value;
+      
+      if (pass1 === '' && pass2 === '') {
+        passwordCheck.innerHTML = '';
+        passwordCheck.className = 'password-check';
+        return;
+      }
+      
+      if (pass1 === pass2 && pass1 !== '') {
+        passwordCheck.innerHTML = '<span class="password-check-icon">✓</span> Passwords match';
+        passwordCheck.className = 'password-check match';
+      } else if (pass2 !== '') {
+        passwordCheck.innerHTML = '<span class="password-check-icon">✗</span> Passwords do not match';
+        passwordCheck.className = 'password-check mismatch';
+      } else {
+        passwordCheck.innerHTML = '';
+        passwordCheck.className = 'password-check';
+      }
+    };
+    
+    password.removeEventListener('input', checkMatch);
+    password_confirm.removeEventListener('input', checkMatch);
+    
+    password.addEventListener('input', checkMatch);
+    password_confirm.addEventListener('input', checkMatch);
+  }
+}
+
+window.addEventListener('load', function() {
+  setTimeout(check_passwords_match, 100);
+});
+
 function list_zones() {
-//vars:
-const { exec } = require('child_process');
-count = 0;
-i = 1 ;
-var z=``;
-var fullName='';
-
-exec('find /usr/share/zoneinfo/posix -type f -or -type l | sort | cut -c27- | wc -l', (err, zone_count) => {
-var sZones = `${zone_count}`
-zones_count = parseInt(sZones);
-console.log("There are " + zones_count + " available time-zones");
-
-while (i < (zones_count+1)) {
-	exec("find /usr/share/zoneinfo/posix -type f -or -type l | sort -r | cut -c27- | sed -n "+ i  + "p", (err, stdout) => { var zi=`<option>${stdout}</option>`; i++; z += zi; document.getElementById("time_zones_list").innerHTML =z; })
-        i++;
-        }
-	})
+  const { exec } = require('child_process');
+  const timezoneList = document.getElementById("time_zones_list");
+  
+  if (!timezoneList) {
+    console.error("Timezone list element not found");
+    return;
+  }
+  
+  timezoneList.innerHTML = '';
+  
+  exec('find /usr/share/zoneinfo/posix -type f -or -type l | sort | cut -c27-', (err, stdout, stderr) => {
+    if (err) {
+      console.error("Error getting timezones:", err);
+      timezoneList.innerHTML = '<option>Error loading timezones</option>';
+      return;
+    }
+    
+    const timezones = stdout.trim().split('\n').filter(tz => tz.length > 0);
+    console.log("Found " + timezones.length + " timezones");
+    
+    timezones.forEach((timezone, index) => {
+      const option = document.createElement('option');
+      option.textContent = timezone;
+      timezoneList.appendChild(option);
+      
+      if (index === 0) {
+        timezoneList.disabled = false;
+      }
+    });
+    
+    console.log("Timezone list populated successfully");
+  });
 }
 function select_language() {
   var e = document.getElementById("ddlViewBy");
@@ -88,6 +143,7 @@ function select_keymap() {
   const fs = require('fs');
   if (strUser == "French") {
     fs.writeFileSync('/tmp/keymap', 'fr');
+    window.location.href='page_timezone.html';
   } else if (strUser == "German") {
       fs.writeFileSync('/tmp/keymap', 'de');
       window.location.href='page_timezone.html';
@@ -109,7 +165,7 @@ function select_keymap() {
               } else if (strUser == "Spanish") {
                   fs.writeFileSync('/tmp/keymap', 'es');
                   window.location.href='page_timezone.html';
-                }  else if (strUser == "United States") {
+                }  else if (strUser == "US" || strUser == "United States") {
                      fs.writeFileSync('/tmp/keymap', 'us');
                      window.location.href='page_timezone.html';
                   }
@@ -188,6 +244,6 @@ function commit(){
         execSync("sudo post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username, (err, stdout) => { console.log(stdout); });
 	window.exit();
         // Uncomment the above line if you want to enable the debugger mode. It will print the selected stuff in the Developer Tools Console (inspect element).
-        //execSync("post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username + ' ' + 'debug', (err, stdout) => { console.log(stdout); });
+        // execSync("post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username + ' ' + 'debug', (err, stdout) => { console.log(stdout); });
     }) })})});}); });
 }
