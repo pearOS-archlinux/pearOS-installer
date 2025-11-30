@@ -183,6 +183,10 @@
   # adding pacman config directly
   mkdir -p /mnt/etc/
   cp /etc/pacman.conf /mnt/etc/pacman.conf
+  # Configure pacman to prioritize pearos-settings files over plasma-workspace
+  if ! grep -q "Overwrite = usr/share/plasma/plasmoids/org.kde.plasma.appmenu/" /mnt/etc/pacman.conf; then
+    sed -i '/^\[options\]/a Overwrite = usr/share/plasma/plasmoids/org.kde.plasma.appmenu/' /mnt/etc/pacman.conf
+  fi
   update_progress "17"
 
   # Initialize and update pacman keyring BEFORE installing packages
@@ -335,6 +339,10 @@
 
   # Adding pacman to conf and updating packages list
   cp /etc/pacman.conf /mnt/etc/pacman.conf
+  # Ensure overwrite configuration is maintained for pearos-settings priority
+  if ! grep -q "Overwrite = usr/share/plasma/plasmoids/org.kde.plasma.appmenu/" /mnt/etc/pacman.conf; then
+    sed -i '/^\[options\]/a Overwrite = usr/share/plasma/plasmoids/org.kde.plasma.appmenu/' /mnt/etc/pacman.conf
+  fi
   arch-chroot /mnt pacman -Sy --quiet --noconfirm 2>/dev/null || true
   update_progress "93"
 
