@@ -313,6 +313,11 @@
   cp -r /usr/share/pearOS-installer/general_bin/bin_post /mnt/usr/local/bin/bin_post
   chmod +x /mnt/usr/local/bin/bin_post
 
+  # Create missing directorys and file
+  mkdir /mnt/etc/skel/.config/
+  mkdir /mnt/etc/skel/.config/autostart/
+  touch /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
+
   echo "[Desktop Entry]" > /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
   echo "Name=pearOS Post Install" >> /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
   echo "Comment=Scripts for the after-install time" >> /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
