@@ -67,7 +67,7 @@
 
   # If there is a custom keymap, add it to the vconsole
   if [ "$KEYMAP" != "us" ]; then
-    echo "KEYMAP=$KEYMAP" | suto tee /etc/vconsole.conf
+    echo "KEYMAP=$KEYMAP" | sudo tee /etc/vconsole.conf
     if [ "$DESKTOP" != "None" ]; then
         echo -e "Section \"InputClass\"\nIdentifier \"system-keyboard\"\nMatchIsKeyboard \"on\"\nOption \"XkbLayout\" \"$KEYMAP\"\nEndSection" > /etc/X11/xorg.conf.d/00-keyboard.conf
     fi
