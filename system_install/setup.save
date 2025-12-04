@@ -4,6 +4,7 @@
     local error_message="$1"
     local progress_message=$(echo "$error_message" | tr '\n' ' ')
     echo "INSTALLATION FAILED: $progress_message" | tr -d '\n' > /tmp/progress
+exit
     echo "ERROR: $error_message" >> /home/liveuser/Desktop/install.log
     exit 1
   }
@@ -12,7 +13,7 @@
 
   # Setting usefull variables
   DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  BASE_PACKAGES=('archlinux-keyring' 'plymouth' 'alsa-utils' 'amd-ucode' 'arch-install-scripts' 'b43-fwcutter' 'base' 'bind-tools' 'broadcom-wl' 'btrfs-progs' 'cloud-init' 'crda' 'cryptsetup' 'darkhttpd' 'dhclient' 'dhcpcd' 'diffutils' 'dnsmasq' 'e2fsprogs' 'edk2-shell' 'efibootmgr' 'espeakup' 'ethtool' 'exfatprogs' 'f2fs-tools' 'fatresize' 'fsarchiver' 'openbsd-netcat' 'gpart' 'gpm' 'gptfdisk' 'grml-zsh-config' 'hdparm' 'intel-ucode' 'iwd' 'jfsutils' 'linux617' 'linux-firmware' 'livecd-sounds' 'lsscsi' 'lvm2' 'man-db' 'man-pages' 'mc' 'mdadm' 'memtest86+' 'mkinitcpio' 'mkinitcpio-archiso' 'mkinitcpio-nfs-utils' 'modemmanager' 'mtools' 'nano' 'nbd' 'ndisc6' 'nfs-utils' 'nilfs-utils' 'ntfs-3g' 'nvme-cli' 'parted' 'partimage' 'rp-pppoe' 'rsync' 'sdparm' 'sg3_utils' 'smartmontools' 'sof-firmware' 'sudo' 'syslinux' 'systemd-resolvconf' 'tcpdump' 'testdisk' 'udftools' 'usb_modeswitch' 'usbmuxd' 'usbutils' 'vpnc' 'wireless-regdb' 'wireless_tools' 'wpa_supplicant' 'xfsprogs' 'xl2tpd' 'zsh' 'xorg' 'sddm' 'bash-completion' 'networkmanager' 'linux617-headers' 'base-devel' 'git' 'xf86-input-libinput' 'pacman-contrib' 'plasma' 'konsole' 'kate' 'nautilus' 'xdg-user-dirs' 'ark' 'gnome-software' 'appmenu-gtk-module' 'touchegg' 'rhythmbox' 'kvantum' 'pearos-grub-theme' 'pearos-settings' 'python-pip' 'neofetch' 'grub' 'os-prober' 'firefox' 'ttf-roboto' 'gvfs' 'pavucontrol' 'pipewire' 'pipewire-alsa' 'pipewire-pulse' 'wireplumber' 'jq' 'ttf-dejavu' 'xorg-apps' 'xorg-server' 'kcalc' 'gwenview' 'elisa' 'npm' 'electron' 'system-settings' 'broadcom-wl-dkms')
+  BASE_PACKAGES=('archlinux-keyring' 'plymouth' 'alsa-utils' 'amd-ucode' 'arch-install-scripts' 'b43-fwcutter' 'base' 'bind-tools' 'broadcom-wl' 'btrfs-progs' 'cloud-init' 'crda' 'cryptsetup' 'darkhttpd' 'dhclient' 'dhcpcd' 'diffutils' 'dnsmasq' 'e2fsprogs' 'edk2-shell' 'efibootmgr' 'espeakup' 'ethtool' 'exfatprogs' 'f2fs-tools' 'fatresize' 'fsarchiver' 'openbsd-netcat' 'gpart' 'gpm' 'gptfdisk' 'grml-zsh-config' 'hdparm' 'intel-ucode' 'iwd' 'jfsutils' 'linux617' 'linux-firmware' 'livecd-sounds' 'lsscsi' 'lvm2' 'man-db' 'man-pages' 'mc' 'mdadm' 'memtest86+' 'mkinitcpio' 'mkinitcpio-archiso' 'mkinitcpio-nfs-utils' 'modemmanager' 'mtools' 'nano' 'nbd' 'ndisc6' 'nfs-utils' 'nilfs-utils' 'ntfs-3g' 'nvme-cli' 'parted' 'partimage' 'rp-pppoe' 'rsync' 'sdparm' 'sg3_utils' 'smartmontools' 'sof-firmware' 'sudo' 'syslinux' 'systemd-resolvconf' 'tcpdump' 'testdisk' 'udftools' 'usb_modeswitch' 'usbmuxd' 'usbutils' 'vpnc' 'wireless-regdb' 'wireless_tools' 'wpa_supplicant' 'xfsprogs' 'xl2tpd' 'zsh' 'xorg' 'sddm' 'bash-completion' 'networkmanager' 'linux-headers' 'base-devel' 'git' 'xf86-input-libinput' 'pacman-contrib' 'plasma' 'konsole' 'kate' 'nautilus' 'xdg-user-dirs' 'ark' 'gnome-software' 'appmenu-gtk-module' 'touchegg' 'rhythmbox' 'kvantum' 'pearos-grub-theme' 'pearos-settings' 'python-pip' 'neofetch' 'grub' 'os-prober' 'firefox' 'ttf-roboto' 'gvfs' 'pavucontrol' 'pipewire' 'pipewire-alsa' 'pipewire-pulse' 'wireplumber' 'jq' 'ttf-dejavu' 'xorg-apps' 'xorg-server' 'kcalc' 'gwenview' 'elisa' 'npm' 'electron' 'system-settings')
   UEFI=false
   bluetooth=false
   installed=false
@@ -313,11 +314,6 @@
   cp -r /usr/share/pearOS-installer/general_bin/bin_post /mnt/usr/local/bin/bin_post
   chmod +x /mnt/usr/local/bin/bin_post
 
-  # Create missing directorys and file
-  mkdir /mnt/etc/skel/.config/
-  mkdir /mnt/etc/skel/.config/autostart/
-  touch /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
-
   echo "[Desktop Entry]" > /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
   echo "Name=pearOS Post Install" >> /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
   echo "Comment=Scripts for the after-install time" >> /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
@@ -370,9 +366,7 @@
     arch-chroot /mnt systemctl enable bluetooth.service &> /dev/null
   fi
 
-  # Create extras directory
-  mkdir /mnt/usr/share/extras/
-  # Fix extras files permissions (fixes the theme-switcher bug)
+  # Fix extras files permissions (fixes the theme-switcher bug
   chmod -R 0777 /mnt/usr/share/extras
   update_progress "96"
 
