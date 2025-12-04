@@ -313,11 +313,6 @@
   cp -r /usr/share/pearOS-installer/general_bin/bin_post /mnt/usr/local/bin/bin_post
   chmod +x /mnt/usr/local/bin/bin_post
 
-  # Create missing directorys and file
-  mkdir /mnt/etc/skel/.config/
-  mkdir /mnt/etc/skel/.config/autostart/
-  touch /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
-
   echo "[Desktop Entry]" > /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
   echo "Name=pearOS Post Install" >> /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
   echo "Comment=Scripts for the after-install time" >> /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
@@ -383,6 +378,9 @@
     arch-chroot /mnt ./pearos-boot-sound/install.sh 2>/dev/null || echo "Warning: Failed to install boot chime" >> /home/liveuser/Desktop/install.log
   fi
   update_progress "97"
+
+  chmod 0777 -R /mnt/usr/share/extras/
+  chmod 0777 -R /mnt/usr/share/extras/*
 
   # Check if the user installs pearOS in a VM, if yes, which, then enabled corresponding services
 #  if [ "$hypervisor" != "none" ]; then
