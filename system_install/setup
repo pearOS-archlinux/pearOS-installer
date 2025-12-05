@@ -336,10 +336,6 @@
 
   # Adding pacman to conf and updating packages list
   cp /etc/pacman.conf /mnt/etc/pacman.conf
-  # Ensure overwrite configuration is maintained for pearos-settings priority
-  if ! grep -q "Overwrite = usr/share/plasma/plasmoids/org.kde.plasma.appmenu/" /mnt/etc/pacman.conf; then
-    sed -i '/^\[options\]/a Overwrite = usr/share/plasma/plasmoids/org.kde.plasma.appmenu/' /mnt/etc/pacman.conf
-  fi
   arch-chroot /mnt pacman -Sy --quiet --noconfirm 2>/dev/null || true
   update_progress "93"
 
@@ -402,7 +398,7 @@
 
   update_progress "99"
   rm -rf /mnt/usr/share/applications/assistant.desktop /mnt/usr/share/applications/qdbusviewer.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/designer.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/lstopo.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/kvantummanager.desktop /mnt/usr/share/applications/org.kde.drkonqi.coredump.gui.desktop /mnt/usr/share/applications/electron38.desktop /mnt/usr/share/applications/org.kde.plasma.emojier.desktop /mnt/usr/share/applications/kde_wacom_tabletfinder.desktop /mnt/usr/share/applications/systemsettings.desktop /mnt/usr/share/applications/org.kde.kmenuedit.desktop
-  arch-chroot /mnt pacman -R --noconfirm kinfocenter plasma-disks plasma-welcome kmenuedit plasma-sdk
+  arch-chroot /mnt pacman -R --noconfirm kinfocenter plasma-disks plasma-welcome plasma-sdk
 
   # Sends the install finished messages to the frontend
   if [ -f /tmp/failed_packages.log ]; then
