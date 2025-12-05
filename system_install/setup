@@ -366,7 +366,6 @@
   fi
 
   # Create extras directory
-  mkdir /mnt/usr/share/extras/
   # Fix extras files permissions (fixes the theme-switcher bug)
   chmod -R 0777 /mnt/usr/share/extras
   update_progress "96"
