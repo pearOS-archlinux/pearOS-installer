@@ -104,6 +104,8 @@ fs.readFile("/tmp" + "/disk-to-install", (error, data) => {
 // Variabile globale pentru calcularea timpului estimat
 var startTime = null;
 var lastProgress = 0;
+var progressHistory = []; // Istoric pentru medie mobilă
+var lastUpdateTime = null;
 
 function formatTimeRemaining(seconds) {
 	if (seconds < 0) return "Calculating...";
@@ -143,6 +145,12 @@ function startProgressInterval(disk) {
             
             // Verifică dacă instalarea a eșuat complet
             if (progressText.startsWith("INSTALLATION FAILED")) {
+                // Reset variabile pentru următoarea instalare
+                startTime = null;
+                lastProgress = 0;
+                progressHistory = [];
+                lastUpdateTime = null;
+                
                 var errorMessage = progressText.replace("INSTALLATION FAILED: ", "");
                 var prog = '<p align="center" class="setup-text" style="color: #ff0000;">Installation Failed!</p>';
                 prog += '<p align="center" class="setup-text" style="color: #ff6666;"><b>Error:</b> ' + errorMessage + '</p>';
@@ -151,7 +159,11 @@ function startProgressInterval(disk) {
             }
             // Verifică dacă instalarea s-a terminat (cu sau fără warnings)
             else if (progressText.startsWith("Installation finished")) {
-            	startTime = null; // Reset pentru următoarea instalare
+            	// Reset variabile pentru următoarea instalare
+            	startTime = null;
+            	lastProgress = 0;
+            	progressHistory = [];
+            	lastUpdateTime = null;
                 var prog = '';
                 
                 // Verifică dacă sunt warnings
@@ -169,25 +181,104 @@ function startProgressInterval(disk) {
                 
                 document.getElementById("disk_list").innerHTML = prog;
             } else {
-                // Calculează timpul estimat rămas
-                var timeRemainingText = "";
+                // Calculează timpul estimat rămas cu o metodă mai precisă
+                var timeValue = "";
+                
                 if (startTime !== null && progressPercent > 0 && progressPercent < 100) {
-                	var elapsedTime = (Date.now() - startTime) / 1000; // în secunde
-                	var progressDecimal = progressPercent / 100;
-                	
-                	if (progressDecimal > 0 && elapsedTime > 0) {
-                		var totalEstimatedTime = elapsedTime / progressDecimal;
-                		var remainingTime = totalEstimatedTime - elapsedTime;
-                		timeRemainingText = '<p align="center" class="setup-text" style="font-size: 0.9em; color: #888; margin-top: 10px;">Estimated time remaining: <b>' + formatTimeRemaining(Math.ceil(remainingTime)) + '</b></p>';
-                	}
+                    var currentTime = Date.now();
+                    var elapsedTime = (currentTime - startTime) / 1000; // în secunde
+                    
+                    // Adaugă progresul curent în istoric (păstrăm ultimele 10 măsurători)
+                    if (lastProgress !== progressPercent) {
+                        progressHistory.push({
+                            progress: progressPercent,
+                            time: currentTime
+                        });
+                        
+                        // Păstrează doar ultimele 10 măsurători
+                        if (progressHistory.length > 10) {
+                            progressHistory.shift();
+                        }
+                        
+                        lastProgress = progressPercent;
+                        lastUpdateTime = currentTime;
+                    }
+                    
+                    // Nu calculează timpul prea devreme (minim 10% progres SAU minim 30 secunde)
+                    var minProgress = 10;
+                    var minElapsedTime = 30;
+                    
+                    if (progressPercent >= minProgress || elapsedTime >= minElapsedTime) {
+                        // Metodă 1: Folosește viteza medie recentă (ultimele 3-5 măsurători)
+                        if (progressHistory.length >= 3) {
+                            var recentHistory = progressHistory.slice(-5); // Ultimele 5 măsurători
+                            var firstPoint = recentHistory[0];
+                            var lastPoint = recentHistory[recentHistory.length - 1];
+                            
+                            var recentProgress = lastPoint.progress - firstPoint.progress;
+                            var recentTime = (lastPoint.time - firstPoint.time) / 1000; // în secunde
+                            
+                            if (recentProgress > 0 && recentTime > 0) {
+                                // Viteza medie recentă (% per secundă)
+                                var recentSpeed = recentProgress / recentTime;
+                                
+                                // Timp estimat rămas bazat pe viteza recentă
+                                var remainingProgress = 100 - progressPercent;
+                                var estimatedRemainingTime = remainingProgress / recentSpeed;
+                                
+                                // Limitează estimarea la valori rezonabile (max 2 ore)
+                                if (estimatedRemainingTime > 0 && estimatedRemainingTime < 7200) {
+                                    timeValue = formatTimeRemaining(Math.ceil(estimatedRemainingTime));
+                                }
+                            }
+                        }
+                        
+                        // Dacă nu avem destule date pentru metoda recentă, folosim metoda clasică
+                        // dar doar dacă avem cel puțin 15% progres pentru a fi mai precis
+                        if (!timeValue && progressPercent >= 15) {
+                            var progressDecimal = progressPercent / 100;
+                            
+                            if (progressDecimal > 0 && elapsedTime > 0) {
+                                var totalEstimatedTime = elapsedTime / progressDecimal;
+                                var remainingTime = totalEstimatedTime - elapsedTime;
+                                
+                                // Limitează estimarea la valori rezonabile
+                                if (remainingTime > 0 && remainingTime < 7200) {
+                                    timeValue = formatTimeRemaining(Math.ceil(remainingTime));
+                                }
+                            }
+                        }
+                    }
                 }
                 
-                // Afișează progress bar cu timpul estimat rămas
-                var prog = `
-                	<br><progress id="file" value="` + progressText + `" max="100"> ` + progressText + `% </progress>
-                	` + timeRemainingText + `
+                // Verifică dacă elementele există deja pentru a actualiza doar valoarea
+                var timeValueElement = document.getElementById("time-value");
+                var progressElement = document.getElementById("file");
+                
+                if (timeValueElement && progressElement) {
+                    // Actualizează doar valoarea timpului și progress bar-ul
+                    progressElement.value = progressText;
+                    progressElement.textContent = progressText + "%";
+                    if (timeValue) {
+                        timeValueElement.textContent = timeValue;
+                    } else {
+                        timeValueElement.textContent = "Calculating...";
+                    }
+                } else {
+                    // Creează totul pentru prima dată
+                    var prog = `
+                	<br>
+                	<div style="width: 100%; max-width: 500px; margin: 0 auto;">
+                		<progress id="file" value="` + progressText + `" max="100" style="width: 100%; height: 25px;"> ` + progressText + `% </progress>
+                	</div>
+                	<div id="time-remaining-container" style="width: 100%; max-width: 500px; margin: 10px auto 0 auto; min-height: 30px; display: flex; align-items: center; justify-content: center;">
+                		<p class="setup-text" style="font-size: 0.9em; color: #888; margin: 0; text-align: center;">
+                			<span style="display: inline-block; min-width: 250px; text-align: center;">Estimated time remaining: <b id="time-value">` + (timeValue || "Calculating...") + `</b></span>
+                		</p>
+                	</div>
                 	`
-		document.getElementById("disk_list").innerHTML = disk + prog;
+                    document.getElementById("disk_list").innerHTML = disk + prog;
+                }
             }
             });
         }, 1000);
