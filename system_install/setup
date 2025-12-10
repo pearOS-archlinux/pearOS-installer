@@ -404,7 +404,7 @@
   arch-chroot /mnt pacman -S --noconfirm plasma-welcome
   cp -r /usr/share/applications/welcome.desktop /etc/skel/.config/autostart/welcome.desktop 
   arch-chroot /mnt pacman -R --noconfirm kinfocenter plasma-disks plasma-sdk
-
+  arch-chroot /mnt rm -rf /usr/share/wayland-sessions || :
 
   arch-chroot /mnt pacman -S --noconfirm plasma-x11-session
 
