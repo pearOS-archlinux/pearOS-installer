@@ -55,11 +55,11 @@ fs.readFile("/tmp" + "/disk-to-install", (error, data) => {
 				}
 				
 				var disk = `
-				<li>
-				<label class="label_for_disk">
-				<input type="radio" id="disk" name="disk" value="` + diskPath + `">
-				<img class="disk_logo_progress" height=50px src="../../resources/disk.png"></img>
-				<p id="label_disk" class="disk_title">` + diskPath + `</p>
+				<li style="float: none; display: flex; justify-content: center; align-items: center; width: 100%;">
+				<label class="label_for_disk" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+				<input type="radio" id="disk" name="disk" value="` + diskPath + `" style="position: absolute; opacity: 0;">
+				<img class="disk_logo_progress" height=50px src="../../resources/disk.png" style="margin: 0 auto; display: block;"></img>
+				<p id="label_disk" class="disk_title" style="margin-top: 10px; text-align: center;">` + diskPath + `</p>
 				</label>
 				</li>
 				`;
@@ -79,11 +79,11 @@ fs.readFile("/tmp" + "/disk-to-install", (error, data) => {
 						}
 						
 						var disk = `
-						<li>
-						<label class="label_for_disk">
-						<input type="radio" id="disk" name="disk" value="` + diskPath + `">
-						<img class="disk_logo_progress" height=50px src="../../resources/disk.png"></img>
-						<p id="label_disk" class="disk_title">` + diskNameTrimmed + `</p>
+						<li style="float: none; display: flex; justify-content: center; align-items: center; width: 100%;">
+						<label class="label_for_disk" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+						<input type="radio" id="disk" name="disk" value="` + diskPath + `" style="position: absolute; opacity: 0;">
+						<img class="disk_logo_progress" height=50px src="../../resources/disk.png" style="margin: 0 auto; display: block;"></img>
+						<p id="label_disk" class="disk_title" style="margin-top: 10px; text-align: center;">` + diskNameTrimmed + `</p>
 						</label>
 						</li>
 						`;
