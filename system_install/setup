@@ -397,8 +397,11 @@
   fi
 
   update_progress "99"
+  
+  arch-chroot /mnt pacman-key --populate archlinux
+
   rm -rf /mnt/usr/share/applications/assistant.desktop /mnt/usr/share/applications/qdbusviewer.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/designer.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/lstopo.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/kvantummanager.desktop /mnt/usr/share/applications/org.kde.drkonqi.coredump.gui.desktop /mnt/usr/share/applications/electron38.desktop /mnt/usr/share/applications/org.kde.plasma.emojier.desktop /mnt/usr/share/applications/kde_wacom_tabletfinder.desktop /mnt/usr/share/applications/systemsettings.desktop /mnt/usr/share/applications/org.kde.kmenuedit.desktop 
-  arch-chroot /mnt/pacman -S --noconfirm plasma-welcome
+  arch-chroot /mnt pacman -S --noconfirm plasma-welcome
   cp -r /usr/share/applications/welcome.desktop /etc/skel/.config/autostart/welcome.desktop 
   arch-chroot /mnt pacman -R --noconfirm kinfocenter plasma-disks plasma-sdk
 
