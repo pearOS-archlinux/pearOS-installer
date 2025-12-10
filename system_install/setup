@@ -405,6 +405,9 @@
   cp -r /usr/share/applications/welcome.desktop /etc/skel/.config/autostart/welcome.desktop 
   arch-chroot /mnt pacman -R --noconfirm kinfocenter plasma-disks plasma-sdk
 
+
+  arch-chroot /mnt pacman -S --noconfirm plasma-x11-session
+
   # Sends the install finished messages to the frontend
   if [ -f /tmp/failed_packages.log ]; then
     failed_count=$(wc -l < /tmp/failed_packages.log)
