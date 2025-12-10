@@ -193,7 +193,39 @@ function startProgressInterval(disk) {
         }, 1000);
 }
 
-document.getElementById("close-btn").addEventListener("click", function (e) {
-       var window = remote.getCurrentWindow();
-       window.close();
-  });
+// Funcție pentru a închide fereastra
+function closeWindow() {
+    const { remote } = require('electron');
+    if (remote) {
+        var window = remote.getCurrentWindow();
+        window.close();
+    }
+}
+
+// Funcție pentru a adăuga event listener la butonul de close
+function setupCloseButton() {
+    var closeBtn = document.getElementById("close-btn");
+    if (closeBtn) {
+        // Elimină event listener-ii vechi dacă există
+        var newCloseBtn = closeBtn.cloneNode(true);
+        closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+        
+        newCloseBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            closeWindow();
+        });
+    }
+}
+
+// Adaugă event listener pentru butonul de close când DOM-ul este gata
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupCloseButton);
+} else {
+    // DOM-ul este deja încărcat
+    setupCloseButton();
+}
+
+// De asemenea, adaugă funcția la window pentru a putea fi apelată din onclick (pentru compatibilitate)
+window.exit = function() {
+    closeWindow();
+};
