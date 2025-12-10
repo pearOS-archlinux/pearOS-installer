@@ -284,12 +284,11 @@ function startProgressInterval(disk) {
         }, 1000);
 }
 
-// Funcție pentru a închide fereastra
+// Funcție pentru a închide aplicația (aceeași ca butonul din top bar)
 function closeWindow() {
-    const { remote } = require('electron');
-    if (remote) {
-        var window = remote.getCurrentWindow();
-        window.close();
+    if (typeof require !== 'undefined') {
+        const { ipcRenderer } = require('electron');
+        ipcRenderer.send('app-action', 'quit');
     }
 }
 
