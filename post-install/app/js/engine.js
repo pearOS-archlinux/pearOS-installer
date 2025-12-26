@@ -185,6 +185,7 @@ function select_timezone() {
 function save_user(){
 	fullName = document.getElementById("full_name").value;
 	var userName = document.getElementById("account_name").value;
+	var hostname = document.getElementById("hostname").value;
 	var password = document.getElementById("password").value;
 	var password_confirm = document.getElementById("password_confirm").value;
 	const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
@@ -193,12 +194,14 @@ function save_user(){
 
     if(fullName == '') { alert("FullName cannot be empty"); } else { fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`); };
     if(userName == '') { alert("Username cannot be empty"); } else { console.log("Username not empty. Continuing!");};
+    if(hostname == '') { alert("Hostname cannot be empty"); } else { console.log("Hostname not empty. Continuing!");};
     if(password == '') { alert("Password cannot be empty"); } else if(password != '') { check_match();}
 }
 
 function check_match(){
   fullName = document.getElementById("full_name").value;
   var userName = document.getElementById("account_name").value;
+  var hostname = document.getElementById("hostname").value;
   var password = document.getElementById("password").value;
   var password_confirm = document.getElementById("password_confirm").value;
   const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
@@ -213,6 +216,7 @@ function check_match(){
 
 function checkchars() {
 	var userName = document.getElementById("account_name").value;
+	var hostname = document.getElementById("hostname").value;
 	const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
 	const checkgex = userName.match(regex);
 
@@ -224,6 +228,8 @@ function checkchars() {
 	const fs = require('fs');
       	if(fullName == '') { alert("FullName cannot be empty"); } else { fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`); };
 	if(userName == '' || checkgex == null) { alert("username cannot be empty"); } else { fs.writeFileSync('/tmp/username', '' + userName); };
+	if(hostname == '') { hostname = 'pearOS-machine'; }
+	fs.writeFileSync('/tmp/hostname', '' + hostname);
 	fs.writeFileSync('/tmp/password', '' + password);
 	window.location.href='page_agreement.html';
   }
@@ -232,18 +238,19 @@ function checkchars() {
 function commit(){
   var fs = require('fs');
 
-    fs.readFile('/tmp/fullname', 'utf-8', (err, fn_data) => { var fullname = fn_data; fs.readFile('/tmp/username', 'utf-8', (err, usr_data) => { var username = usr_data; fs.readFile('/tmp/password', 'utf-8', (err, passwd_data) => { var password = passwd_data; fs.readFile('/tmp/keymap', 'utf-8', (err, kmap_data) => { var keymap = kmap_data; fs.readFile('/tmp/locale', 'utf-8', (err, locale_data) => { var locale = locale_data; fs.readFile('/tmp/timezone', 'utf-8', (err, tzone_data) => { var timezone = tzone_data; const { exec } = require('child_process'); const execSync = require("child_process").execSync;
+    fs.readFile('/tmp/fullname', 'utf-8', (err, fn_data) => { var fullname = fn_data; fs.readFile('/tmp/username', 'utf-8', (err, usr_data) => { var username = usr_data; fs.readFile('/tmp/password', 'utf-8', (err, passwd_data) => { var password = passwd_data; fs.readFile('/tmp/keymap', 'utf-8', (err, kmap_data) => { var keymap = kmap_data; fs.readFile('/tmp/locale', 'utf-8', (err, locale_data) => { var locale = locale_data; fs.readFile('/tmp/timezone', 'utf-8', (err, tzone_data) => { var timezone = tzone_data; fs.readFile('/tmp/hostname', 'utf-8', (err, hostname_data) => { var hostname = hostname_data; const { exec } = require('child_process'); const execSync = require("child_process").execSync;
         console.log('Keymap is ' + keymap);
         console.log('Locale is ' + locale);
         console.log('Timezone is ' + timezone);
         console.log('');
-        console.log('User passowrd is ' + password);
+        console.log('User password is ' + password);
         console.log('User Full name is ' + fullname);
         console.log('username is ' + username);
+        console.log('hostname is ' + hostname);
         // Comment the above line if you want to enable the debugger mode (must uncomment the line above this).
-        execSync("sudo post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username, (err, stdout) => { console.log(stdout); });
+        execSync(`sudo post_setup '${keymap.replace(/'/g, "'\\''")}' '${locale.replace(/'/g, "'\\''")}' '${timezone.replace(/'/g, "'\\''")}' '${password.replace(/'/g, "'\\''")}' '${fullname.replace(/'/g, "'\\''")}' '${username.replace(/'/g, "'\\''")}' '${hostname.replace(/'/g, "'\\''")}' `, (err, stdout) => { console.log(stdout); });
 	window.exit();
         // Uncomment the above line if you want to enable the debugger mode. It will print the selected stuff in the Developer Tools Console (inspect element).
-        // execSync("post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username + ' ' + 'debug', (err, stdout) => { console.log(stdout); });
-    }) })})});}); });
+        // execSync("post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username + ' ' + hostname + ' ' + 'debug', (err, stdout) => { console.log(stdout); });
+    }) })})})});}); });
 }
