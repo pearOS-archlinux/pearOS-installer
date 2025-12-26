@@ -138,39 +138,53 @@ function select_language() {
 
 function select_keymap() {
   var e = document.getElementById("keymapList");
-   if (e.options[e.selectedIndex] === undefined) { alert('You must choose one Keyboard Layout from the list'); } else {
+  
+  if (e.options[e.selectedIndex] === undefined) {
+    alert('You must choose one Keyboard Layout from the list');
+    return;
+  }
+  
   var strUser = e.options[e.selectedIndex].text;
   const fs = require('fs');
-  if (strUser == "French") {
-    fs.writeFileSync('/tmp/keymap', 'fr');
-    window.location.href='page_timezone.html';
-  } else if (strUser == "German") {
-      fs.writeFileSync('/tmp/keymap', 'de');
-      window.location.href='page_timezone.html';
-    } else if (strUser == "Greek") {
-      fs.writeFileSync('/tmp/keymap', 'gr');
-      window.location.href='page_timezone.html';
-      } else if (strUser == "Hungarian") {
-        fs.writeFileSync('/tmp/keymap', 'hu');
-        window.location.href='page_timezone.html';
-        } else if (strUser == "Italian") {
-            fs.writeFileSync('/tmp/keymap', 'it');
-            window.location.href='page_timezone.html';
-          } else if (strUser == "Polish") {
-              fs.writeFileSync('/tmp/keymap', 'pl');
-              window.location.href='page_timezone.html';
-            } else if (strUser == "Russian") {
-                fs.writeFileSync('/tmp/keymap', 'ru');
-                window.location.href='page_timezone.html';
-              } else if (strUser == "Spanish") {
-                  fs.writeFileSync('/tmp/keymap', 'es');
-                  window.location.href='page_timezone.html';
-                }  else if (strUser == "US" || strUser == "United States") {
-                     fs.writeFileSync('/tmp/keymap', 'us');
-                     window.location.href='page_timezone.html';
-                  }
-   }
+  const { exec } = require('child_process');
+  
+  // Map display names to layout codes
+  const layoutMap = {
+    "French": "fr",
+    "German": "de",
+    "Greek": "gr",
+    "Hungarian": "hu",
+    "Italian": "it",
+    "Polish": "pl",
+    "Russian": "ru",
+    "Spanish": "es",
+    "US": "us",
+    "United States": "us"
+  };
+  
+  const layout = layoutMap[strUser];
+  
+  if (layout) {
+    // Write to file for reference
+    fs.writeFileSync('/tmp/keymap', layout);
+    
+    // Apply the layout using localectl
+    exec(`localectl set-keymap ${layout}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error applying keyboard layout: ${error.message}`);
+        console.error(`stderr: ${stderr}`);
+        alert('Failed to apply keyboard layout. Check permissions.');
+      } else {
+        console.log('Keyboard layout applied successfully with localectl');
+      }
+      // Navigate regardless of success/failure
+      window.location.href = 'page_timezone.html';
+    });
+  } else {
+    alert('Unknown keyboard layout selected');
+  }
 }
+
 
 function select_timezone() {
   var e = document.getElementById("time_zones_list");
