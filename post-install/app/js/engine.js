@@ -168,15 +168,15 @@ function select_keymap() {
     // Write to file for reference
     fs.writeFileSync('/tmp/keymap', layout);
     
-    // Apply the layout using localectl
-    exec(`localectl set-keymap ${layout}`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error applying keyboard layout: ${error.message}`);
-        console.error(`stderr: ${stderr}`);
-        alert('Failed to apply keyboard layout. Check permissions.');
-      } else {
-        console.log('Keyboard layout applied successfully with localectl');
-      }
+    // Apply the layout using localectl | doesn't work and requires PW atm
+    // exec(`localectl set-keymap ${layout}`, (error, stdout, stderr) => {
+    //  if (error) {
+    //    console.error(`Error applying keyboard layout: ${error.message}`);
+    //    console.error(`stderr: ${stderr}`);
+    //    alert('Failed to apply keyboard layout. Check permissions.');
+    //  } else {
+    //    console.log('Keyboard layout applied successfully with localectl');
+    //  }
       // Navigate regardless of success/failure
       window.location.href = 'page_timezone.html';
     });
