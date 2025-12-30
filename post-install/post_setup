@@ -225,4 +225,4 @@ echo "System will reboot in 10 seconds. Press Ctrl+C to cancel..."
 sleep 10
 
 # Final reboot
-sync && shutdown -r now
+sync && systemctl reboot -i
