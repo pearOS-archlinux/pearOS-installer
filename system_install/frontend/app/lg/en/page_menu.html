@@ -50,4 +50,15 @@
   </body>
   <script src="../../js/engine.js"></script>
   <script src="../../js/navbar.js"></script>
+  <script>
+    // Update navbar title to "Recovery" on menu page
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        var appNameButton = document.getElementById('app-name-button');
+        if (appNameButton) {
+          appNameButton.innerHTML = '<b>Recovery</b>';
+        }
+      }, 100);
+    });
+  </script>
 </html>

@@ -2,10 +2,12 @@ const electron = require('electron')
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow
 const ipcMain = electron.ipcMain
+const powerSaveBlocker = electron.powerSaveBlocker
 const path = require('path')
 const url = require('url')
 const { exec } = require('child_process')
 let mainWindow
+let powerSaveBlockerId = null
 
 function createWindow () {
   const screen = electron.screen;
@@ -44,6 +46,11 @@ function createWindow () {
    mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', function () {
+    // Oprește power save blocker când fereastra se închide
+    if (powerSaveBlockerId !== null) {
+      powerSaveBlocker.stop(powerSaveBlockerId)
+      powerSaveBlockerId = null
+    }
     mainWindow = null
   })
 }
@@ -90,14 +97,29 @@ ipcMain.on('app-action', (event, action) => {
       });
       break;
     case 'quit':
+      // Oprește power save blocker înainte de quit
+      if (powerSaveBlockerId !== null) {
+        powerSaveBlocker.stop(powerSaveBlockerId)
+        powerSaveBlockerId = null
+      }
       app.quit();
       break;
   }
 })
 
-app.on('ready', createWindow)
+app.on('ready', () => {
+  // Previne ecranul să se stingă cât timp aplicația rulează
+  powerSaveBlockerId = powerSaveBlocker.start('prevent-display-sleep')
+  console.log('Power save blocker started, ID:', powerSaveBlockerId)
+  createWindow()
+})
 
 app.on('window-all-closed', function () {
+  // Oprește power save blocker când aplicația se închide
+  if (powerSaveBlockerId !== null) {
+    powerSaveBlocker.stop(powerSaveBlockerId)
+    powerSaveBlockerId = null
+  }
   if (process.platform !== 'darwin') {
     app.quit()
   }
@@ -106,5 +128,13 @@ app.on('window-all-closed', function () {
 app.on('activate', function () {
   if (mainWindow === null) {
     createWindow()
+  }
+})
+
+app.on('before-quit', function () {
+  // Oprește power save blocker înainte de a închide aplicația
+  if (powerSaveBlockerId !== null) {
+    powerSaveBlocker.stop(powerSaveBlockerId)
+    powerSaveBlockerId = null
   }
 })

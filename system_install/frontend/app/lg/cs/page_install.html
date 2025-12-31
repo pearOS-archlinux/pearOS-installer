@@ -24,4 +24,15 @@
     </div>
   </body>
   <script src="../../js/navbar.js"></script>
+  <script>
+    // Update navbar title to "Install pearOS NiceC0re" on install page
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        var appNameButton = document.getElementById('app-name-button');
+        if (appNameButton) {
+          appNameButton.innerHTML = '<b>Install pearOS NiceC0re</b>';
+        }
+      }, 100);
+    });
+  </script>
 </html>

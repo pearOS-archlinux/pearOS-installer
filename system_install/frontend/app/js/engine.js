@@ -361,6 +361,23 @@ window.addEventListener('load', function() {
   }
 });
 
+// Initialize language selection handler
+function initLanguageSelection() {
+  var selectElement = document.getElementById("ddlViewBy");
+  if (selectElement) {
+    selectElement.addEventListener('change', function() {
+      // Remove selected attribute from all options
+      for (var i = 0; i < this.options.length; i++) {
+        this.options[i].removeAttribute('selected');
+      }
+      // Set selected attribute on the currently selected option
+      if (this.selectedIndex >= 0) {
+        this.options[this.selectedIndex].setAttribute('selected', 'selected');
+      }
+    });
+  }
+}
+
 function select_language() {
   var e = document.getElementById("ddlViewBy");
   var strUser = e.options[e.selectedIndex].text;

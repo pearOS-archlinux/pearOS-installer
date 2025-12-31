@@ -13,7 +13,6 @@
 	    <img class="release-logo-agreement" height="350px" src="../../resources/nicec0re-logo.png"/>
 	    <h1><b>pearOS NiceC0re</b></h1>
 	    <p align="center" class="setup-text" id="disk-install-text">Vyberte disk, na který chcete nainstalovat pearOS.</p>
-	    <p align="center" class="setup-text" style="color:red;">Upozornění: Tato operace vymaže všechna data na vybraném disku.</p>
 
       <ul id="disk_list" class="ul_menu_disk">
       <form>
@@ -24,7 +23,6 @@
       <img class="release-logo" height="200px" src="../../resources/nicec0re-logo.png"/>
       <h1>pearOS NiceC0re</h1>
       <p align="center" class="setup-text">Vyberte disk, na který chcete nainstalovat pearOS NiceC0re.</p>
-      <p align="center" class="setup-text" style="color:red;">Upozornění: Tato operace vymaže všechna data na vybraném disku.</p>
 
     </div>
 
@@ -32,12 +30,47 @@
        <div class="movement-buttons">
         <div class="grid-container-disk">
           <button onclick="window.location.href='page_install_agreement.html';" class="install-button-agreement" id="move-forward-btn">Zpět</button>
-	  <button onclick="select_disk();" class="install-button-agreement" name="move-forward-btn" id="move-forward-btn select">Pokračovat</button>
+	  <button onclick="showEraseModal();" class="install-button-agreement" name="move-forward-btn" id="move-forward-btn select">Pokračovat</button>
         </div>
       </div>
     </div>
   </div>
+    <!-- Erase Disk Confirmation Modal -->
+    <div id="erase-modal" class="agreement-modal">
+      <div class="agreement-modal-content" style="height: auto; max-height: 500px;">
+        <img class="agreement-modal-logo" height="100px" src="../../resources/nicec0re-logo.png"/>
+        <p class="agreement-modal-text" style="font-size: 16px; margin-bottom: 15px;"><b>Tato operace VYMAŽE vybraný disk.</b></p>
+        <p class="agreement-modal-text" style="font-size: 12px; font-weight: normal; margin-bottom: 20px; line-height: 1.6;">
+          macOS neobsahuje možnost multibootu nebo rozdělení disku. Jakékoli stížnosti týkající se tohoto by měly být směřovány na Apple. My pouze replikujeme jejich přístup.<br><br>
+          Děkujeme za pochopení.
+        </p>
+        <div class="agreement-modal-buttons">
+          <button onclick="closeEraseModal();" class="install-button-agreement">Zrušit</button>
+          <button onclick="confirmErase();" class="install-button-agreement">Pokračovat</button>
+        </div>
+      </div>
+    </div>
   </body>
   <script src="../../js/engine.js"></script>
   <script src="../../js/navbar.js"></script>
+  <script>
+    function showEraseModal() {
+      var modal = document.getElementById('erase-modal');
+      if (modal) {
+        modal.classList.add('show');
+      }
+    }
+    
+    function closeEraseModal() {
+      var modal = document.getElementById('erase-modal');
+      if (modal) {
+        modal.classList.remove('show');
+      }
+    }
+    
+    function confirmErase() {
+      closeEraseModal();
+      select_disk();
+    }
+  </script>
 </html>

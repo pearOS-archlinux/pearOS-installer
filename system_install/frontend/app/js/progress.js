@@ -284,11 +284,11 @@ function startProgressInterval(disk) {
         }, 1000);
 }
 
-// Funcție pentru a închide aplicația (aceeași ca butonul din top bar)
+// Funcție pentru a închide aplicația (aceeași ca butonul "Go to Live Environment")
 function closeWindow() {
     if (typeof require !== 'undefined') {
         const { ipcRenderer } = require('electron');
-        ipcRenderer.send('app-action', 'quit');
+        ipcRenderer.send('system-action', 'live-environment');
     }
 }
 

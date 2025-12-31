@@ -863,7 +863,7 @@ input[type="radio"]{
 /* Stiluri pentru navbar-ul dinamic */
 .taskbar {
   text-transform: capitalize;
-  height: 2em;
+  height: 2.5em;
   z-index: 5;
   width: 100vw;
   backdrop-filter: blur(10vw);
@@ -928,7 +928,7 @@ input[type="radio"]{
 
 /* Ajustare pentru conținutul de sub navbar */
 body {
-  padding-top: 2em; /* Spațiu pentru navbar-ul fix */
+  padding-top: 2.5em; /* Spațiu pentru navbar-ul fix */
 }
 
 /* Meniu dropdown pentru logo */
