@@ -104,13 +104,26 @@ if [ "$KEYMAP" != "us" ]; then
     echo "ERROR: Failed to write /etc/vconsole.conf" >&2
     exit 1
   fi
-  if [ "$DESKTOP" != "None" ]; then
-    if ! echo -e "Section \"InputClass\"\nIdentifier \"system-keyboard\"\nMatchIsKeyboard \"on\"\nOption \"XkbLayout\" \"$KEYMAP\"\nEndSection" > /etc/X11/xorg.conf.d/00-keyboard.conf; then
-      echo "ERROR: Failed to configure X11 keyboard" >&2
-      exit 1
-    fi
+fi
+
+# Configure X11 keyboard layout (for X11 desktop environments)
+# Note: localectl set-keymap (called above) works for both X11 and Wayland
+# This X11-specific config ensures compatibility with X11-only applications
+if [ -d /usr/share/X11 ]; then
+  echo "Configuring X11 keyboard layout..."
+  if ! mkdir -p /etc/X11/xorg.conf.d; then
+    echo "ERROR: Failed to create /etc/X11/xorg.conf.d directory" >&2
+    exit 1
+  fi
+  if ! echo -e "Section \"InputClass\"\nIdentifier \"system-keyboard\"\nMatchIsKeyboard \"on\"\nOption \"XkbLayout\" \"$KEYMAP\"\nEndSection" > /etc/X11/xorg.conf.d/00-keyboard.conf; then
+    echo "ERROR: Failed to configure X11 keyboard" >&2
+    exit 1
   fi
 fi
+
+# Note: For Wayland, localectl set-keymap (called above) is sufficient
+# Most Wayland compositors (including Plasma Wayland) read keyboard layout from systemd/localectl
+# Individual compositors may have additional config files, but localectl covers the base configuration
 
 # Committing the locale settings
 echo "Generating locale..."

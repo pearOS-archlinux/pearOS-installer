@@ -147,7 +147,7 @@ img, a {
   border-radius: 10px;
   border-color: transparent;
   overflow-y: auto;
-  clor: red;
+  color: red;
   background: #252525;
   border-color: #383838;
 }
@@ -369,7 +369,9 @@ hr {
   height: 200px;
 }
 
-.disk_button:focus .disk_list:after{height="675px"}
+.disk_button:focus .disk_list:after {
+  height: 675px;
+}
 
 .menu_button:hover {
   background-color: #393e3d;
@@ -586,10 +588,12 @@ list-style-type: none;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   width: 100%;
   padding: 0;
   margin: 0;
+  gap: 20px;
 }
 
 .ul_menu_disk li {
@@ -597,7 +601,9 @@ list-style-type: none;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: auto;
+  min-width: 200px;
+  flex: 0 1 auto;
 }
 
 .label_for_disk {

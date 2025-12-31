@@ -178,7 +178,6 @@ function select_keymap() {
       }
     
       console.log(`Keyboard layout applied successfully: ${layout}`);
-    });
       // Navigate regardless of success/failure
       window.location.href = 'page_timezone.html';
     });
@@ -251,19 +250,55 @@ function checkchars() {
   }
 }
 
+function display_settings() {
+  const fs = require('fs');
+  
+  try {
+    const keymap = fs.readFileSync('/tmp/keymap', 'utf-8').trim();
+    const locale = fs.readFileSync('/tmp/locale', 'utf-8').trim();
+    const timezone = fs.readFileSync('/tmp/timezone', 'utf-8').trim();
+    const fullname = fs.readFileSync('/tmp/fullname', 'utf-8').trim().replace(/^'|'$/g, '');
+    const username = fs.readFileSync('/tmp/username', 'utf-8').trim();
+    const hostname = fs.readFileSync('/tmp/hostname', 'utf-8').trim();
+    
+    console.log('');
+    console.log('==========================================');
+    console.log('  Selected Configuration Settings');
+    console.log('==========================================');
+    console.log('Keyboard Layout:     ' + keymap);
+    console.log('Locale:              ' + locale);
+    console.log('Timezone:            ' + timezone);
+    console.log('Full Name:           ' + fullname);
+    console.log('Username:            ' + username);
+    console.log('Hostname:            ' + hostname);
+    console.log('==========================================');
+    console.log('');
+  } catch (err) {
+    console.error('Error reading settings:', err);
+  }
+}
+
 function commit(){
   var fs = require('fs');
 
     fs.readFile('/tmp/fullname', 'utf-8', (err, fn_data) => { var fullname = fn_data; fs.readFile('/tmp/username', 'utf-8', (err, usr_data) => { var username = usr_data; fs.readFile('/tmp/password', 'utf-8', (err, passwd_data) => { var password = passwd_data; fs.readFile('/tmp/keymap', 'utf-8', (err, kmap_data) => { var keymap = kmap_data; fs.readFile('/tmp/locale', 'utf-8', (err, locale_data) => { var locale = locale_data; fs.readFile('/tmp/timezone', 'utf-8', (err, tzone_data) => { var timezone = tzone_data; fs.readFile('/tmp/hostname', 'utf-8', (err, hostname_data) => { var hostname = hostname_data; const { exec } = require('child_process'); const execSync = require("child_process").execSync;
-        console.log('Keymap is ' + keymap);
-        console.log('Locale is ' + locale);
-        console.log('Timezone is ' + timezone);
+        
+        // Display selected settings from frontend before execution
         console.log('');
-        console.log('User password is ' + password);
-        console.log('User Full name is ' + fullname);
-        console.log('username is ' + username);
-        console.log('hostname is ' + hostname);
-        // Comment the above line if you want to enable the debugger mode (must uncomment the line above this).
+        console.log('==========================================');
+        console.log('  Selected Configuration Settings');
+        console.log('==========================================');
+        console.log('Keyboard Layout:     ' + keymap);
+        console.log('Locale:              ' + locale);
+        console.log('Timezone:            ' + timezone);
+        console.log('Full Name:           ' + fullname);
+        console.log('Username:            ' + username);
+        console.log('Hostname:            ' + hostname);
+        console.log('==========================================');
+        console.log('');
+        console.log('Starting post-installation setup...');
+        console.log('');
+        
         execSync(`sudo post_setup '${keymap.replace(/'/g, "'\\''")}' '${locale.replace(/'/g, "'\\''")}' '${timezone.replace(/'/g, "'\\''")}' '${password.replace(/'/g, "'\\''")}' '${fullname.replace(/'/g, "'\\''")}' '${username.replace(/'/g, "'\\''")}' '${hostname.replace(/'/g, "'\\''")}' `, (err, stdout) => { console.log(stdout); });
 	window.exit();
         // Uncomment the above line if you want to enable the debugger mode. It will print the selected stuff in the Developer Tools Console (inspect element).
