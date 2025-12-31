@@ -50,4 +50,15 @@
     </div>
  </div>
   <script src="../../js/engine.js"></script>
+  <script>
+    // Verificare suplimentară după ce scriptul este încărcat
+    setTimeout(function() {
+      const container = document.getElementById('profile-pictures-circle');
+      if (container && typeof load_profile_pictures === 'function') {
+        console.log('Late initialization: Container found, loading pictures...');
+        load_profile_pictures();
+      }
+    }, 1000);
+  </script>
+</body>
 </html>

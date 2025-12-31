@@ -157,9 +157,9 @@ img, a {
   width: 100%;
   max-width: 400px;
   position: absolute;
-  top: 50%;
+  top: 185%;
   left: 50%;
-  transform: translate(-50%, 100%);
+  transform: translate(-50%, -50%);
 }
 
 /* Aliniere la stânga pentru titlul din pagina de user */
@@ -486,12 +486,17 @@ label {
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
   box-shadow: -1px 11px 20px 1px rgb(0 0 0 / 24%);
 }
 
-.nav-button:hover {
+.nav-button:hover:not(:disabled) {
   opacity: 0.8;
+}
+
+.nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .hello-stroke {
@@ -536,4 +541,90 @@ label {
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
   }
+}
+
+/* Stiluri pentru selectorul circular de imagini de profil */
+.profile-picture-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.profile-picture-container h2 {
+  font-family: "Sen";
+  font-weight: 400;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.profile-pictures-circle {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+  max-width: 100%;
+  padding: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.profile-picture-item {
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  min-height: 80px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-picture-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profile-picture-item:hover {
+  transform: scale(1.1);
+  border-color: #57a2ff;
+  box-shadow: 0 0 10px rgba(87, 162, 255, 0.3);
+}
+
+.profile-picture-item.selected {
+  border-color: #0570fb;
+  box-shadow: 0 0 15px rgba(5, 112, 251, 0.5);
+  transform: scale(1.15);
+}
+
+.profile-picture-item.selected::after {
+  content: '✓';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #0570fb;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  border: 2px solid white;
 }

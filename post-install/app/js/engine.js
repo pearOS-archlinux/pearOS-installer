@@ -1,3 +1,134 @@
+function load_profile_pictures() {
+  const container = document.getElementById('profile-pictures-circle');
+  if (!container) {
+    console.log('Container profile-pictures-circle not found');
+    return;
+  }
+
+  const fs = require('fs');
+  const path = require('path');
+  
+  // Încearcă mai multe căi posibile pentru a găsi directorul profiles
+  let profilesPath;
+  
+  try {
+    // Metoda 1: __dirname (din app/js -> app/resources/profiles)
+    profilesPath = path.join(__dirname, '..', 'resources', 'profiles');
+    console.log('Trying path 1:', profilesPath);
+    
+    // Metoda 2: process.cwd() (directorul de lucru al aplicației)
+    if (!fs.existsSync(profilesPath)) {
+      profilesPath = path.join(process.cwd(), 'app', 'resources', 'profiles');
+      console.log('Trying path 2:', profilesPath);
+    }
+    
+    // Metoda 3: Din locația paginii HTML
+    if (!fs.existsSync(profilesPath)) {
+      try {
+        const url = window.location.href;
+        const urlPath = decodeURIComponent(url.replace(/^file:\/\//, ''));
+        const urlParts = urlPath.split(path.sep).filter(p => p);
+        const appIndex = urlParts.findIndex(part => part === 'app');
+        if (appIndex !== -1) {
+          const basePath = urlParts.slice(0, appIndex + 1).join(path.sep);
+          profilesPath = path.join(basePath, 'resources', 'profiles');
+          console.log('Trying path 3:', profilesPath);
+        }
+      } catch (e) {
+        console.error('Error calculating path from URL:', e);
+      }
+    }
+    
+    console.log('Final path:', profilesPath);
+    
+    // Dacă directorul nu există, nu face nimic
+    if (!fs.existsSync(profilesPath)) {
+      console.log('Profile pictures directory not found at:', profilesPath);
+      return;
+    }
+    
+    const files = fs.readdirSync(profilesPath);
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp'];
+    
+    const imageFiles = files.filter(file => {
+      const ext = path.extname(file).toLowerCase();
+      return imageExtensions.includes(ext);
+    });
+    
+    console.log('Found', imageFiles.length, 'image files');
+    
+    if (imageFiles.length === 0) {
+      console.log('No image files found in profile pictures directory');
+      return;
+    }
+    
+    container.innerHTML = '';
+    
+    imageFiles.forEach((file, index) => {
+      const item = document.createElement('div');
+      item.className = 'profile-picture-item';
+      item.dataset.imagePath = path.join(profilesPath, file);
+      item.dataset.imageName = file;
+      
+      const img = document.createElement('img');
+      // Folosește calea relativă pentru a încărca imaginea
+      // Din app/lg/ro_RO/page_user.html, calea către resources este ../../resources/
+      img.src = `../../resources/profiles/${file}`;
+      img.alt = file;
+      img.onerror = function() {
+        console.error('Error loading image:', img.src);
+        this.style.display = 'none';
+        item.innerHTML = '<span style="font-size: 12px; color: #999;">?</span>';
+      };
+      
+      item.appendChild(img);
+      
+      item.addEventListener('click', function() {
+        // Elimină selecția de la toate imaginile
+        document.querySelectorAll('.profile-picture-item').forEach(el => {
+          el.classList.remove('selected');
+        });
+        
+        // Adaugă selecția la imaginea curentă
+        this.classList.add('selected');
+        
+        // Salvează selecția
+        const fs = require('fs');
+        const { exec } = require('child_process');
+        const imagePath = this.dataset.imagePath;
+        fs.writeFileSync('/tmp/profile_picture', imagePath);
+        
+        // Execută comenzile sudo cp imediat
+        const cmd1 = `sudo cp "${imagePath}" /usr/share/sddm/themes/pearOS/faces/.face.icon`;
+        const cmd2 = `sudo cp "${imagePath}" /usr/share/sddm/themes/pearOS-dark/faces/.face.icon`;
+        
+        exec(cmd1, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error copying to pearOS theme: ${error.message}`);
+          } else {
+            console.log('Image copied to pearOS theme successfully');
+          }
+        });
+        
+        exec(cmd2, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error copying to pearOS-dark theme: ${error.message}`);
+          } else {
+            console.log('Image copied to pearOS-dark theme successfully');
+          }
+        });
+        
+        // Verifică dacă toate datele sunt completate
+        checkFormValidity();
+      });
+      
+      container.appendChild(item);
+    });
+  } catch (error) {
+    console.error('Error loading profile pictures:', error);
+  }
+}
+
 function check_passwords_match() {
   const password = document.getElementById("password");
   const password_confirm = document.getElementById("password_confirm");
@@ -34,9 +165,161 @@ function check_passwords_match() {
   }
 }
 
+let profilePicturesLoaded = false;
+
+// Funcție pentru a verifica dacă toate datele sunt completate
+function checkFormValidity() {
+  const fullName = document.getElementById('full_name');
+  const accountName = document.getElementById('account_name');
+  const hostname = document.getElementById('hostname');
+  const password = document.getElementById('password');
+  const passwordConfirm = document.getElementById('password_confirm');
+  const continueBtn = document.getElementById('move-forward-btn');
+  const selectedPicture = document.querySelector('.profile-picture-item.selected');
+  
+  if (!continueBtn) return;
+  
+  // Verifică dacă toate câmpurile sunt completate
+  const allFieldsFilled = 
+    fullName && fullName.value.trim() !== '' &&
+    accountName && accountName.value.trim() !== '' &&
+    hostname && hostname.value.trim() !== '' &&
+    password && password.value !== '' &&
+    passwordConfirm && passwordConfirm.value !== '' &&
+    password.value === passwordConfirm.value &&
+    selectedPicture !== null;
+  
+  // Activează/dezactivează butonul
+  continueBtn.disabled = !allFieldsFilled;
+  if (allFieldsFilled) {
+    continueBtn.style.opacity = '1';
+    continueBtn.style.cursor = 'pointer';
+  } else {
+    continueBtn.style.opacity = '0.5';
+    continueBtn.style.cursor = 'not-allowed';
+  }
+}
+
+function ensureProfilePicturesContainer() {
+  // Verifică dacă containerul există deja
+  let container = document.getElementById('profile-pictures-circle');
+  
+  if (!container) {
+    // Creează containerul dacă nu există
+    const createUser = document.getElementById('create_user');
+    if (createUser) {
+      const profileContainer = document.createElement('div');
+      profileContainer.className = 'profile-picture-container';
+      profileContainer.innerHTML = '<div id="profile-pictures-circle" class="profile-pictures-circle"></div>';
+      
+      // Inserează containerul înainte de formular (primul copil)
+      const form = createUser.querySelector('form');
+      if (form) {
+        createUser.insertBefore(profileContainer, form);
+      } else {
+        // Dacă nu există formular, adaugă la început
+        createUser.insertBefore(profileContainer, createUser.firstChild);
+      }
+      
+      container = document.getElementById('profile-pictures-circle');
+    }
+  }
+  
+  return container;
+}
+
+function initProfilePictures() {
+  if (profilePicturesLoaded) {
+    return;
+  }
+  
+  // Asigură-te că containerul există
+  const container = ensureProfilePicturesContainer();
+  
+  if (container) {
+    profilePicturesLoaded = true;
+    load_profile_pictures();
+  } else {
+    // Dacă create_user nu există încă, așteaptă puțin
+    setTimeout(function() {
+      const container2 = ensureProfilePicturesContainer();
+      if (container2 && !profilePicturesLoaded) {
+        profilePicturesLoaded = true;
+        load_profile_pictures();
+      }
+    }, 500);
+  }
+}
+
+// Funcție pentru a verifica dacă toate datele sunt completate
+function checkFormValidity() {
+  const fullName = document.getElementById('full_name');
+  const accountName = document.getElementById('account_name');
+  const hostname = document.getElementById('hostname');
+  const password = document.getElementById('password');
+  const passwordConfirm = document.getElementById('password_confirm');
+  const continueBtn = document.getElementById('move-forward-btn');
+  const selectedPicture = document.querySelector('.profile-picture-item.selected');
+  
+  if (!continueBtn) return;
+  
+  // Verifică dacă toate câmpurile sunt completate
+  const allFieldsFilled = 
+    fullName && fullName.value.trim() !== '' &&
+    accountName && accountName.value.trim() !== '' &&
+    hostname && hostname.value.trim() !== '' &&
+    password && password.value !== '' &&
+    passwordConfirm && passwordConfirm.value !== '' &&
+    password.value === passwordConfirm.value &&
+    selectedPicture !== null;
+  
+  // Activează/dezactivează butonul
+  continueBtn.disabled = !allFieldsFilled;
+  if (allFieldsFilled) {
+    continueBtn.style.opacity = '1';
+    continueBtn.style.cursor = 'pointer';
+  } else {
+    continueBtn.style.opacity = '0.5';
+    continueBtn.style.cursor = 'not-allowed';
+  }
+}
+
+// Așteaptă ca totul să fie complet încărcat
 window.addEventListener('load', function() {
   setTimeout(check_passwords_match, 100);
+  setTimeout(initProfilePictures, 300);
+  
+  // Adaugă event listeners pentru toate câmpurile DOAR pe pagina de user
+  setTimeout(function() {
+    const createUser = document.getElementById('create_user');
+    if (!createUser) return; // Nu suntem pe pagina de user
+    
+    const fullName = document.getElementById('full_name');
+    const accountName = document.getElementById('account_name');
+    const hostname = document.getElementById('hostname');
+    const password = document.getElementById('password');
+    const passwordConfirm = document.getElementById('password_confirm');
+    
+    if (fullName) fullName.addEventListener('input', checkFormValidity);
+    if (accountName) accountName.addEventListener('input', checkFormValidity);
+    if (hostname) hostname.addEventListener('input', checkFormValidity);
+    if (password) password.addEventListener('input', checkFormValidity);
+    if (passwordConfirm) passwordConfirm.addEventListener('input', checkFormValidity);
+    
+    // Verifică inițial
+    checkFormValidity();
+  }, 500);
 });
+
+// De asemenea, încercă când DOM-ul este gata
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(initProfilePictures, 200);
+  });
+} else {
+  // DOM-ul este deja gata
+  setTimeout(initProfilePictures, 300);
+}
 
 function list_zones() {
   const { exec } = require('child_process');
@@ -211,6 +494,12 @@ function save_user(){
     if(userName == '') { alert("Username cannot be empty"); } else { console.log("Username not empty. Continuing!");};
     if(hostname == '') { alert("Hostname cannot be empty"); } else { console.log("Hostname not empty. Continuing!");};
     if(password == '') { alert("Password cannot be empty"); } else if(password != '') { check_match();}
+    
+    // Salvează imaginea de profil selectată dacă există
+    const selectedPicture = document.querySelector('.profile-picture-item.selected');
+    if (selectedPicture) {
+      fs.writeFileSync('/tmp/profile_picture', selectedPicture.dataset.imagePath);
+    }
 }
 
 function check_match(){
