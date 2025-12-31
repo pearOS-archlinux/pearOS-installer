@@ -138,39 +138,55 @@ function select_language() {
 
 function select_keymap() {
   var e = document.getElementById("keymapList");
-   if (e.options[e.selectedIndex] === undefined) { alert('You must choose one Keyboard Layout from the list'); } else {
+  
+  if (e.options[e.selectedIndex] === undefined) {
+    alert('You must choose one Keyboard Layout from the list');
+    return;
+  }
+  
   var strUser = e.options[e.selectedIndex].text;
   const fs = require('fs');
-  if (strUser == "French") {
-    fs.writeFileSync('/tmp/keymap', 'fr');
-    window.location.href='page_timezone.html';
-  } else if (strUser == "German") {
-      fs.writeFileSync('/tmp/keymap', 'de');
-      window.location.href='page_timezone.html';
-    } else if (strUser == "Greek") {
-      fs.writeFileSync('/tmp/keymap', 'gr');
-      window.location.href='page_timezone.html';
-      } else if (strUser == "Hungarian") {
-        fs.writeFileSync('/tmp/keymap', 'hu');
-        window.location.href='page_timezone.html';
-        } else if (strUser == "Italian") {
-            fs.writeFileSync('/tmp/keymap', 'it');
-            window.location.href='page_timezone.html';
-          } else if (strUser == "Polish") {
-              fs.writeFileSync('/tmp/keymap', 'pl');
-              window.location.href='page_timezone.html';
-            } else if (strUser == "Russian") {
-                fs.writeFileSync('/tmp/keymap', 'ru');
-                window.location.href='page_timezone.html';
-              } else if (strUser == "Spanish") {
-                  fs.writeFileSync('/tmp/keymap', 'es');
-                  window.location.href='page_timezone.html';
-                }  else if (strUser == "US" || strUser == "United States") {
-                     fs.writeFileSync('/tmp/keymap', 'us');
-                     window.location.href='page_timezone.html';
-                  }
-   }
+  const { exec } = require('child_process');
+  
+  // Map display names to layout codes
+  const layoutMap = {
+    "French": "fr",
+    "German": "de",
+    "Greek": "gr",
+    "Hungarian": "hu",
+    "Italian": "it",
+    "Polish": "pl",
+    "Russian": "ru",
+    "Spanish": "es",
+    "US": "us",
+    "United States": "us"
+  };
+  
+  const layout = layoutMap[strUser];
+  
+  if (layout) {
+    // Write to file for reference
+    fs.writeFileSync('/tmp/keymap', layout);
+    
+    // Apply the layout temporarily using setxkbmap
+    exec(`setxkbmap ${layout}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error applying keyboard layout: ${error.message}`);
+        console.error(`stderr: ${stderr}`);
+        alert('Failed to apply keyboard layout. Check if setxkbmap is installed.');
+        return;
+      }
+    
+      console.log(`Keyboard layout applied successfully: ${layout}`);
+    });
+      // Navigate regardless of success/failure
+      window.location.href = 'page_timezone.html';
+    });
+  } else {
+    alert('Unknown keyboard layout selected');
+  }
 }
+
 
 function select_timezone() {
   var e = document.getElementById("time_zones_list");
@@ -185,6 +201,7 @@ function select_timezone() {
 function save_user(){
 	fullName = document.getElementById("full_name").value;
 	var userName = document.getElementById("account_name").value;
+	var hostname = document.getElementById("hostname").value;
 	var password = document.getElementById("password").value;
 	var password_confirm = document.getElementById("password_confirm").value;
 	const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
@@ -193,12 +210,14 @@ function save_user(){
 
     if(fullName == '') { alert("FullName cannot be empty"); } else { fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`); };
     if(userName == '') { alert("Username cannot be empty"); } else { console.log("Username not empty. Continuing!");};
+    if(hostname == '') { alert("Hostname cannot be empty"); } else { console.log("Hostname not empty. Continuing!");};
     if(password == '') { alert("Password cannot be empty"); } else if(password != '') { check_match();}
 }
 
 function check_match(){
   fullName = document.getElementById("full_name").value;
   var userName = document.getElementById("account_name").value;
+  var hostname = document.getElementById("hostname").value;
   var password = document.getElementById("password").value;
   var password_confirm = document.getElementById("password_confirm").value;
   const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
@@ -213,6 +232,7 @@ function check_match(){
 
 function checkchars() {
 	var userName = document.getElementById("account_name").value;
+	var hostname = document.getElementById("hostname").value;
 	const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
 	const checkgex = userName.match(regex);
 
@@ -224,6 +244,8 @@ function checkchars() {
 	const fs = require('fs');
       	if(fullName == '') { alert("FullName cannot be empty"); } else { fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`); };
 	if(userName == '' || checkgex == null) { alert("username cannot be empty"); } else { fs.writeFileSync('/tmp/username', '' + userName); };
+	if(hostname == '') { hostname = 'pearOS-machine'; }
+	fs.writeFileSync('/tmp/hostname', '' + hostname);
 	fs.writeFileSync('/tmp/password', '' + password);
 	window.location.href='page_agreement.html';
   }
@@ -232,18 +254,19 @@ function checkchars() {
 function commit(){
   var fs = require('fs');
 
-    fs.readFile('/tmp/fullname', 'utf-8', (err, fn_data) => { var fullname = fn_data; fs.readFile('/tmp/username', 'utf-8', (err, usr_data) => { var username = usr_data; fs.readFile('/tmp/password', 'utf-8', (err, passwd_data) => { var password = passwd_data; fs.readFile('/tmp/keymap', 'utf-8', (err, kmap_data) => { var keymap = kmap_data; fs.readFile('/tmp/locale', 'utf-8', (err, locale_data) => { var locale = locale_data; fs.readFile('/tmp/timezone', 'utf-8', (err, tzone_data) => { var timezone = tzone_data; const { exec } = require('child_process'); const execSync = require("child_process").execSync;
+    fs.readFile('/tmp/fullname', 'utf-8', (err, fn_data) => { var fullname = fn_data; fs.readFile('/tmp/username', 'utf-8', (err, usr_data) => { var username = usr_data; fs.readFile('/tmp/password', 'utf-8', (err, passwd_data) => { var password = passwd_data; fs.readFile('/tmp/keymap', 'utf-8', (err, kmap_data) => { var keymap = kmap_data; fs.readFile('/tmp/locale', 'utf-8', (err, locale_data) => { var locale = locale_data; fs.readFile('/tmp/timezone', 'utf-8', (err, tzone_data) => { var timezone = tzone_data; fs.readFile('/tmp/hostname', 'utf-8', (err, hostname_data) => { var hostname = hostname_data; const { exec } = require('child_process'); const execSync = require("child_process").execSync;
         console.log('Keymap is ' + keymap);
         console.log('Locale is ' + locale);
         console.log('Timezone is ' + timezone);
         console.log('');
-        console.log('User passowrd is ' + password);
+        console.log('User password is ' + password);
         console.log('User Full name is ' + fullname);
         console.log('username is ' + username);
+        console.log('hostname is ' + hostname);
         // Comment the above line if you want to enable the debugger mode (must uncomment the line above this).
-        execSync("sudo post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username, (err, stdout) => { console.log(stdout); });
+        execSync(`sudo post_setup '${keymap.replace(/'/g, "'\\''")}' '${locale.replace(/'/g, "'\\''")}' '${timezone.replace(/'/g, "'\\''")}' '${password.replace(/'/g, "'\\''")}' '${fullname.replace(/'/g, "'\\''")}' '${username.replace(/'/g, "'\\''")}' '${hostname.replace(/'/g, "'\\''")}' `, (err, stdout) => { console.log(stdout); });
 	window.exit();
         // Uncomment the above line if you want to enable the debugger mode. It will print the selected stuff in the Developer Tools Console (inspect element).
-        // execSync("post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username + ' ' + 'debug', (err, stdout) => { console.log(stdout); });
-    }) })})});}); });
+        // execSync("post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username + ' ' + hostname + ' ' + 'debug', (err, stdout) => { console.log(stdout); });
+    }) })})})});}); });
 }

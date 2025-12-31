@@ -1,125 +1,236 @@
 #!/bin/bash
 
-  # Setting usefull variables
-  DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  installed=true
-  hypervisor=$(systemd-detect-virt)
+# Setting useful variables
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+installed=true
+hypervisor=$(systemd-detect-virt)
 
+# Logging setup
+LOG_FILE="/var/log/pearos-install.log"
+exec > >(tee -a "$LOG_FILE")
+exec 2>&1
 
-  if [ "$#" -ne 6 ]; then
-    echo "KEYMAP=$1"
-    echo "LOCALE=$2"
-    echo "ZONE=$3"
-    echo "user_passwd=$4"
-    echo "FULL_NAME=$5"
-    echo "USER_NAME=$6"
-    echo " ^ The above list represents your selected configurations."
+echo "=== pearOS Installation Script Started: $(date) ==="
+
+if [ "$#" -ne 7 ]; then
+  echo "KEYMAP=$1"
+  echo "LOCALE=$2"
+  echo "ZONE=$3"
+  echo "user_passwd=$4"
+  echo "FULL_NAME=$5"
+  echo "USER_NAME=$6"
+  echo "HOST_NAME=$7"
+  echo " ^ The above list represents your selected configurations."
+  exit 2
+fi
+
+# Various settings for the installation process
+KEYMAP="$1" # us
+LOCALE="$2" # en_US.UTF-8
+utc_enabled=false # true | false
+ZONE="$3" # Europe/Bucharest
+user_passwd="$4" # user password: pear
+FULL_NAME="$5" # Full Name
+USER_NAME="$6" # username (to log into your system)
+HOST_NAME="$7" # hostname for the system
+
+# Check the username
+if printf "%s" "$USER_NAME" | grep -Eoq "^[a-z][a-z0-9-]*$" \
+  && [ "${#USER_NAME}" -lt 33 ]; then
+  if grep -Fxq "$USER_NAME" "$DIR"/reserved_usernames; then
+    echo "Reserved username. Abort"
+    exit 2
+  fi
+  else
+    echo "Invalid Username! Abort."
     exit 2
   fi
 
-  # Various settings for the installation process
-  KEYMAP="$1" # us
-  LOCALE="$2" # en_US.UTF-8
-  utc_enabled=false # true | false
-  ZONE="$3" # Europe/Bucharest
-  HOST_NAME="pearOS-machine"
+# Remove the script from the autostart
+echo "Removing autostart entry..."
+rm -rf /etc/skel/.config/autostart/xyz.pearos-post-install.desktop
 
-  user_passwd="$4" # user password: pear
-  FULL_NAME="$5" # Full Name
-  USER_NAME="$6" # username (to log into your system)
+# Set/load the keymap
+echo "Setting keymap to $KEYMAP..."
+if ! localectl set-keymap "$KEYMAP"; then
+  echo "ERROR: Failed to set keymap" >&2
+  exit 1
+fi
+if ! loadkeys "$KEYMAP"; then
+  echo "ERROR: Failed to load keymap" >&2
+  exit 1
+fi
 
-  # Check the username
-  if printf "%s" "$USER_NAME" | grep -Eoq "^[a-z][a-z0-9-]*$" \
-    && [ "${#USER_NAME}" -lt 33 ]; then
-    if grep -Fxq "$USER_NAME" "$DIR"/reserved_usernames; then
-      echo "Reserved username. Abort"
-      exit 2
-    fi
-    else
-      echo "Invalid Username! Abort."
-      exit 2
-    fi
+# Pushing Timezone to localtime file
+echo "Setting timezone to $ZONE..."
+if ! ln -sf /usr/share/zoneinfo/"$ZONE" /etc/localtime; then
+  echo "ERROR: Failed to set timezone" >&2
+  exit 1
+fi
 
-  # Remove the script from the autostart
-  rm -rf /etc/skel/.config/autostart/xyz.pearos-post-install.desktop
-
-  # Set/load the keymap
-  localectl set-keymap "$KEYMAP"
-  loadkeys "$KEYMAP"
-
-  # Pushing Timezone to localtime file
-  ln -sf /usr/share/zoneinfo/"$ZONE" /etc/localtime
-
-  # Enable or disable UTC time
-  if $utc_enabled; then
-    hwclock --systohc --utc
-  else
-    hwclock --systohc --localtime
+# Enable or disable UTC time
+echo "Configuring hardware clock..."
+if $utc_enabled; then
+  if ! hwclock --systohc --utc; then
+    echo "ERROR: Failed to set hardware clock to UTC" >&2
+    exit 1
   fi
-
-  # Passing custom locale to locale file
-  if [ "$LOCALE" != "en_US.UTF-8" ]; then
-    sed -i "s/#$LOCALE/$LOCALE/" /etc/locale.gen
+else
+  if ! hwclock --systohc --localtime; then
+    echo "ERROR: Failed to set hardware clock to localtime" >&2
+    exit 1
   fi
+fi
 
-  # making the language equal to the locale, and passing to locale.conf
-  echo "LANG=$LOCALE" | tee /etc/locale.conf
+# Passing custom locale to locale file
+echo "Configuring locale: $LOCALE..."
+if [ "$LOCALE" != "en_US.UTF-8" ]; then
+  if ! sed -i "s/#$LOCALE/$LOCALE/" /etc/locale.gen; then
+    echo "ERROR: Failed to configure locale in /etc/locale.gen" >&2
+    exit 1
+  fi
+fi
 
-  # If there is a custom keymap, add it to the vconsole
-  if [ "$KEYMAP" != "us" ]; then
-    echo "KEYMAP=$KEYMAP" | sudo tee /etc/vconsole.conf
-    if [ "$DESKTOP" != "None" ]; then
-        echo -e "Section \"InputClass\"\nIdentifier \"system-keyboard\"\nMatchIsKeyboard \"on\"\nOption \"XkbLayout\" \"$KEYMAP\"\nEndSection" > /etc/X11/xorg.conf.d/00-keyboard.conf
+# making the language equal to the locale, and passing to locale.conf
+if ! echo "LANG=$LOCALE" | tee /etc/locale.conf; then
+  echo "ERROR: Failed to write /etc/locale.conf" >&2
+  exit 1
+fi
+
+# If there is a custom keymap, add it to the vconsole
+if [ "$KEYMAP" != "us" ]; then
+  echo "Configuring custom keymap..."
+  if ! echo "KEYMAP=$KEYMAP" | tee /etc/vconsole.conf; then
+    echo "ERROR: Failed to write /etc/vconsole.conf" >&2
+    exit 1
+  fi
+  if [ "$DESKTOP" != "None" ]; then
+    if ! echo -e "Section \"InputClass\"\nIdentifier \"system-keyboard\"\nMatchIsKeyboard \"on\"\nOption \"XkbLayout\" \"$KEYMAP\"\nEndSection" > /etc/X11/xorg.conf.d/00-keyboard.conf; then
+      echo "ERROR: Failed to configure X11 keyboard" >&2
+      exit 1
     fi
   fi
+fi
 
-  # Comitting the locale settings
-  locale-gen &> /dev/null
+# Committing the locale settings
+echo "Generating locale..."
+if ! locale-gen; then
+  echo "ERROR: Failed to generate locale" >&2
+  exit 1
+fi
 
-  # Setting the hostname
-  echo "$HOST_NAME" | tee /etc/hostname
+# Setting the hostname
+echo "Setting hostname to $HOST_NAME..."
+if ! echo "$HOST_NAME" | tee /etc/hostname; then
+  echo "ERROR: Failed to set hostname" >&2
+  exit 1
+fi
 
-  # Add the grub theme to the configuration file
-  grub-mkconfig -o /boot/grub/grub.cfg &> /dev/null
+# Add the grub theme to the configuration file
+echo "Generating grub configuration..."
+if ! grub-mkconfig -o /boot/grub/grub.cfg; then
+  echo "ERROR: Failed to generate grub configuration" >&2
+  exit 1
+fi
 
-  # Add "default" user to wheel and sudoers, and make the system not to ask sudo password for user 'default'
-  useradd -m -g users -G wheel -s /bin/bash "$USER_NAME"
-  chpasswd <<<"$USER_NAME:$user_passwd"
-  usermod -aG wheel "$USER_NAME"
-  sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /etc/sudoers
-  echo "$USER_NAME   ALL=(ALL) ALL" | tee /etc/sudoers
+# Add user to wheel and sudoers
+echo "Creating user $USER_NAME..."
+if ! useradd -m -g users -s /bin/bash "$USER_NAME"; then
+  echo "ERROR: Failed to create user $USER_NAME" >&2
+  exit 1
+fi
 
-  # Fix extras files permissions (fixes the theme-switcher bug
-  chmod -R 0777 /usr/share/extras
+echo "Adding user to wheel group..."
+if ! usermod -aG wheel "$USER_NAME"; then
+  echo "ERROR: Failed to add user to wheel group" >&2
+  exit 1
+fi
 
-  # Remove useless packages and their desktop entries
-  yes | LC_ALL=en_US.UTF-8 pacman -R electron npm plasma-sdk discover
-  rm -rf /usr/share/applications/avahi-discover.desktop /usr/share/applications/bssh.desktop /usr/share/applications/bvnc.desktop /usr/share/applications/qv4l2.desktop /usr/share/applications/qvidcap.desktop /usr/share/applications/org.kde.plasma.emojier /usr/share/applications/calamares*
+echo "User $USER_NAME created successfully with sudo access"
 
-  # Remove sddm.conf > it is set to autologin user 'default', which breaks the system
-  rm -Rf /etc/sddm.conf
+if ! chpasswd <<<"$USER_NAME:$user_passwd"; then
+  echo "ERROR: Failed to set password for $USER_NAME" >&2
+  exit 1
+fi
 
-  # Installing yay helper
-  #git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm
+# Backup sudoers before modifying
+echo "Configuring sudo access..."
+if [ -f /etc/sudoers ]; then
+  cp /etc/sudoers /etc/sudoers.backup.$(date +%Y%m%d_%H%M%S)
+fi
 
-  # Installing plymouth
-  #yay -S plymouth --noconfirm
+if ! sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /etc/sudoers; then
+  echo "ERROR: Failed to configure sudoers" >&2
+  exit 1
+fi
 
-  # Setting pearOS plymouth theme
-  #plymouth-set-default-theme -R pear-plymouth
+# Fix extras files permissions (fixes the theme-switcher bug)
+echo "Fixing permissions for extras..."
+if ! chmod -R 0777 /usr/share/extras; then
+  echo "WARNING: Failed to set permissions on /usr/share/extras" >&2
+fi
 
+# Remove useless packages and their desktop entries
+echo "Removing unnecessary packages..."
+if ! yes | LC_ALL=en_US.UTF-8 pacman -R electron npm plasma-sdk discover; then
+  echo "WARNING: Some packages failed to remove" >&2
+fi
 
-  # Remove 'default' user. It can be very dangerous
-  userdel -rf default
-  rm -rf /home/default/*
-  rm -rf /home/defaul/
+echo "Removing desktop entries..."
+rm -rf /usr/share/applications/avahi-discover.desktop \
+       /usr/share/applications/bssh.desktop \
+       /usr/share/applications/bvnc.desktop \
+       /usr/share/applications/qv4l2.desktop \
+       /usr/share/applications/qvidcap.desktop \
+       /usr/share/applications/org.kde.plasma.emojier \
+       /usr/share/applications/calamares*
 
-  # Fixing the SDDM theme, finally :))
-  echo "[Autologin]" > /etc/sddm.conf
-  echo "Session=plasma" >> /etc/sddm.conf
-  echo "" >> /etc/sddm.conf
-  echo "[Theme]" >> /etc/sddm.conf
-  echo "Current=pearOS" >> /etc/sddm.conf
+# Remove sddm.conf > it is set to autologin user 'default', which breaks the system
+echo "Removing old SDDM configuration..."
+if [ -f /etc/sddm.conf ]; then
+  cp /etc/sddm.conf /etc/sddm.conf.backup.$(date +%Y%m%d_%H%M%S)
+  rm -f /etc/sddm.conf
+fi
 
-  # Final reboot
-  sync && shutdown -r now
+# Installing yay helper
+#git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm
+
+# Installing plymouth
+#yay -S plymouth --noconfirm
+
+# Setting pearOS plymouth theme
+#plymouth-set-default-theme -R pear-plymouth
+
+# Remove 'default' user. It can be very dangerous
+echo "Removing default user..."
+if id "default" &>/dev/null; then
+  if ! userdel -rf default; then
+    echo "ERROR: Failed to remove default user" >&2
+    exit 1
+  fi
+  echo "Default user removed successfully"
+else
+  echo "Default user does not exist, skipping..."
+fi
+
+# Fixing the SDDM theme
+echo "Configuring SDDM theme..."
+cat > /etc/sddm.conf << 'EOF'
+[Autologin]
+Session=plasma
+
+[Theme]
+Current=pearOS
+EOF
+
+if [ $? -ne 0 ]; then
+  echo "ERROR: Failed to write SDDM configuration" >&2
+  exit 1
+fi
+
+echo "=== pearOS Installation Script Completed: $(date) ==="
+echo "System will reboot in 10 seconds. Press Ctrl+C to cancel..."
+sleep 10
+
+# Final reboot
+sync && systemctl reboot -i
