@@ -40,10 +40,23 @@ Tento text obsahuje právní ujednání o používání systému Arch Linux – 
        <div class="movement-buttons">
         <div class="grid-container-agreement">
           <button onclick="alert('Musíte souhlasit s podmínkami použití pro instalaci pearOS.')" class="install-button-agreement" id="moooove-forward-btn">Nesouhlasím</button>
-	  <button onclick="window.location.href='page_install_disk.html';" class="install-button-agreement" id="move-forward-btn">Souhlasím</button>
+	  <button onclick="showAgreementModal();" class="install-button-agreement" id="move-forward-btn">Souhlasím</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Agreement Confirmation Modal -->
+    <div id="agreement-modal" class="agreement-modal">
+      <div class="agreement-modal-content">
+        <img class="agreement-modal-logo" height="100px" src="../../resources/nicec0re-logo.png"/>
+        <p class="agreement-modal-text">I have read and agree to the terms of the software license agreement.</p>
+        <div class="agreement-modal-buttons">
+          <button onclick="closeAgreementModal();" class="install-button-agreement">Disagree</button>
+          <button onclick="confirmAgreement();" class="install-button-agreement">Agree</button>
         </div>
       </div>
     </div>
   </body>
   <script src="../../js/navbar.js"></script>
+  <script src="../../js/engine.js"></script>
 </html>

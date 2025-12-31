@@ -115,11 +115,11 @@ if [ -d /usr/share/X11 ]; then
     echo "ERROR: Failed to create /etc/X11/xorg.conf.d directory" >&2
     exit 1
   fi
-  if ! echo -e "Section \"InputClass\"\nIdentifier \"system-keyboard\"\nMatchIsKeyboard \"on\"\nOption \"XkbLayout\" \"$KEYMAP\"\nEndSection" > /etc/X11/xorg.conf.d/00-keyboard.conf; then
-    echo "ERROR: Failed to configure X11 keyboard" >&2
-    exit 1
+    if ! echo -e "Section \"InputClass\"\nIdentifier \"system-keyboard\"\nMatchIsKeyboard \"on\"\nOption \"XkbLayout\" \"$KEYMAP\"\nEndSection" > /etc/X11/xorg.conf.d/00-keyboard.conf; then
+      echo "ERROR: Failed to configure X11 keyboard" >&2
+      exit 1
+    fi
   fi
-fi
 
 # Note: For Wayland, localectl set-keymap (called above) is sufficient
 # Most Wayland compositors (including Plasma Wayland) read keyboard layout from systemd/localectl

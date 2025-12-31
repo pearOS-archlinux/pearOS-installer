@@ -37,7 +37,7 @@ body::before {
   right: 0;
   bottom: 0;
   /* background-image: url(../resources/background.avif); */
-  background-color: #2c2c2c;
+  background-color: #060606;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -116,9 +116,14 @@ img, a {
   height: 600px;
   position: relative;
   border-radius: 10px;
-  background: #1e1e1e;
-  border: 2px solid #383838; /* grosime de 4px și culoare custom */
+  background: #080808;
+  /* border: 2px solid #383838; grosime de 4px și culoare custom */
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  overflow-x: hidden;
+}
+
+.page-install-wrapper {
+  border: 2px solid #383838;
 }
 
 
@@ -127,7 +132,8 @@ img, a {
   height: 500px;
   position: relative;
   border-radius: 10px;
-  background: #312e2e;
+  background: #0a0a0a;
+  border: 1px solid #383838;
 }
 
 
@@ -136,7 +142,7 @@ img, a {
 }
 
 .list {
-  width: 350px;
+  width: 230px;
   height: 200px;
   display: block;
   font-size: 14px;
@@ -144,11 +150,11 @@ img, a {
   word-spacing: 0.1em;
   font-family: inherit;
   border: 1px solid #c5c5c5;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   border-color: transparent;
   overflow-y: auto;
   color: red;
-  background: #252525;
+  background: #040404;
   border-color: #383838;
 }
 
@@ -187,6 +193,29 @@ option {
   padding-top: 2px;
   color: #dedede;
   text-align: center;
+  background-color: #040404;
+}
+
+option:checked,
+option:selected {
+  background-color: #57a2ff !important;
+  color: #ffffff !important;
+}
+
+.list:not(:focus) option:checked,
+.list:not(:focus) option:selected {
+  background-color: #4a8fdd !important;
+  color: #ffffff !important;
+}
+
+.list option[selected] {
+  background-color: #434343 !important;
+  color: #ffffff !important;
+}
+
+option.selected-option {
+  background-color: #4a8fdd !important;
+  color: #ffffff !important;
 }
 
 .description {
@@ -195,6 +224,10 @@ option {
 
 .menu_title {
   margin-top: -50px;
+  padding: 0px 0px 25px 60px;
+}
+
+.menu_checkbox_label .menu_title {
   padding: 0px 0px 25px 60px;
 }
 
@@ -230,6 +263,10 @@ option {
   padding: 0px 0px 0px 60px;
 }
 
+.menu_checkbox_label .menu_description {
+  padding: 0px 0px 0px 60px;
+}
+
 .disk_description {
   margin-top: -40px;
   padding: 0px 0px 0px 0px;
@@ -240,7 +277,7 @@ option {
 }
 
 .license-sub-text {
-  margin-top: -15px;
+  margin-top: -45px;
   color: white;
 }
 
@@ -252,6 +289,8 @@ option {
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 hr {
@@ -310,7 +349,7 @@ hr {
 }
 
 .install-button-agreement {
-  background-color: #5b5e5b;
+  background-color: #232323;
   border: none;
   color: white;
   border-radius: 8px;
@@ -319,6 +358,14 @@ hr {
   margin-left: auto;
   margin-right: 5px;
   margin-bottom: 10px;
+}
+
+.install-button-agreement:disabled,
+.install-button-agreement.disabled {
+  background-color: #1a1a1a;
+  color: #666666;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .button {
@@ -343,6 +390,50 @@ hr {
   width:93%;
   border-radius: 10px;
   height: 80px;
+}
+
+.menu_checkbox_label {
+  display: block;
+  background-color: transparent;
+  /* border: 1px solid #383838; */
+  color: white;
+  margin-top: 20px;
+  text-align: left;
+  font-size: 16px;
+  width: 95%;
+  border-radius: 5px;
+  height: 80px;
+  /* cursor: pointer; */
+  position: relative;
+  padding: 10px;
+  transition: all 0.2s ease;
+  left:10px;
+}
+
+
+.menu_checkbox_label.menu_checkbox_checked {
+  background-color: #303030;
+  /* border-color: #57a2ff; */
+}
+
+.menu_checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+.menu_checkbox_label .menu_logo {
+  margin-left: 0;
+}
+
+.ul_menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .disk_button {
@@ -373,13 +464,13 @@ hr {
   height: 675px;
 }
 
-.menu_button:hover {
+/* .menu_button:hover {
   background-color: #393e3d;
   border: none;
   color: white;
   display: inline-block;
   font-size: 16px;
-}
+} */
 
 .disk_button:hover {
   background-color: #393e3d;
@@ -421,8 +512,98 @@ hr {
 .license-agreement {
   width: 80%;
   height: 200px;
-  color: #808080;
-  overflow: scroll;
+  color: #ffffff;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  border: 1px solid #383838;
+  border-radius: 5px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.license-agreement::-webkit-scrollbar {
+  width: 15px;
+}
+
+.license-agreement::-webkit-scrollbar-track {
+  background-color: #131313;
+  border-radius: 5px;
+}
+
+.license-agreement::-webkit-scrollbar-thumb {
+  background-color: #808080;
+  border-radius: 5px;
+  border: 2px solid #141414;
+}
+
+.license-agreement::-webkit-scrollbar-thumb:hover {
+  background-color: #808080;
+  border-radius: 5px;
+  border: 2px solid #141414;
+}
+
+/* Agreement Modal */
+.agreement-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  align-items: center;
+  justify-content: center;
+}
+
+.agreement-modal.show {
+  display: flex;
+}
+
+.agreement-modal-content {
+  background-color: #252525;
+  border-radius: 24px;
+  border: 1px solid #676767;
+  padding: 30px;
+  text-align: center;
+  max-width: 280px;
+  width: 85%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 250px;
+}
+
+.agreement-modal-logo {
+  margin-bottom: 15px;
+  height: 70px;
+  width: 70px;
+  align-self: center;
+}
+
+.agreement-modal-text {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+  flex-grow: 1;
+}
+
+.agreement-modal-buttons {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.agreement-modal-buttons button {
+  flex: 1;
+  border-radius: 50px;
+  margin: 0;
+  padding: 12px 20px;
+  height: auto;
 }
 
 .gradient {
@@ -568,6 +749,27 @@ hr {
   display: grid;
   grid-template-columns: auto 70px 30px auto;
   padding: 0px 0px 0px 10%;
+}
+
+.grid-container-disk {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 15px;
+  padding: 0;
+  box-sizing: border-box;
+  margin: 0 auto;
+  position: relative;
+  left: 0;
+  right: 0;
+}
+
+.grid-container-disk .install-button-agreement {
+  flex: 0 0 auto;
+  width: 90px;
+  border-radius: 50px;
+  margin: 0;
 }
 
 .grid-container-status {

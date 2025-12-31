@@ -8,35 +8,42 @@
     <title>pearOS NiceC0re Installer</title>
   </head>
 
-  <body>
+  <body onload="initMenuCheckboxes();">
     <div class="flex-container">
       <div class="menu">
       <ul class="ul_menu">
 
-	<button onclick="open_packup()" class="menu_button">
+	<label class="menu_checkbox_label" ondblclick="handleMenuAction('packup')">
+	<input type="checkbox" class="menu_checkbox" id="menu_packup" value="packup" checked>
 	<img class="menu_logo" height=50px src="../../resources/packup-logo.png"></img>
-	<p class="menu_title"><b>Restore from Packup</b></p>
-	<p class="menu_description">If you packed up your system before erasing data</p>
-	</button><br>
+	<p class="menu_title"><b>Restore from Time Machine</b></p>
+	<p class="menu_description">If you have packup of your system that you want to restore</p>
+	</label>
 
-        <button onclick="open_installer()" class="menu_button">
+        <label class="menu_checkbox_label" ondblclick="handleMenuAction('installer')">
+	<input type="checkbox" class="menu_checkbox" id="menu_installer" value="installer">
 	<img class="menu_logo" height=50px src="../../resources/nicec0re-logo.png"></img>
 	<p class="menu_title"><b>Install pearOS NiceC0re</b></p>
-	<p class="menu_description">Installs pearOS permanently on disk</p>
-	</button><br>
+	<p class="menu_description">Use the attached installer to Upgrade or Install pearOS.</p>
+	</label>
 
-	<button onclick="open_browser()" class="menu_button">
+	<label class="menu_checkbox_label" ondblclick="handleMenuAction('browser')">
+	<input type="checkbox" class="menu_checkbox" id="menu_browser" value="browser">
 	<img class="menu_logo" height="50px" src="../../resources/firefox-logo.png"></img>
-	<p class="menu_title"><b>Browser</b></p>
-	<p class="menu_description">Open a Firefox instance in your computer</p>
-	</button>
+	<p class="menu_title"><b>Web Browser</b></p>
+	<p class="menu_description">Browse for support to get help with your Computer</p>
+	</label>
 
-	<button onclick="open_gparted()" class="menu_button">
+	<label class="menu_checkbox_label" ondblclick="handleMenuAction('gparted')">
+	<input type="checkbox" class="menu_checkbox" id="menu_gparted" value="gparted">
 	<img class="menu_logo" height="50px" src="../../resources/gparted.svg"></img>
 	<p class="menu_title"><b>GParted</b></p>
-	<p class="menu_description">Manage or erase a disk using GParted</p>
-	</button>
+	<p class="menu_description">Repair or erase a disk using GParted</p>
+	</label>
 
+        </ul>
+        <div class="movement-buttons">
+          <button onclick="handleMenuContinue();" class="install-button-agreement" id="menu-continue-btn">Continue</button>
         </div>
       </div>
     </div>
