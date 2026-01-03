@@ -43,7 +43,7 @@ function createWindow () {
   })
 
   // !! UNCOMMENT ONLY ON DEBUG !!
-   mainWindow.webContents.openDevTools()
+//   mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', function () {
     // Oprește power save blocker când fereastra se închide
