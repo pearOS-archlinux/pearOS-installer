@@ -406,7 +406,7 @@
   arch-chroot /mnt pacman -R --noconfirm kinfocenter plasma-disks plasma-sdk
   arch-chroot /mnt rm -rf /usr/share/wayland-sessions || :
 
-  arch-chroot /mnt pacman -S --noconfirm plasma-x11-session
+ # arch-chroot /mnt pacman -S --noconfirm plasma-x11-session  ## TODO: Remove this if we are using Wayland
 
   # Sends the install finished messages to the frontend
   if [ -f /tmp/failed_packages.log ]; then

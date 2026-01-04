@@ -148,14 +148,8 @@ fi
 
 # Add user to wheel and sudoers
 echo "Creating user $USER_NAME..."
-if ! useradd -m -g users -s /bin/bash "$USER_NAME"; then
+if ! useradd -m -g users -G wheel -s /bin/bash "$USER_NAME"; then
   echo "ERROR: Failed to create user $USER_NAME" >&2
-  exit 1
-fi
-
-echo "Adding user to wheel group..."
-if ! usermod -aG wheel "$USER_NAME"; then
-  echo "ERROR: Failed to add user to wheel group" >&2
   exit 1
 fi
 
@@ -174,6 +168,12 @@ fi
 
 if ! sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /etc/sudoers; then
   echo "ERROR: Failed to configure sudoers" >&2
+  exit 1
+fi
+
+echo "Adding user to wheel group..."
+if ! echo "$USER_NAME   ALL=(ALL) ALL" | tee /etc/sudoers; then
+  echo "ERROR: Failed to add user to wheel group" >&2
   exit 1
 fi
 

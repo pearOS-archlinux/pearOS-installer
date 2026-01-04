@@ -1,3 +1,6 @@
+// Forțează folosirea X11 indiferent dacă sistemul rulează Wayland sau nu
+process.env.OZONE_PLATFORM = 'x11'
+
 const electron = require('electron')
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow
