@@ -1,5 +1,6 @@
 #!/bin/bash
 
+killall plasmashell
   error_exit() {
     local error_message="$1"
     local progress_message=$(echo "$error_message" | tr '\n' ' ')
@@ -350,7 +351,7 @@
   # Enabling auto-login for 'default' user :
   echo "[Autologin]" > /mnt/etc/sddm.conf
   echo "User=default" >> /mnt/etc/sddm.conf
-  echo "Session=plasmax11.desktop" >> /mnt/etc/sddm.conf
+  echo "Session=plasma.desktop" >> /mnt/etc/sddm.conf
   update_progress "95"
 
   # Enable bluetooth addons if needed
