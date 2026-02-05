@@ -69,11 +69,27 @@ killall plasmashell
           PREFIX="p"
   fi
 
+  # Unmount any partitions on the target disk so mklabel can succeed (avoids "device busy" / existing table)
+  disk_basename="$(basename "$DISK")"
+  for part in /sys/block/$disk_basename/*/partition 2>/dev/null; do
+    [ -e "$part" ] || continue
+    part_name="$(basename "$(dirname "$part")")"
+    part_dev="/dev/$part_name"
+    umount "$part_dev" 2>/dev/null || true
+  done
+
+  # Clear existing partition table so parted mklabel does not fail on in-use or existing label
+  wipefs -a "$DISK" 2>> /home/liveuser/Desktop/install.log || true
+
   # Choose what label to make defined by the system type(UEFI or legacy)
   if $UEFI; then
-    parted -s "$DISK" mklabel gpt &> /dev/null
+    if ! parted -s "$DISK" mklabel gpt 2>> /home/liveuser/Desktop/install.log; then
+      error_exit "Failed to create GPT on $DISK. Ensure no other program (e.g. GParted) is using the disk and try again."
+    fi
   else
-    parted -s "$DISK" mklabel msdos &> /dev/null
+    if ! parted -s "$DISK" mklabel msdos 2>> /home/liveuser/Desktop/install.log; then
+      error_exit "Failed to create MS-DOS label on $DISK. Ensure no other program (e.g. GParted) is using the disk and try again."
+    fi
   fi
   update_progress "5"
 
@@ -372,6 +388,31 @@ killall plasmashell
   fi
   update_progress "97"
 
+  # Download and compile Liquid Gel
+  echo "Downloading Liquid Gel" >> /home/liveuser/Desktop/install.log
+  if git clone https://github.com/pearOS-archlinux/liquid-gel /tmp/liquid-gel 2>> /home/liveuser/Desktop/install.log; then
+    echo "Liquid Gel Downloaded..." >> /home/liveuser/Desktop/install.log
+  else
+    echo "Failed to download Liquid Gel" >> /home/liveuser/Desktop/install.log
+  fi
+
+  if [ -d /tmp/liquid-gel ]; then
+    echo "Compiling Liquid Gel" >> /home/liveuser/Desktop/install.log
+    if ( cd /tmp/liquid-gel && mkdir -p build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/mnt/usr && make -j"$(nproc)" 2>> /home/liveuser/Desktop/install.log && make install 2>> /home/liveuser/Desktop/install.log ); then
+      echo "Liquid Gel Compiled..." >> /home/liveuser/Desktop/install.log
+    else
+      echo "Failed to Compile Liquid Gel - Build Failed" >> /home/liveuser/Desktop/install.log
+      echo "Failed to install Liquid Gel" >> /home/liveuser/Desktop/install.log
+    fi
+
+    echo "Cleanup" >> /home/liveuser/Desktop/install.log
+    if rm -rf /tmp/liquid-gel; then
+      echo "Finish cleanup" >> /home/liveuser/Desktop/install.log
+    else
+      echo "Failed to Cleanup files" >> /home/liveuser/Desktop/install.log
+    fi
+  fi
+
   chmod 0777 -R /mnt/usr/share/extras/
   chmod 0777 -R /mnt/usr/share/extras/*
 
@@ -401,11 +442,13 @@ killall plasmashell
   
   arch-chroot /mnt pacman-key --populate archlinux
 
+  arch-chroot /mnt pacman -S plasma-workspace --noconfirm 2>> /home/liveuser/Desktop/install.log || echo "Warning: Failed to install plasma-workspace" >> /home/liveuser/Desktop/install.log
+
   rm -rf /mnt/usr/share/applications/assistant.desktop /mnt/usr/share/applications/qdbusviewer.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/designer.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/lstopo.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/kvantummanager.desktop /mnt/usr/share/applications/org.kde.drkonqi.coredump.gui.desktop /mnt/usr/share/applications/electron38.desktop /mnt/usr/share/applications/org.kde.plasma.emojier.desktop /mnt/usr/share/applications/kde_wacom_tabletfinder.desktop /mnt/usr/share/applications/systemsettings.desktop /mnt/usr/share/applications/org.kde.kmenuedit.desktop 
   arch-chroot /mnt pacman -S --noconfirm plasma-welcome
   cp -r /usr/share/applications/welcome.desktop /etc/skel/.config/autostart/welcome.desktop 
   arch-chroot /mnt pacman -R --noconfirm kinfocenter plasma-disks plasma-sdk
-  arch-chroot /mnt rm -rf /usr/share/wayland-sessions || :
+  # arch-chroot /mnt rm -rf /usr/share/wayland-sessions || :
 
  # arch-chroot /mnt pacman -S --noconfirm plasma-x11-session  ## TODO: Remove this if we are using Wayland
 
