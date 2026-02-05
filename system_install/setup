@@ -71,7 +71,7 @@ killall plasmashell
 
   # Unmount any partitions on the target disk so mklabel can succeed (avoids "device busy" / existing table)
   disk_basename="$(basename "$DISK")"
-  for part in /sys/block/$disk_basename/*/partition 2>/dev/null; do
+  for part in /sys/block/$disk_basename/*/partition; do
     [ -e "$part" ] || continue
     part_name="$(basename "$(dirname "$part")")"
     part_dev="/dev/$part_name"
