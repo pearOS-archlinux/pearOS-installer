@@ -5,12 +5,27 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 installed=true
 hypervisor=$(systemd-detect-virt)
 
-# Logging setup
-LOG_FILE="/var/log/pearos-install.log"
+# Log on desktop (default user when post-install runs after first boot)
+LOG_DIR="/home/default/Desktop"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/post-install.log"
+ERROR_FILE="/tmp/post-install-error"
+rm -f "$ERROR_FILE"
+
 exec > >(tee -a "$LOG_FILE")
 exec 2>&1
 
-echo "=== pearOS Installation Script Started: $(date) ==="
+# Stop on first error and show it instead of freezing
+error_exit() {
+  local msg="$1"
+  echo "POST_INSTALL_ERROR: $msg" >> "$LOG_FILE"
+  echo "$msg" > "$ERROR_FILE"
+  echo "ERROR: $msg" >&2
+  exit 1
+}
+
+echo "=== pearOS Post-Install Script Started: $(date) ==="
+set -x
 
 if [ "$#" -ne 7 ]; then
   echo "KEYMAP=$1"
@@ -21,6 +36,7 @@ if [ "$#" -ne 7 ]; then
   echo "USER_NAME=$6"
   echo "HOST_NAME=$7"
   echo " ^ The above list represents your selected configurations."
+  echo "Invalid number of arguments (expected 7)." > "$ERROR_FILE"
   exit 2
 fi
 
@@ -38,11 +54,11 @@ HOST_NAME="$7" # hostname for the system
 if printf "%s" "$USER_NAME" | grep -Eoq "^[a-z][a-z0-9-]*$" \
   && [ "${#USER_NAME}" -lt 33 ]; then
   if grep -Fxq "$USER_NAME" "$DIR"/reserved_usernames; then
-    echo "Reserved username. Abort"
+    echo "Reserved username: $USER_NAME. Abort." > "$ERROR_FILE"
     exit 2
   fi
   else
-    echo "Invalid Username! Abort."
+    echo "Invalid Username: $USER_NAME. Abort." > "$ERROR_FILE"
     exit 2
   fi
 
@@ -53,32 +69,27 @@ rm -rf /etc/skel/.config/autostart/xyz.pearos-post-install.desktop
 # Set/load the keymap
 echo "Setting keymap to $KEYMAP..."
 if ! localectl set-keymap "$KEYMAP"; then
-  echo "ERROR: Failed to set keymap" >&2
-  exit 1
+  error_exit "Failed to set keymap: $KEYMAP"
 fi
 if ! loadkeys "$KEYMAP"; then
-  echo "ERROR: Failed to load keymap" >&2
-  exit 1
+  error_exit "Failed to load keymap: $KEYMAP"
 fi
 
 # Pushing Timezone to localtime file
 echo "Setting timezone to $ZONE..."
 if ! ln -sf /usr/share/zoneinfo/"$ZONE" /etc/localtime; then
-  echo "ERROR: Failed to set timezone" >&2
-  exit 1
+  error_exit "Failed to set timezone: $ZONE"
 fi
 
 # Enable or disable UTC time
 echo "Configuring hardware clock..."
 if $utc_enabled; then
   if ! hwclock --systohc --utc; then
-    echo "ERROR: Failed to set hardware clock to UTC" >&2
-    exit 1
+    error_exit "Failed to set hardware clock to UTC"
   fi
 else
   if ! hwclock --systohc --localtime; then
-    echo "ERROR: Failed to set hardware clock to localtime" >&2
-    exit 1
+    error_exit "Failed to set hardware clock to localtime"
   fi
 fi
 
@@ -86,23 +97,20 @@ fi
 echo "Configuring locale: $LOCALE..."
 if [ "$LOCALE" != "en_US.UTF-8" ]; then
   if ! sed -i "s/#$LOCALE/$LOCALE/" /etc/locale.gen; then
-    echo "ERROR: Failed to configure locale in /etc/locale.gen" >&2
-    exit 1
+    error_exit "Failed to configure locale in /etc/locale.gen"
   fi
 fi
 
 # making the language equal to the locale, and passing to locale.conf
 if ! echo "LANG=$LOCALE" | tee /etc/locale.conf; then
-  echo "ERROR: Failed to write /etc/locale.conf" >&2
-  exit 1
+  error_exit "Failed to write /etc/locale.conf"
 fi
 
 # If there is a custom keymap, add it to the vconsole
 if [ "$KEYMAP" != "us" ]; then
   echo "Configuring custom keymap..."
   if ! echo "KEYMAP=$KEYMAP" | tee /etc/vconsole.conf; then
-    echo "ERROR: Failed to write /etc/vconsole.conf" >&2
-    exit 1
+    error_exit "Failed to write /etc/vconsole.conf"
   fi
 fi
 
@@ -116,8 +124,7 @@ if [ -d /usr/share/X11 ]; then
     exit 1
   fi
     if ! echo -e "Section \"InputClass\"\nIdentifier \"system-keyboard\"\nMatchIsKeyboard \"on\"\nOption \"XkbLayout\" \"$KEYMAP\"\nEndSection" > /etc/X11/xorg.conf.d/00-keyboard.conf; then
-      echo "ERROR: Failed to configure X11 keyboard" >&2
-      exit 1
+      error_exit "Failed to configure X11 keyboard"
     fi
   fi
 
@@ -128,36 +135,31 @@ if [ -d /usr/share/X11 ]; then
 # Committing the locale settings
 echo "Generating locale..."
 if ! locale-gen; then
-  echo "ERROR: Failed to generate locale" >&2
-  exit 1
+  error_exit "Failed to generate locale"
 fi
 
 # Setting the hostname
 echo "Setting hostname to $HOST_NAME..."
 if ! echo "$HOST_NAME" | tee /etc/hostname; then
-  echo "ERROR: Failed to set hostname" >&2
-  exit 1
+  error_exit "Failed to set hostname"
 fi
 
 # Add the grub theme to the configuration file
 echo "Generating grub configuration..."
 if ! grub-mkconfig -o /boot/grub/grub.cfg; then
-  echo "ERROR: Failed to generate grub configuration" >&2
-  exit 1
+  error_exit "Failed to generate grub configuration"
 fi
 
 # Add user to wheel and sudoers
 echo "Creating user $USER_NAME..."
 if ! useradd -m -g users -G wheel -s /bin/bash "$USER_NAME"; then
-  echo "ERROR: Failed to create user $USER_NAME" >&2
-  exit 1
+  error_exit "Failed to create user: $USER_NAME"
 fi
 
 echo "User $USER_NAME created successfully with sudo access"
 
 if ! chpasswd <<<"$USER_NAME:$user_passwd"; then
-  echo "ERROR: Failed to set password for $USER_NAME" >&2
-  exit 1
+  error_exit "Failed to set password for $USER_NAME"
 fi
 
 # Backup sudoers before modifying
@@ -167,14 +169,56 @@ if [ -f /etc/sudoers ]; then
 fi
 
 if ! sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /etc/sudoers; then
-  echo "ERROR: Failed to configure sudoers" >&2
-  exit 1
+  error_exit "Failed to configure sudoers"
 fi
 
 echo "Adding user to wheel group..."
 if ! echo "$USER_NAME   ALL=(ALL) ALL" | tee /etc/sudoers; then
-  echo "ERROR: Failed to add user to wheel group" >&2
-  exit 1
+  error_exit "Failed to add user to wheel group in sudoers"
+fi
+
+# Profile picture: ~/.face.icon for new user and SDDM themes (critical for login screen)
+echo "Setting profile picture (avatar)..."
+PROFILE_PIC_FILE="/tmp/profile_picture"
+if [ -f "$PROFILE_PIC_FILE" ] && [ -s "$PROFILE_PIC_FILE" ]; then
+  PROFILE_PIC_SRC="$(cat "$PROFILE_PIC_FILE" | tr -d '\n\r')"
+  if [ -n "$PROFILE_PIC_SRC" ] && [ -f "$PROFILE_PIC_SRC" ] && [ -r "$PROFILE_PIC_SRC" ]; then
+    # 1. New user's home avatar
+    USER_HOME="/home/$USER_NAME"
+    USER_FACE="$USER_HOME/.face.icon"
+    if [ -d "$USER_HOME" ]; then
+      if ! cp -f "$PROFILE_PIC_SRC" "$USER_FACE"; then
+        error_exit "Failed to copy profile picture to $USER_FACE"
+      fi
+      chown "$USER_NAME:users" "$USER_FACE" 2>/dev/null || true
+      echo "Profile picture set for user $USER_NAME"
+    fi
+
+    # 2. SDDM themes – mandatory; do not skip
+    # pearOS theme uses images/.face.icon as fallback (Main.qml); some use faces/.face.icon
+    SDDM_THEMES="pearOS pearOS-dark"
+    for theme in $SDDM_THEMES; do
+      THEME_ROOT="/usr/share/sddm/themes/$theme"
+      for subdir in faces images; do
+        SDDM_DIR="$THEME_ROOT/$subdir"
+        SDDM_FACE="$SDDM_DIR/.face.icon"
+        if ! mkdir -p "$SDDM_DIR"; then
+          error_exit "Failed to create SDDM directory: $SDDM_DIR"
+        fi
+        if ! cp -f "$PROFILE_PIC_SRC" "$SDDM_FACE"; then
+          error_exit "Failed to copy profile picture to SDDM theme $theme ($subdir): $SDDM_FACE"
+        fi
+        if [ ! -f "$SDDM_FACE" ] || [ ! -s "$SDDM_FACE" ]; then
+          error_exit "SDDM profile picture missing or empty after copy: $SDDM_FACE"
+        fi
+      done
+      echo "Profile picture set for SDDM theme: $theme (faces + images)"
+    done
+  else
+    echo "Profile picture source missing or not readable: $PROFILE_PIC_SRC" >&2
+  fi
+else
+  echo "No profile picture selected (/tmp/profile_picture missing or empty), skipping avatar setup"
 fi
 
 # Fix extras files permissions (fixes the theme-switcher bug)
@@ -218,8 +262,7 @@ fi
 echo "Removing default user..."
 if id "default" &>/dev/null; then
   if ! userdel -rf default; then
-    echo "ERROR: Failed to remove default user" >&2
-    exit 1
+    error_exit "Failed to remove default user"
   fi
   echo "Default user removed successfully"
 else
@@ -237,8 +280,7 @@ Current=pearOS
 EOF
 
 if [ $? -ne 0 ]; then
-  echo "ERROR: Failed to write SDDM configuration" >&2
-  exit 1
+  error_exit "Failed to write SDDM configuration"
 fi
 
 echo "=== pearOS Installation Script Completed: $(date) ==="

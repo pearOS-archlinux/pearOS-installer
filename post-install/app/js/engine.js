@@ -587,10 +587,28 @@ function commit(){
         console.log('');
         console.log('Starting post-installation setup...');
         console.log('');
-        
-        execSync(`sudo post_setup '${keymap.replace(/'/g, "'\\''")}' '${locale.replace(/'/g, "'\\''")}' '${timezone.replace(/'/g, "'\\''")}' '${password.replace(/'/g, "'\\''")}' '${fullname.replace(/'/g, "'\\''")}' '${username.replace(/'/g, "'\\''")}' '${hostname.replace(/'/g, "'\\''")}' `, (err, stdout) => { console.log(stdout); });
-	window.exit();
-        // Uncomment the above line if you want to enable the debugger mode. It will print the selected stuff in the Developer Tools Console (inspect element).
-        // execSync("post_setup " + keymap + ' ' + locale + ' ' + timezone + ' ' + password + ' ' + fullname + ' ' + username + ' ' + hostname + ' ' + 'debug', (err, stdout) => { console.log(stdout); });
+
+        try {
+          execSync(`sudo post_setup '${keymap.replace(/'/g, "'\\''")}' '${locale.replace(/'/g, "'\\''")}' '${timezone.replace(/'/g, "'\\''")}' '${password.replace(/'/g, "'\\''")}' '${fullname.replace(/'/g, "'\\''")}' '${username.replace(/'/g, "'\\''")}' '${hostname.replace(/'/g, "'\\''")}' `, { maxBuffer: 10 * 1024 * 1024 });
+          window.exit();
+        } catch (e) {
+          var errMsg = '';
+          try {
+            errMsg = fs.readFileSync('/tmp/post-install-error', 'utf8').trim();
+          } catch (_) {}
+          if (!errMsg) {
+            errMsg = (e.message || String(e)).trim();
+          }
+          var tab = document.querySelector('.tab.active');
+          if (tab) {
+            var errDiv = document.createElement('div');
+            errDiv.id = 'post-install-error';
+            errDiv.style.cssText = 'color: #ff6666; margin: 20px; padding: 15px; background: rgba(0,0,0,0.4); border-radius: 8px; white-space: pre-wrap; text-align: left; max-width: 90%;';
+            errDiv.innerHTML = '<strong>Post-install failed</strong>\n\n' + (errMsg || 'Unknown error.') + '\n\nCheck /home/default/Desktop/post-install.log for details.';
+            tab.appendChild(errDiv);
+          } else {
+            alert('Post-install failed: ' + (errMsg || e.message));
+          }
+        }
     }) })})})});}); });
 }
