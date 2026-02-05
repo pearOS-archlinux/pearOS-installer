@@ -267,11 +267,11 @@ function startProgressInterval(disk) {
                 } else {
                     // Creează totul pentru prima dată
                     var prog = `
-                	<li style="float: none; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;">
-                		<div style="width: 100%; max-width: 350px; margin: 0 auto;">
+                	<li class="progress-block" style="float: none; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;">
+                		<div class="progress-bar-wrapper" style="width: 100%; max-width: 350px; margin: 0 auto;">
                 			<progress id="file" value="` + progressText + `" max="100" style="width: 100%; height: 18px;"> ` + progressText + `% </progress>
                 		</div>
-                		<div id="time-remaining-container" style="width: 100%; max-width: 350px; margin: 10px auto 0 auto; min-height: 30px; display: flex; align-items: center; justify-content: center;">
+                		<div id="time-remaining-container" class="progress-text-under" style="width: 100%; max-width: 350px; margin: 10px auto 0 auto; min-height: 30px; display: flex; align-items: center; justify-content: center;">
                 			<p class="setup-text" style="font-size: 0.9em; color: #888; margin: 0; text-align: center;">
                 				<span style="display: inline-block; min-width: 250px; text-align: center;">Estimated time remaining: <b id="time-value">` + (timeValue || "Calculating...") + `</b></span>
                 			</p>

@@ -798,6 +798,34 @@ list-style-type: none;
   gap: 20px;
 }
 
+/* Pagina de progress: text mereu sub bara de progress, indiferent de lungimea textului */
+.install-progress-page .ul_menu_disk {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+}
+.install-progress-page .ul_menu_disk li {
+  width: 100%;
+  max-width: 100%;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+}
+.install-progress-page .progress-block {
+  flex-direction: column !important;
+  display: flex !important;
+}
+.install-progress-page .progress-block .progress-bar-wrapper,
+.install-progress-page .progress-block .progress-text-under {
+  display: block !important;
+  width: 100% !important;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.install-progress-page .progress-block .progress-text-under {
+  margin-top: 10px;
+}
+
 .ul_menu_disk li {
   float: none;
   display: flex;
