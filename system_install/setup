@@ -211,6 +211,8 @@ killall plasmashell
   # Refresh database to ensure package availability checks are accurate
   pacman -Sy --noconfirm &> /dev/null || true
 
+  pacman -Sy --noconfirm kscreenlocker || true
+
   # Generate package availability report before installation
   REPORT_PATH="/home/liveuser/Desktop/packages-report.txt"
   : > "$REPORT_PATH"
