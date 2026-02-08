@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+    
+  <body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Style Hello</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Borel&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="display-container">
+        <!-- Background Orbs -->
+        <div class="orb w-96 h-96 bg-blue-300 top-[-100px] left-[-100px]" id="orb1"></div>
+        <div class="orb w-96 h-96 bg-purple-300 bottom-[-50px] right-[-50px]" id="orb2"></div>
+
+        <!-- SVG Container for the Drawing Effect -->
+        <svg class="hello-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <linearGradient id="rainbowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#ff3b30;stop-opacity:1" />
+                    <stop offset="20%" style="stop-color:#ff9500;stop-opacity:1" />
+                    <stop offset="40%" style="stop-color:#ffcc00;stop-opacity:1" />
+                    <stop offset="60%" style="stop-color:#34c759;stop-opacity:1" />
+                    <stop offset="80%" style="stop-color:#007aff;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#af52de;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            
+            <text x="50%" y="50%" 
+                  dominant-baseline="middle" 
+                  text-anchor="middle" 
+                  class="hello-text-svg" 
+                  id="svgText">
+                welcome
+            </text>
+        </svg>
+
+        <!-- Controls -->
+        <!-- <div class="controls">
+            <input type="text" id="userInput" placeholder="Type something..." maxlength="15" autocomplete="off">
+            <button onclick="updateText()">Update</button>
+        </div> -->
+    </div>
+
+    <!-- Link to external JS -->
+    <script src="script.js"></script>
+</body>
+</html>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>

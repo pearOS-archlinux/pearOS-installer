@@ -1,14 +1,1 @@
-{
-  "name": "pearOS NiceC0re Installer",
-  "version": "25.11.29",
-  "description": "pearOS NiceC0re Installer",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron ."
-  },
-  "author": "Pear Software and Services",
-  "license": "GNU General Public License v3.0",
-  "devDependencies": {
-    "electron": "^28.0.0"
-  }
-}
+{"name":"pearOS NiceC0re Installer","version":"26.02.08","description":"pearOS NiceC0re Installer","main":"main.js","scripts":{"start":"electron .","test":"POST_INSTALL_TEST=1 electron ."},"author":"Pear Software and Services","license":"GNU General Public License v3.0","devDependencies":{"electron":"^28.0.0"}}

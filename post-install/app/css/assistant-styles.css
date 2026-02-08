@@ -61,11 +61,13 @@ body::after {
   transition: background 0.8s ease-in-out;
 }
 
-body.hello-page::before {
+body.hello-page::before,
+body.welcome-page::before {
   filter: blur(0px);
 }
 
-body.hello-page::after {
+body.hello-page::after,
+body.welcome-page::after {
   background: rgba(0, 0, 0, 0.1);
 }
 
@@ -499,7 +501,8 @@ label {
   cursor: not-allowed;
 }
 
-.hello-stroke {
+.hello-stroke,
+.welcome-stroke {
   filter: 
     blur(0.5px)
     contrast(1.2)
@@ -510,6 +513,52 @@ label {
   transition: all 0.3s ease;
   animation: liquidDistortion 3s ease-in-out infinite alternate;
   opacity: 0.6;
+}
+
+.welcome__div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 0 auto;
+  text-align: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 2rem;
+  position: relative;
+}
+
+.welcome-button-container {
+  margin-top: 3rem;
+}
+
+.welcome__svg {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-miterlimit: 10;
+  stroke-width: 48px;
+  stroke-dasharray: 5800px;
+  stroke-dashoffset: 5800px;
+  animation: anim__welcome linear 5s forwards;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0 auto;
+  text-align: center;
+}
+
+@keyframes anim__welcome {
+  0% {
+    stroke-dashoffset: 5800;
+  }
+  25% {
+    stroke-dashoffset: 5800;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
 
 

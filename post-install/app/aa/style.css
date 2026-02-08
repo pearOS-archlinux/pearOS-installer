@@ -1,0 +1,191 @@
+/* Copyright by Sangram */
+
+/* Doar când aa e deschis standalone (fără id pe body) */
+body:not(#language-selection-page) {
+    background-color: #f5f5f7;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#display-container {
+    width: 100%;
+    max-width: 1600px;
+    aspect-ratio: 16/9;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Pagina finish: fără fundal alb, text mare */
+#welcome-display-container {
+    width: 100%;
+    max-width: 1600px;
+    aspect-ratio: 16/9;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    min-height: 50vh;
+    margin: 0 auto;
+}
+
+#welcome-display-container .welcome-aa-svg {
+    max-height: 70vh;
+    min-height: 320px;
+}
+
+#welcome-display-container .hello-text-svg {
+    font-size: clamp(140px, 28vw, 420px);
+}
+
+#welcome-display-container .orb {
+    width: 384px;
+    height: 384px;
+}
+
+#welcome-display-container .orb-1 {
+    top: -100px;
+    left: -100px;
+    background: rgba(147, 197, 253, 0.4);
+}
+
+#welcome-display-container .orb-2 {
+    bottom: -50px;
+    right: -50px;
+    background: rgba(216, 180, 254, 0.4);
+}
+
+/* SVG Container */
+.hello-svg {
+    width: 100%;
+    height: 100%;
+    max-height: 600px;
+    z-index: 10;
+}
+
+/* The SVG Text Styling */
+.hello-text-svg {
+    font-family: 'Borel', cursive;
+    font-size: clamp(80px, 15vw, 300px);
+    
+    /* Initial State */
+    fill: url(#rainbowGradient);
+    fill-opacity: 0;
+    stroke: url(#rainbowGradient);
+    stroke-width: 4px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0; 
+    
+    /* Default variables (overridden by JS) */
+    --stroke-length: 1000;
+    --draw-duration: 3s;
+}
+
+/* The Animation Class */
+.animate-draw {
+    stroke-dasharray: var(--stroke-length);
+    stroke-dashoffset: var(--stroke-length);
+    opacity: 1;
+    
+    animation: 
+        drawStroke var(--draw-duration) ease-in-out forwards,
+        fillFade 2s ease-out forwards;
+    
+    /* Delay the fill until the drawing is mostly done (80% of duration) */
+    animation-delay: 0s, calc(var(--draw-duration) * 0.85);
+}
+
+@keyframes drawStroke {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes fillFade {
+    0% {
+        fill-opacity: 0;
+        stroke-width: 4px;
+    }
+    100% {
+        fill-opacity: 1;
+        stroke-width: 0px; 
+    }
+}
+
+/* Controls */
+.controls {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    padding: 12px;
+    border-radius: 999px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 90%;
+    max-width: 400px;
+    z-index: 20;
+}
+
+.controls:hover, .controls:focus-within {
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    padding: 10px 16px;
+    outline: none;
+    color: #1d1d1f;
+}
+
+button {
+    background: #0071e3;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+button:hover { background: #0077ed; }
+button:active { transform: scale(0.96); }
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    z-index: 0;
+    pointer-events: none;
+    transition: all 2s ease;
+}

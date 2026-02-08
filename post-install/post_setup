@@ -296,6 +296,41 @@ if [ $? -ne 0 ]; then
   error_exit "Failed to write SDDM configuration"
 fi
 
+# Liquid Gel: instalam cmake și extra-cmake-modules, build, apoi le scoatem
+echo "Installing cmake and extra-cmake-modules for Liquid Gel build..."
+if ! pacman -S --noconfirm cmake extra-cmake-modules 2>> "$LOG_FILE"; then
+  echo "Warning: Failed to install cmake/extra-cmake-modules" >&2
+fi
+
+echo "Downloading Liquid Gel"
+if git clone https://github.com/pearOS-archlinux/liquid-gel /tmp/liquid-gel 2>> "$LOG_FILE"; then
+  echo "Liquid Gel Downloaded..."
+else
+  echo "Failed to download Liquid Gel" >&2
+fi
+
+if [ -d /tmp/liquid-gel ]; then
+  echo "Compiling Liquid Gel"
+  if ( cd /tmp/liquid-gel && mkdir -p build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr && make -j"$(nproc)" 2>> "$LOG_FILE" && make install 2>> "$LOG_FILE" ); then
+    echo "Liquid Gel Compiled..."
+  else
+    echo "Failed to Compile Liquid Gel - Build Failed" >&2
+    echo "Failed to install Liquid Gel" >&2
+  fi
+
+  echo "Cleanup Liquid Gel source"
+  if rm -rf /tmp/liquid-gel; then
+    echo "Finish cleanup"
+  else
+    echo "Failed to Cleanup files" >&2
+  fi
+fi
+
+echo "Removing cmake and extra-cmake-modules..."
+if ! pacman -R --noconfirm cmake extra-cmake-modules 2>> "$LOG_FILE"; then
+  echo "Warning: Failed to remove cmake/extra-cmake-modules" >&2
+fi
+
 echo "=== pearOS Installation Script Completed: $(date) ==="
 echo "System will reboot in 10 seconds. Press Ctrl+C to cancel..."
 sleep 10

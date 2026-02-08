@@ -390,31 +390,6 @@ killall plasmashell
   fi
   update_progress "97"
 
-  # Download and compile Liquid Gel
-  echo "Downloading Liquid Gel" >> /home/liveuser/Desktop/install.log
-  if git clone https://github.com/pearOS-archlinux/liquid-gel /tmp/liquid-gel 2>> /home/liveuser/Desktop/install.log; then
-    echo "Liquid Gel Downloaded..." >> /home/liveuser/Desktop/install.log
-  else
-    echo "Failed to download Liquid Gel" >> /home/liveuser/Desktop/install.log
-  fi
-
-  if [ -d /tmp/liquid-gel ]; then
-    echo "Compiling Liquid Gel" >> /home/liveuser/Desktop/install.log
-    if ( cd /tmp/liquid-gel && mkdir -p build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/mnt/usr && make -j"$(nproc)" 2>> /home/liveuser/Desktop/install.log && make install 2>> /home/liveuser/Desktop/install.log ); then
-      echo "Liquid Gel Compiled..." >> /home/liveuser/Desktop/install.log
-    else
-      echo "Failed to Compile Liquid Gel - Build Failed" >> /home/liveuser/Desktop/install.log
-      echo "Failed to install Liquid Gel" >> /home/liveuser/Desktop/install.log
-    fi
-
-    echo "Cleanup" >> /home/liveuser/Desktop/install.log
-    if rm -rf /tmp/liquid-gel; then
-      echo "Finish cleanup" >> /home/liveuser/Desktop/install.log
-    else
-      echo "Failed to Cleanup files" >> /home/liveuser/Desktop/install.log
-    fi
-  fi
-
   chmod 0777 -R /mnt/usr/share/extras/
   chmod 0777 -R /mnt/usr/share/extras/*
 
@@ -461,6 +436,12 @@ killall plasmashell
   else
     echo "Installation finished" | tr -d '\n' > /tmp/progress
   fi
+
+  # La succes sau doar warnings: repornire automată; la eroare scriptul iese prin error_exit, nu ajunge aici
+  echo "System will reboot in 15 seconds. Press Ctrl+C in terminal to cancel." >> /home/liveuser/Desktop/install.log
+  sync
+  sleep 15
+  systemctl reboot
 
   # Not sure if I keep this or not. Looks useless to me :shrug:
   check_mountpoints() {

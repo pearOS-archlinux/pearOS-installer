@@ -39,10 +39,10 @@ function createWindow () {
   mainWindow.once('ready-to-show', () => {
     mainWindow.setFullScreen(true)
     mainWindow.show()
+    if (process.env.POST_INSTALL_TEST === '1') {
+      mainWindow.webContents.openDevTools()
+    }
   })
-
-  // !! UNCOMMENT ONLY ON DEBUG !!
- // mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', function () {
     mainWindow = null

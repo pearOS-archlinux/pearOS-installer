@@ -1,3 +1,6 @@
+// Mod test: nu rulează post_setup și nu modifică sistemul (POST_INSTALL_TEST=1)
+var isTestMode = typeof process !== 'undefined' && process.env.POST_INSTALL_TEST === '1';
+
 function load_profile_pictures() {
   const container = document.getElementById('profile-pictures-circle');
   if (!container) {
@@ -94,29 +97,23 @@ function load_profile_pictures() {
         
         // Salvează selecția
         const fs = require('fs');
-        const { exec } = require('child_process');
         const imagePath = this.dataset.imagePath;
         fs.writeFileSync('/tmp/profile_picture', imagePath);
         
-        // Execută comenzile sudo cp imediat
-        const cmd1 = `sudo cp "${imagePath}" /usr/share/sddm/themes/pearOS/faces/.face.icon`;
-        const cmd2 = `sudo cp "${imagePath}" /usr/share/sddm/themes/pearOS-dark/faces/.face.icon`;
-        
-        exec(cmd1, (error, stdout, stderr) => {
-          if (error) {
-            console.error(`Error copying to pearOS theme: ${error.message}`);
-          } else {
-            console.log('Image copied to pearOS theme successfully');
-          }
-        });
-        
-        exec(cmd2, (error, stdout, stderr) => {
-          if (error) {
-            console.error(`Error copying to pearOS-dark theme: ${error.message}`);
-          } else {
-            console.log('Image copied to pearOS-dark theme successfully');
-          }
-        });
+        // În mod test nu copiem în /usr (inoffensiv)
+        if (!isTestMode) {
+          const { exec } = require('child_process');
+          const cmd1 = `sudo cp "${imagePath}" /usr/share/sddm/themes/pearOS/faces/.face.icon`;
+          const cmd2 = `sudo cp "${imagePath}" /usr/share/sddm/themes/pearOS-dark/faces/.face.icon`;
+          exec(cmd1, (error, stdout, stderr) => {
+            if (error) console.error(`Error copying to pearOS theme: ${error.message}`);
+            else console.log('Image copied to pearOS theme successfully');
+          });
+          exec(cmd2, (error, stdout, stderr) => {
+            if (error) console.error(`Error copying to pearOS-dark theme: ${error.message}`);
+            else console.log('Image copied to pearOS-dark theme successfully');
+          });
+        }
         
         // Verifică dacă toate datele sunt completate
         checkFormValidity();
@@ -251,39 +248,6 @@ function initProfilePictures() {
   }
 }
 
-// Funcție pentru a verifica dacă toate datele sunt completate
-function checkFormValidity() {
-  const fullName = document.getElementById('full_name');
-  const accountName = document.getElementById('account_name');
-  const hostname = document.getElementById('hostname');
-  const password = document.getElementById('password');
-  const passwordConfirm = document.getElementById('password_confirm');
-  const continueBtn = document.getElementById('move-forward-btn');
-  const selectedPicture = document.querySelector('.profile-picture-item.selected');
-  
-  if (!continueBtn) return;
-  
-  // Verifică dacă toate câmpurile sunt completate
-  const allFieldsFilled = 
-    fullName && fullName.value.trim() !== '' &&
-    accountName && accountName.value.trim() !== '' &&
-    hostname && hostname.value.trim() !== '' &&
-    password && password.value !== '' &&
-    passwordConfirm && passwordConfirm.value !== '' &&
-    password.value === passwordConfirm.value &&
-    selectedPicture !== null;
-  
-  // Activează/dezactivează butonul
-  continueBtn.disabled = !allFieldsFilled;
-  if (allFieldsFilled) {
-    continueBtn.style.opacity = '1';
-    continueBtn.style.cursor = 'pointer';
-  } else {
-    continueBtn.style.opacity = '0.5';
-    continueBtn.style.cursor = 'not-allowed';
-  }
-}
-
 // Așteaptă ca totul să fie complet încărcat
 window.addEventListener('load', function() {
   setTimeout(check_passwords_match, 100);
@@ -362,7 +326,7 @@ function select_language() {
   const fs = require('fs');
   if (strUser == "Chinese (Simplified)") {
       fs.writeFileSync('/tmp/locale', 'zh_CN.UTF-8');
-    window.location.href='lg/zn_CN/page_keymap.html';
+    window.location.href='lg/zh_CN/page_keymap.html';
   } else if (strUser == "English (Australia)") {
       fs.writeFileSync('/tmp/locale', 'en_AU.UTF-8');
       window.location.href='lg/en_AU/page_keymap.html';
@@ -370,7 +334,7 @@ function select_language() {
         fs.writeFileSync('/tmp/locale', 'en_CA.UTF-8');
       window.location.href='lg/en_CA/page_keymap.html';
       } else if (strUser == "English (United States)") {
-          fs.writeFileSync('/tmp/locale', 'en_USS.UTF-8');
+          fs.writeFileSync('/tmp/locale', 'en_US.UTF-8');
         window.location.href='lg/en_US/page_keymap.html';
         } else if (strUser == "English (United Kingdom)") {
             fs.writeFileSync('/tmp/locale', 'en_GB.UTF-8');
@@ -481,7 +445,7 @@ function select_timezone() {
 }
 
 function save_user(){
-	fullName = document.getElementById("full_name").value;
+	var fullName = document.getElementById("full_name").value;
 	var userName = document.getElementById("account_name").value;
 	var hostname = document.getElementById("hostname").value;
 	var password = document.getElementById("password").value;
@@ -503,7 +467,7 @@ function save_user(){
 }
 
 function check_match(){
-  fullName = document.getElementById("full_name").value;
+  var fullName = document.getElementById("full_name").value;
   var userName = document.getElementById("account_name").value;
   var hostname = document.getElementById("hostname").value;
   var password = document.getElementById("password").value;
@@ -519,6 +483,7 @@ function check_match(){
 }
 
 function checkchars() {
+	var fullName = document.getElementById("full_name").value;
 	var userName = document.getElementById("account_name").value;
 	var hostname = document.getElementById("hostname").value;
 	const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
@@ -570,8 +535,29 @@ function display_settings() {
 function commit(){
   var fs = require('fs');
 
-    fs.readFile('/tmp/fullname', 'utf-8', (err, fn_data) => { var fullname = fn_data; fs.readFile('/tmp/username', 'utf-8', (err, usr_data) => { var username = usr_data; fs.readFile('/tmp/password', 'utf-8', (err, passwd_data) => { var password = passwd_data; fs.readFile('/tmp/keymap', 'utf-8', (err, kmap_data) => { var keymap = kmap_data; fs.readFile('/tmp/locale', 'utf-8', (err, locale_data) => { var locale = locale_data; fs.readFile('/tmp/timezone', 'utf-8', (err, tzone_data) => { var timezone = tzone_data; fs.readFile('/tmp/hostname', 'utf-8', (err, hostname_data) => { var hostname = hostname_data; const { exec } = require('child_process'); const execSync = require("child_process").execSync;
-        
+    fs.readFile('/tmp/fullname', 'utf-8', (err, fn_data) => {
+      if (err) { console.error('Missing /tmp/fullname'); return; }
+      var fullname = (fn_data || '').trim().replace(/^'|'$/g, '');
+      fs.readFile('/tmp/username', 'utf-8', (err, usr_data) => {
+        if (err) { console.error('Missing /tmp/username'); return; }
+        var username = (usr_data || '').trim();
+        fs.readFile('/tmp/password', 'utf-8', (err, passwd_data) => {
+          if (err) { console.error('Missing /tmp/password'); return; }
+          var password = (passwd_data || '').trim();
+          fs.readFile('/tmp/keymap', 'utf-8', (err, kmap_data) => {
+            if (err) { console.error('Missing /tmp/keymap'); return; }
+            var keymap = (kmap_data || '').trim();
+            fs.readFile('/tmp/locale', 'utf-8', (err, locale_data) => {
+              if (err) { console.error('Missing /tmp/locale'); return; }
+              var locale = (locale_data || '').trim();
+              fs.readFile('/tmp/timezone', 'utf-8', (err, tzone_data) => {
+                if (err) { console.error('Missing /tmp/timezone'); return; }
+                var timezone = (tzone_data || '').trim();
+                fs.readFile('/tmp/hostname', 'utf-8', (err, hostname_data) => {
+                  if (err) { console.error('Missing /tmp/hostname'); return; }
+                  var hostname = (hostname_data || '').trim();
+                  const execSync = require("child_process").execSync;
+
         // Display selected settings from frontend before execution
         console.log('');
         console.log('==========================================');
@@ -589,8 +575,13 @@ function commit(){
         console.log('');
 
         try {
+          if (isTestMode) {
+            console.log('Mod test: post_setup nu rulează, nu se modifică sistemul.');
+            require('electron').ipcRenderer.send('close-me');
+            return;
+          }
           execSync(`sudo post_setup '${keymap.replace(/'/g, "'\\''")}' '${locale.replace(/'/g, "'\\''")}' '${timezone.replace(/'/g, "'\\''")}' '${password.replace(/'/g, "'\\''")}' '${fullname.replace(/'/g, "'\\''")}' '${username.replace(/'/g, "'\\''")}' '${hostname.replace(/'/g, "'\\''")}' `, { maxBuffer: 10 * 1024 * 1024 });
-          window.exit();
+          require('electron').ipcRenderer.send('close-me');
         } catch (e) {
           var errMsg = '';
           try {
@@ -610,5 +601,28 @@ function commit(){
             alert('Post-install failed: ' + (errMsg || e.message));
           }
         }
-    }) })})})});}); });
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+}
+
+// Banner vizual când rulezi în mod test
+if (isTestMode && typeof document !== 'undefined') {
+  function showTestModeBanner() {
+    if (document.getElementById('post-install-test-banner')) return;
+    var b = document.createElement('div');
+    b.id = 'post-install-test-banner';
+    b.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#ff9800;color:#000;padding:6px;text-align:center;z-index:9999;font-size:12px;';
+    b.textContent = 'Mod test — nu se modifică sistemul.';
+    if (document.body) document.body.appendChild(b);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', showTestModeBanner);
+  } else {
+    showTestModeBanner();
+  }
 }

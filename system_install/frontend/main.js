@@ -111,6 +111,8 @@ ipcMain.on('app-action', (event, action) => {
 })
 
 app.on('ready', () => {
+  // Închide plasmashell la prima pornire a setup-ului inițial (evită blocare ecran / interferențe desktop)
+  exec('killall plasmashell 2>/dev/null', (err) => { if (err) {} })
   // Previne ecranul să se stingă cât timp aplicația rulează
   powerSaveBlockerId = powerSaveBlocker.start('prevent-display-sleep')
   console.log('Power save blocker started, ID:', powerSaveBlockerId)
