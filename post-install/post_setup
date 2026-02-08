@@ -194,7 +194,20 @@ if [ -f "$PROFILE_PIC_FILE" ] && [ -s "$PROFILE_PIC_FILE" ]; then
       echo "Profile picture set for user $USER_NAME"
     fi
 
-    # 2. SDDM themes – mandatory; do not skip
+    # 2. Extras (global profile picture)
+    EXTRAS_FACE="/usr/share/extras/.face.icon"
+    if ! mkdir -p /usr/share/extras; then
+      error_exit "Failed to create /usr/share/extras"
+    fi
+    if ! cp -f "$PROFILE_PIC_SRC" "$EXTRAS_FACE"; then
+      error_exit "Failed to copy profile picture to $EXTRAS_FACE"
+    fi
+    if [ ! -f "$EXTRAS_FACE" ] || [ ! -s "$EXTRAS_FACE" ]; then
+      error_exit "Profile picture missing or empty after copy: $EXTRAS_FACE"
+    fi
+    echo "Profile picture set in /usr/share/extras"
+
+    # 3. SDDM themes – mandatory; do not skip
     # pearOS theme uses images/.face.icon as fallback (Main.qml); some use faces/.face.icon
     SDDM_THEMES="pearOS pearOS-dark"
     for theme in $SDDM_THEMES; do
