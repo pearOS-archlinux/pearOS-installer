@@ -123,21 +123,34 @@ killall plasmashell
   update_progress "8"
 
   # Create btrfs filesystem on root partition
-  if ! mkfs."$FILE_SYSTEM" -f "$ROOT_PART" &> /dev/null; then
-    error_exit "Failed to create filesystem on $ROOT_PART"
+  if ! mkfs.btrfs -f -L root "$ROOT_PART" &> /dev/null; then
+    error_exit "Failed to create btrfs on $ROOT_PART"
   fi
   update_progress "10"
 
-  # Mount the disk to /mnt and commit that into the variable
+  # Mount btrfs, create subvolumes @ (root) and @home, then remount with subvols
   if ! mount "$ROOT_PART" /mnt; then
     error_exit "Failed to mount $ROOT_PART to /mnt"
   fi
   mounted=true
+  btrfs subvolume create /mnt/@ 2>> /home/liveuser/Desktop/install.log || error_exit "Failed to create btrfs subvolume @"
+  btrfs subvolume create /mnt/@home 2>> /home/liveuser/Desktop/install.log || error_exit "Failed to create btrfs subvolume @home"
+  # Set default subvolume so mounting by UUID alone uses @
+  _subvol_id=$(btrfs subvolume list /mnt | awk '/\s@\s/{print $2}' | head -1)
+  [ -n "$_subvol_id" ] && btrfs subvolume set-default "$_subvol_id" /mnt 2>> /home/liveuser/Desktop/install.log || true
+  umount /mnt
+  if ! mount -o subvol=@,compress=zstd "$ROOT_PART" /mnt; then
+    error_exit "Failed to mount btrfs subvol=@ to /mnt"
+  fi
+  mkdir -p /mnt/home
+  if ! mount -o subvol=@home,compress=zstd "$ROOT_PART" /mnt/home; then
+    error_exit "Failed to mount btrfs subvol=@home to /mnt/home"
+  fi
   update_progress "12"
 
   # If the system is UEFI enabled, the boot partition gets mounted
   if $UEFI; then
-    mkdir /mnt/boot
+    mkdir -p /mnt/boot
     mount "$BOOT_PART" /mnt/boot
   fi
 
@@ -147,9 +160,9 @@ killall plasmashell
   multilib=false
   DESKTOP_PACKAGES=()
 
-  # If the system is UEFI enabled, add efibootmgr to the packages list
+  # If the system is UEFI enabled, add efibootmgr and refind (boot manager) to the packages list
   if $UEFI; then
-    DESKTOP_PACKAGES+=('efibootmgr')
+    DESKTOP_PACKAGES+=('efibootmgr' 'refind')
   fi
 
   # If the system has bluetooth, install bluetooth packages
@@ -255,8 +268,8 @@ killall plasmashell
   if ! genfstab -U /mnt >> /mnt/etc/fstab 2>> /home/liveuser/Desktop/install.log; then
     error_exit "Failed to generate fstab"
   fi
-  # Add btrfs compression for root (zstd is fast and effective)
-  awk '$2=="/" && $3=="btrfs" {$4=$4",compress=zstd"} 1' /mnt/etc/fstab > /tmp/fstab.btrfs && mv /tmp/fstab.btrfs /mnt/etc/fstab
+  # Ensure btrfs compression (zstd) on all btrfs entries if not already set
+  awk '$3=="btrfs" && $4!~/compress=zstd/ {$4=$4",compress=zstd"} 1' /mnt/etc/fstab > /tmp/fstab.btrfs && mv /tmp/fstab.btrfs /mnt/etc/fstab
   update_progress "72"
 
   # Pushing temporary Timezone to localtime file
@@ -301,19 +314,37 @@ killall plasmashell
   echo -e "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t$HOST_NAME.localdomain\t$HOST_NAME" >> /mnt/etc/hosts
   update_progress "84"
 
-  # Partition layout work:
-  if [ "$PARTITION_LAYOUT" != "Basic" ]; then
-    arch-chroot /mnt mkinitcpio -p linux617 &> /dev/null
-    grep -q 'plymouth' /mnt/etc/mkinitcpio.conf || sed -i 's/^\(HOOKS=(\)/\1plymouth /' /mnt/etc/mkinitcpio.conf
-    arch-chroot /mnt mkinitcpio -P &> /dev/null
-
-  fi
+  # Generate initramfs (required for boot with linux617). Always run, not only for non-Basic layout.
+  arch-chroot /mnt mkinitcpio -p linux617 &> /dev/null || true
+  grep -q 'plymouth' /mnt/etc/mkinitcpio.conf || sed -i 's/^\(HOOKS=(\)/\1plymouth /' /mnt/etc/mkinitcpio.conf
+  arch-chroot /mnt mkinitcpio -P &> /dev/null || error_exit "Failed to generate initramfs (mkinitcpio -P)"
   update_progress "86"
 
-  # Install GRUB for EFI or Legacy platform
+  # Install boot manager: rEFInd for UEFI, GRUB for Legacy (BIOS)
   if $UEFI; then
-    if ! arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=pearOS --removable &> /dev/null; then
-      error_exit "Failed to install GRUB (UEFI mode)"
+    # rEFInd: install to ESP (/boot), non-interactive, all drivers (btrfs etc.)
+    if ! arch-chroot /mnt refind-install --yes --alldrivers &> /dev/null; then
+      error_exit "Failed to install rEFInd (UEFI mode)"
+    fi
+    # refind_linux.conf in chroot gets live system params; fix for installed system (btrfs subvol=@)
+    ROOT_ID=$(blkid -s UUID -o value "$ROOT_PART")
+    ROOT_PREFIX="UUID"
+    if [ -z "$ROOT_ID" ]; then
+      ROOT_ID=$(blkid -s PARTUUID -o value "$ROOT_PART" | head -1)
+      ROOT_PREFIX="PARTUUID"
+    fi
+    if [ -n "$ROOT_ID" ]; then
+      echo "\"Boot with default options\" \"root=${ROOT_PREFIX}=${ROOT_ID} subvol=@ rw add_efi_memmap initrd=\\initramfs-linux617.img\"" > /mnt/boot/refind_linux.conf
+      echo "\"Boot fallback initramfs\" \"root=${ROOT_PREFIX}=${ROOT_ID} subvol=@ rw add_efi_memmap initrd=\\initramfs-linux617-fallback.img\"" >> /mnt/boot/refind_linux.conf
+    fi
+    # Match Arch/pearOS kernel naming (linux617) so rEFInd pairs kernel with correct initramfs
+    REFIND_CONF="/mnt/boot/EFI/refind/refind.conf"
+    if [ -f "$REFIND_CONF" ]; then
+      if grep -q 'extra_kernel_version_strings' "$REFIND_CONF"; then
+        sed -i 's/^#*extra_kernel_version_strings.*/extra_kernel_version_strings "linux617,linux"/' "$REFIND_CONF"
+      else
+        echo 'extra_kernel_version_strings "linux617,linux"' >> "$REFIND_CONF"
+      fi
     fi
   else
     if ! arch-chroot /mnt grub-install --target=i386-pc "$DISK" &> /dev/null; then
@@ -330,6 +361,20 @@ killall plasmashell
   cp -r /usr/share/pearOS-installer/ /mnt/usr/share/
   cp -r /usr/share/pearOS-installer/general_bin/bin_post /mnt/usr/local/bin/bin_post
   chmod +x /mnt/usr/local/bin/bin_post
+
+  # macOS-style paths (symlinks for familiarity)
+  ln -sf /usr/share/applications /mnt/Applications
+  ln -sf /home /mnt/Users
+  ln -sf /media /mnt/Volumes
+  ln -sf /usr/share /mnt/Library
+  ln -sf /usr /mnt/System
+  mkdir -p /mnt/private
+  ln -sf /etc /mnt/private/etc
+  ln -sf /var /mnt/private/var
+  ln -sf /tmp /mnt/private/tmp
+  # /usr/share/extras = assets (wallpapers, profile pic, settings). background.jpg = lockscreen asset (copied from selected wallpaper).
+  ln -sf /usr/share/extras/wallpapers /mnt/Library/Desktop\ Pictures
+  ln -sf /usr/share/extras /mnt/Library/User\ Pictures
 
   echo "[Desktop Entry]" > /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
   echo "Name=pearOS Post Install" >> /mnt/etc/skel/.config/autostart/xyz.pearos-post-install.desktop
@@ -409,12 +454,15 @@ killall plasmashell
     update_progress "98"
 #  fi
 
-    # Add the grub theme to the configuration file
-  echo "GRUB_THEME=\"/usr/share/grub/themes/pearOS/theme.txt\"" >> /mnt/etc/default/grub
-  sudo sed -i 's|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX="quiet splash loglevel=3"|' /mnt/etc/default/grub
-
-  if ! arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg &> /dev/null; then
-    error_exit "Failed to generate GRUB configuration"
+  # GRUB theme and config only for Legacy (BIOS); UEFI uses rEFInd
+  if ! $UEFI; then
+    if [ -f /mnt/etc/default/grub ]; then
+      echo "GRUB_THEME=\"/usr/share/grub/themes/pearOS/theme.txt\"" >> /mnt/etc/default/grub
+      sed -i 's|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX="quiet splash loglevel=3"|' /mnt/etc/default/grub
+    fi
+    if ! arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg &> /dev/null; then
+      error_exit "Failed to generate GRUB configuration"
+    fi
   fi
 
   update_progress "99"
@@ -425,7 +473,8 @@ killall plasmashell
 
   rm -rf /mnt/usr/share/applications/assistant.desktop /mnt/usr/share/applications/qdbusviewer.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/designer.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/lstopo.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/kvantummanager.desktop /mnt/usr/share/applications/org.kde.drkonqi.coredump.gui.desktop /mnt/usr/share/applications/electron38.desktop /mnt/usr/share/applications/org.kde.plasma.emojier.desktop /mnt/usr/share/applications/kde_wacom_tabletfinder.desktop /mnt/usr/share/applications/systemsettings.desktop /mnt/usr/share/applications/org.kde.kmenuedit.desktop 
   arch-chroot /mnt pacman -S --noconfirm plasma-welcome
-  cp -r /usr/share/applications/welcome.desktop /etc/skel/.config/autostart/welcome.desktop 
+  mkdir -p /mnt/etc/skel/.config/autostart
+  cp -r /usr/share/applications/welcome.desktop /mnt/etc/skel/.config/autostart/welcome.desktop 2>/dev/null || true 
   arch-chroot /mnt pacman -R --noconfirm kinfocenter plasma-disks plasma-sdk
   # arch-chroot /mnt rm -rf /usr/share/wayland-sessions || :
 
