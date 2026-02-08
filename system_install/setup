@@ -35,7 +35,7 @@ killall plasmashell
   swap_enabled=false
   block_devices=()
   PARTITION_LAYOUT="Basic"
-  FILE_SYSTEM="ext4"
+  FILE_SYSTEM="btrfs"
   DISK="$1"
   PREFIX=""
   multilib=true
@@ -122,8 +122,8 @@ killall plasmashell
   fi
   update_progress "8"
 
-  # Make the ext4 filesystem
-  if ! mkfs."$FILE_SYSTEM" "$ROOT_PART" &> /dev/null; then
+  # Create btrfs filesystem on root partition
+  if ! mkfs."$FILE_SYSTEM" -f "$ROOT_PART" &> /dev/null; then
     error_exit "Failed to create filesystem on $ROOT_PART"
   fi
   update_progress "10"
@@ -255,6 +255,8 @@ killall plasmashell
   if ! genfstab -U /mnt >> /mnt/etc/fstab 2>> /home/liveuser/Desktop/install.log; then
     error_exit "Failed to generate fstab"
   fi
+  # Add btrfs compression for root (zstd is fast and effective)
+  awk '$2=="/" && $3=="btrfs" {$4=$4",compress=zstd"} 1' /mnt/etc/fstab > /tmp/fstab.btrfs && mv /tmp/fstab.btrfs /mnt/etc/fstab
   update_progress "72"
 
   # Pushing temporary Timezone to localtime file
