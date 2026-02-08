@@ -8,40 +8,88 @@ const path = require('path')
 const url = require('url')
 let mainWindow
 
+// Evită crash-ul GPU (vaInitialize failed / virtio_gpu) în VM/live: randare software
+app.commandLine.appendSwitch('disable-gpu')
+app.commandLine.appendSwitch('disable-gpu-sandbox')
+
+// O singură instanță: al doilea npm start dă focus primei ferestre
+const gotTheLock = app.requestSingleInstanceLock()
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.show()
+      mainWindow.focus()
+    }
+  })
+}
+
+function showWindow () {
+  if (!mainWindow || mainWindow.isDestroyed()) return
+  mainWindow.setFullScreen(true)
+  mainWindow.show()
+  mainWindow.focus()
+  if (process.env.POST_INSTALL_TEST === '1') {
+    mainWindow.webContents.openDevTools()
+  }
+}
+
 function createWindow () {
-  const screen = electron.screen;
-  const primaryDisplay = screen.getPrimaryDisplay();
-  const displayWidth = primaryDisplay.size.width;
-  const displayHeight = primaryDisplay.size.height;
+  const screen = electron.screen
+  const primaryDisplay = screen.getPrimaryDisplay()
+  const displayWidth = primaryDisplay.size.width
+  const displayHeight = primaryDisplay.size.height
 
   mainWindow = new BrowserWindow({
-      show: false,
-      resizable: false,
-      frame: false,
-      width: displayWidth,
-      height: displayHeight,
-      webPreferences: {
-	nodeIntegration: true,
-	enableRemoteModule: true,
-	contextIsolation: false
+    show: false,
+    resizable: false,
+    frame: false,
+    width: displayWidth,
+    height: displayHeight,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      contextIsolation: false
     }
   })
 
-  // Disables F11
-  mainWindow.setMenu(null);
+  mainWindow.setMenu(null)
 
-  mainWindow.loadURL(url.format({
+  const loadUrl = url.format({
     pathname: path.join(__dirname, '/app/hello.html'),
     protocol: 'file:',
     slashes: true
-  }))
+  })
+
+  let showTimeout = null
+  let shown = false
+  const ensureShow = () => {
+    if (shown) return
+    shown = true
+    if (showTimeout) {
+      clearTimeout(showTimeout)
+      showTimeout = null
+    }
+    showWindow()
+  }
 
   mainWindow.once('ready-to-show', () => {
-    mainWindow.setFullScreen(true)
-    mainWindow.show()
-    if (process.env.POST_INSTALL_TEST === '1') {
-      mainWindow.webContents.openDevTools()
-    }
+    ensureShow()
+  })
+
+  // Dacă ready-to-show nu se declanșează, afișează fereastra după 8s
+  showTimeout = setTimeout(() => {
+    ensureShow()
+  }, 8000)
+
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+    ensureShow()
+  })
+
+  mainWindow.loadURL(loadUrl).catch((err) => {
+    ensureShow()
   })
 
   mainWindow.on('closed', function () {
