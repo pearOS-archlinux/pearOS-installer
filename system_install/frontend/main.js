@@ -3,6 +3,10 @@ process.env.OZONE_PLATFORM = 'x11'
 
 const electron = require('electron')
 const app = electron.app
+
+// Evită crash-ul GPU (vaInitialize failed / virtio_gpu) în VM/live: randare software
+app.commandLine.appendSwitch('disable-gpu')
+app.commandLine.appendSwitch('disable-gpu-sandbox')
 const BrowserWindow = electron.BrowserWindow
 const ipcMain = electron.ipcMain
 const powerSaveBlocker = electron.powerSaveBlocker
@@ -12,37 +16,92 @@ const { exec } = require('child_process')
 let mainWindow
 let powerSaveBlockerId = null
 
+// O singură instanță: al doilea npm start dă focus primei ferestre
+const gotTheLock = app.requestSingleInstanceLock()
+if (!gotTheLock) {
+  console.log('[system_install] Altă instanță rulează deja; închid. Dă focus pe fereastra existentă.')
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.show()
+      mainWindow.focus()
+    }
+  })
+}
+
+function showWindow () {
+  if (!mainWindow || mainWindow.isDestroyed()) return
+  mainWindow.setFullScreen(true)
+  mainWindow.show()
+  mainWindow.focus()
+}
+
 function createWindow () {
-  const screen = electron.screen;
-  const primaryDisplay = screen.getPrimaryDisplay();
-  const displayWidth = primaryDisplay.size.width;
-  const displayHeight = primaryDisplay.size.height;
+  console.log('[system_install] createWindow()')
+  const screen = electron.screen
+  const primaryDisplay = screen.getPrimaryDisplay()
+  const displayWidth = primaryDisplay.size.width
+  const displayHeight = primaryDisplay.size.height
 
   mainWindow = new BrowserWindow({
-      show: false,
-      resizable: false,
-      frame: false,
-      width: displayWidth,
-      height: displayHeight,
-      webPreferences: {
-	nodeIntegration: true,
-	enableRemoteModule: true,
-	contextIsolation: false
+    show: false,
+    resizable: false,
+    frame: false,
+    width: displayWidth,
+    height: displayHeight,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      contextIsolation: false
     }
   })
 
-  // Disables F11
-  mainWindow.setMenu(null);
+  mainWindow.setMenu(null)
 
-  mainWindow.loadURL(url.format({
+  const loadUrl = url.format({
     pathname: path.join(__dirname, '/app/index.html'),
     protocol: 'file:',
     slashes: true
-  }))
+  })
+  console.log('[system_install] Loading:', loadUrl)
+
+  let showTimeout = null
+  let shown = false
+  const ensureShow = () => {
+    if (shown) return
+    shown = true
+    if (showTimeout) {
+      clearTimeout(showTimeout)
+      showTimeout = null
+    }
+    console.log('[system_install] Showing window')
+    showWindow()
+  }
 
   mainWindow.once('ready-to-show', () => {
-    mainWindow.setFullScreen(true)
-    mainWindow.show()
+    ensureShow()
+  })
+
+  // Dacă ready-to-show nu se declanșează (încărcare lentă/eroare), afișează fereastra după 8s
+  showTimeout = setTimeout(() => {
+    console.log('[system_install] Fallback: showing window after timeout')
+    ensureShow()
+  }, 8000)
+
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+    console.error('[system_install] did-fail-load:', errorCode, errorDescription, validatedURL)
+    ensureShow()
+  })
+
+  mainWindow.loadURL(loadUrl).catch((err) => {
+    console.error('[system_install] loadURL error:', err)
+    ensureShow()
+  })
+
+  mainWindow.webContents.once('did-finish-load', () => {
+    console.log('[system_install] Page loaded')
   })
 
   // !! UNCOMMENT ONLY ON DEBUG !!
@@ -111,11 +170,10 @@ ipcMain.on('app-action', (event, action) => {
 })
 
 app.on('ready', () => {
-  // Închide plasmashell la prima pornire a setup-ului inițial (evită blocare ecran / interferențe desktop)
+  console.log('[system_install] App ready')
   exec('killall plasmashell 2>/dev/null', (err) => { if (err) {} })
-  // Previne ecranul să se stingă cât timp aplicația rulează
   powerSaveBlockerId = powerSaveBlocker.start('prevent-display-sleep')
-  console.log('Power save blocker started, ID:', powerSaveBlockerId)
+  console.log('[system_install] Power save blocker started, ID:', powerSaveBlockerId)
   createWindow()
 })
 
