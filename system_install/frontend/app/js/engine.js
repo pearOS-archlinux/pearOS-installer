@@ -47,6 +47,16 @@ function open_installer() {
  location.href = "page_install.html";
 }
 
+function open_offline_installer() {
+  const { exec } = require('child_process');
+  exec('sudo calamares', (err) => {
+    if (err) {
+      console.error('Error opening Calamares:', err.message);
+      alert('Calamares could not be opened. Make sure it is installed.');
+    }
+  });
+}
+
 // Menu checkbox functionality
 function initMenuCheckboxes() {
   var checkboxes = document.querySelectorAll('.menu_checkbox');
@@ -69,8 +79,13 @@ function initMenuCheckboxes() {
       }
       // Update visual state
       updateMenuCheckboxState(this);
+      // Actualizează UI-ul pentru modul Offline/Dual Boot când se schimbă selecția
+      updateInstallerAltUI();
     });
   });
+
+  // Sincronizează titlul/descrierea și hint-ul Alt cu selecția curentă la inițializare
+  updateInstallerAltUI();
 }
 
 function updateMenuCheckboxState(checkbox) {
@@ -81,6 +96,78 @@ function updateMenuCheckboxState(checkbox) {
     label.classList.remove('menu_checkbox_checked');
   }
 }
+
+// Alt (⌥) state for Offline Install & Dual Boot
+var isAltPressed = false;
+
+function updateInstallerAltUI() {
+  var titleEl = document.getElementById('menu_installer_title');
+  var descEl = document.getElementById('menu_installer_desc');
+  var installerCheckbox = document.getElementById('menu_installer');
+  var hintEl = document.querySelector('.alt-hint');
+
+  // Dacă installer nu este selectat, revenim la textul default și ascundem complet hint-ul
+  if (!titleEl || !descEl || !installerCheckbox || !installerCheckbox.checked) {
+    if (titleEl) {
+      var defTitle = titleEl.getAttribute('data-default-title') || titleEl.textContent.trim();
+      titleEl.innerHTML = '<b>' + defTitle + '</b>';
+    }
+    if (descEl) {
+      var defDesc = descEl.getAttribute('data-default-desc') || descEl.textContent.trim();
+      descEl.textContent = defDesc;
+    }
+    if (hintEl) {
+      hintEl.style.visibility = 'hidden';
+    }
+    return;
+  }
+
+  var defaultTitle = titleEl.getAttribute('data-default-title') || titleEl.textContent.trim();
+  var altTitle = titleEl.getAttribute('data-alt-title') || defaultTitle;
+  var defaultDesc = descEl.getAttribute('data-default-desc') || descEl.textContent.trim();
+  var altDesc = descEl.getAttribute('data-alt-desc') || defaultDesc;
+
+  if (hintEl) {
+    hintEl.style.visibility = 'visible';
+  }
+
+  // Installer selectat: hint vizibil mereu; Alt doar schimbă textul
+  if (isAltPressed) {
+    titleEl.innerHTML = '<b>' + altTitle + '</b>';
+    descEl.textContent = altDesc;
+  } else {
+    titleEl.innerHTML = '<b>' + defaultTitle + '</b>';
+    descEl.textContent = defaultDesc;
+  }
+}
+
+// Initializare globală pentru detectarea tastei Alt (doar o dată)
+(function initAltForMenu() {
+  if (typeof window === 'undefined') return;
+  if (window.__pearosAltInit) return;
+  window.__pearosAltInit = true;
+
+  window.addEventListener('keydown', function(e) {
+    if (e.altKey && !isAltPressed) {
+      isAltPressed = true;
+      updateInstallerAltUI();
+    }
+  });
+
+  window.addEventListener('keyup', function(e) {
+    if (!e.altKey && isAltPressed) {
+      isAltPressed = false;
+      updateInstallerAltUI();
+    }
+  });
+
+  window.addEventListener('blur', function() {
+    if (isAltPressed) {
+      isAltPressed = false;
+      updateInstallerAltUI();
+    }
+  });
+})();
 
 function handleMenuAction(action) {
   // Uncheck all checkboxes first
@@ -128,7 +215,11 @@ function handleMenuContinue() {
       open_packup();
       break;
     case 'installer':
-      open_installer();
+      if (isAltPressed) {
+        open_offline_installer();
+      } else {
+        open_installer();
+      }
       break;
     case 'browser':
       open_browser();

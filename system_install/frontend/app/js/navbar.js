@@ -55,7 +55,7 @@ function createNavbar() {
     aboutModal.innerHTML = `
         <div class="modal-content">
             <h2>About pearOS Installer</h2>
-            <p><strong>Build:</strong> 2025.10.27</p>
+            <p><strong>Build:</strong> 2026.03.05 - dualboot</p>
             <p><strong>Author:</strong> Pear Software and Services</p>
             <p><strong>Email:</strong> alex@pear-software.com</p>
             <button class="button" onclick="closeAboutModal()">Close</button>

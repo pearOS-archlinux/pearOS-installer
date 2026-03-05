@@ -23,8 +23,8 @@
         <label class="menu_checkbox_label" ondblclick="handleMenuAction('installer')">
 	<input type="checkbox" class="menu_checkbox" id="menu_installer" value="installer">
 	<img class="menu_logo" height=50px src="../../resources/nicec0re-logo.png"></img>
-	<p class="menu_title"><b>Instalează pearOS NiceC0re</b></p>
-	<p class="menu_description">Folosește instalatorul atașat pentru a actualiza sau instala pearOS.</p>
+	<p class="menu_title" id="menu_installer_title" data-default-title="Instalează pearOS NiceC0re" data-alt-title="Instalator Offline & Dual Boot"><b>Instalează pearOS NiceC0re</b></p>
+	<p class="menu_description" id="menu_installer_desc" data-default-desc="Folosește instalatorul atașat pentru a actualiza sau instala pearOS." data-alt-desc="Folosește instalatorul offline Calamares pentru partiționare manuală și dual boot.">Folosește instalatorul atașat pentru a actualiza sau instala pearOS.</p>
 	</label>
 
 	<label class="menu_checkbox_label" ondblclick="handleMenuAction('browser')">
@@ -43,6 +43,7 @@
 
         </ul>
         <div class="movement-buttons">
+          <span class="alt-hint" style="margin-left: 12px; font-size: 12px; opacity: 0.8; color: #595959;">Ține apăsat ⌥ (Alt) pentru Offline installer & Dual Boot</span>
           <button onclick="handleMenuContinue();" class="install-button-agreement" id="menu-continue-btn">Continuă</button>
         </div>
       </div>

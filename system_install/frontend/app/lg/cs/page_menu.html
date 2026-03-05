@@ -23,8 +23,8 @@
         <label class="menu_checkbox_label" ondblclick="handleMenuAction('installer')">
 	<input type="checkbox" class="menu_checkbox" id="menu_installer" value="installer">
 	<img class="menu_logo" height=50px src="../../resources/nicec0re-logo.png"></img>
-	<p class="menu_title"><b>Nainstalovat pearOS NiceC0re</b></p>
-	<p class="menu_description">Použijte připojený instalátor k upgradu nebo instalaci pearOS.</p>
+	<p class="menu_title" id="menu_installer_title" data-default-title="Nainstalovat pearOS NiceC0re" data-alt-title="Offline Install & Dual Boot"><b>Nainstalovat pearOS NiceC0re</b></p>
+	<p class="menu_description" id="menu_installer_desc" data-default-desc="Použijte připojený instalátor k upgradu nebo instalaci pearOS." data-alt-desc="Use the offline Calamares installer for manual partitioning and dual boot.">Použijte připojený instalátor k upgradu nebo instalaci pearOS.</p>
 	</label>
 
 	<label class="menu_checkbox_label" ondblclick="handleMenuAction('browser')">
@@ -43,6 +43,7 @@
 
         </ul>
         <div class="movement-buttons">
+          <span class="alt-hint" style="margin-left: 12px; font-size: 12px; opacity: 0.8; color: #595959;">Hold ⌥ (Alt) for Offline installer & Dual Boot</span>
           <button onclick="handleMenuContinue();" class="install-button-agreement" id="menu-continue-btn">Pokračovat</button>
         </div>
       </div>
