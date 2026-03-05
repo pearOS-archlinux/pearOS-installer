@@ -216,6 +216,21 @@ function handleMenuContinue() {
       break;
     case 'installer':
       if (isAltPressed) {
+        // Feedback vizual: ascundem opțiunile din meniu și blocăm butonul Continue
+        var menuList = document.querySelector('.ul_menu');
+        if (menuList) {
+          menuList.style.opacity = '0.3';
+          menuList.style.pointerEvents = 'none';
+        }
+        var contBtn = document.getElementById('menu-continue-btn');
+        if (contBtn) {
+          contBtn.disabled = true;
+          contBtn.textContent = 'Starting Offline Installer…';
+        }
+        var hintEl = document.querySelector('.alt-hint');
+        if (hintEl) {
+          hintEl.style.visibility = 'hidden';
+        }
         open_offline_installer();
       } else {
         open_installer();
