@@ -366,6 +366,9 @@
   # Enable Network Manager, vbox additions and SDDM services
   arch-chroot /mnt systemctl enable NetworkManager.service &> /dev/null
   arch-chroot /mnt systemctl enable sddm.service &> /dev/null
+  arch-chroot /mnt systemctl enable pacman-init.service || true &> /dev/null
+  arch chroot /mnt ln -sv /usr/lib/systemd/system/qemu-guest-agent.service multi-user.target.wants/qemu-guest-agent.service || treue
+
   update_progress "94"
 
   # Enabling auto-login for 'default' user :
