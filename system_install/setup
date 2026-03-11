@@ -423,10 +423,58 @@
 
   arch-chroot /mnt pacman -S plasma-workspace --noconfirm 2>> /home/liveuser/Desktop/install.log || echo "Warning: Failed to install plasma-workspace" >> /home/liveuser/Desktop/install.log
 
-  rm -rf /mnt/usr/share/applications/assistant.desktop /mnt/usr/share/applications/qdbusviewer.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/designer.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/lstopo.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/kvantummanager.desktop /mnt/usr/share/applications/org.kde.drkonqi.coredump.gui.desktop /mnt/usr/share/applications/electron38.desktop /mnt/usr/share/applications/org.kde.plasma.emojier.desktop /mnt/usr/share/applications/kde_wacom_tabletfinder.desktop /mnt/usr/share/applications/systemsettings.desktop /mnt/usr/share/applications/org.kde.kmenuedit.desktop 
-  arch-chroot /mnt pacman -S --noconfirm plasma-welcome
-  cp -r /usr/share/applications/welcome.desktop /etc/skel/.config/autostart/welcome.desktop 
-  arch-chroot /mnt pacman -R --noconfirm kinfocenter plasma-disks plasma-sdk
+  rm -rf /mnt/usr/share/applications/assistant.desktop /mnt/usr/share/applications/qdbusviewer.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/designer.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/lstopo.desktop /mnt/usr/share/applications/linguist.desktop /mnt/usr/share/applications/kvantummanager.desktop /mnt/usr/share/applications/org.kde.drkonqi.coredump.gui.desktop /mnt/usr/share/applications/electron38.desktop /mnt/usr/share/applications/org.kde.plasma.emojier.desktop /mnt/usr/share/applications/kde_wacom_tabletfinder.desktop /mnt/usr/share/applications/systemsettings.desktop /mnt/usr/share/applications/org.kde.kmenuedit.desktop  || true
+  arch-chroot /mnt pacman -S --noconfirm plasma-welcome || true
+  mkdir -p /mnt/etc/skel/.config/autostart
+  cp -r /mnt/usr/share/applications/welcome.desktop /mnt/etc/skel/.config/autostart/welcome.desktop 2>/dev/null || true
+  arch-chroot /mnt pacman -R --noconfirm kinfocenter plasma-disks plasma-sdk || true
+
+    rm -rf /mnt/usr/share/sddm/themes/elarun || true
+    rm -rf /mnt/usr/share/sddm/themes/maldives || true
+    rm -rf /mnt/usr/share/sddm/themes/maya || true
+    rm -rf /mnt/usr/share/sddm/themes/Qogir || true
+    rm -rf /mnt/usr/share/plasma/desktoptheme/air || true
+    rm -rf /mnt/usr/share/plasma/desktoptheme/breeze-dark || true
+    rm -rf /mnt/usr/share/plasma/desktoptheme/oxygen || true
+    rm -rf /mnt/usr/share/plasma/look-and-feel/org.kde.breezedark.desktop || true
+    rm -rf /mnt/usr/share/plasma/look-and-feel/org.kde.breezetwilight.desktop || true
+    rm -rf /mnt/usr/share/plasma/look-and-feel/org.kde.oxygen || true
+    rm -rf /mnt/usr/share/icons/Oxygen* || true
+    rm -rf /mnt/usr/share/icons/Tela* || true
+    rm -rf /mnt/usr/share/icons/Breeze_Snow || true
+    rm -rf /mnt/usr/share/icons/Adwaita || true
+    rm -rf /mnt/usr/share/icons/breeze-dark || true
+    rm -rf /mnt/usr/share/icons/KDE_Classic || true
+    rm -rf /mnt/usr/share/color-schemes/Kv* || true
+    rm -rf /mnt/usr/share/color-schemes/Oxygen* || true
+    rm -rf /mnt/usr/share/color-schemes/BreezeClas* || true
+    rm -rf /mnt/usr/share/applications/avahi* || true
+    rm -rf /mnt/usr/share/applications/bssh* || true
+    rm -rf /mnt/usr/share/applications/bvnc* || true
+    rm -rf /mnt/usr/share/applications/qv4l2* || true
+    rm -rf /mnt/usr/share/applications/qvidcap* || true
+    rm -rf /mnt/usr/share/applications/org.kde.plasma.emojier.desktop || true
+    rm -rf /mnt/usr/share/applications/kvantum* || true
+    rm -rf /mnt/usr/share/applications/org.kde.latte-dock.desktop || true
+    rm -rf /mnt/usr/share/applications/org.kde.kuserfeedback-console.desktop || true
+    rm -rf /mnt/usr/share/applications/lstopo.desktop || true
+    rm -rf /mnt/usr/share/applications/cmake-gui.desktop || true
+    rm -rf /mnt/usr/share/applications/org.kde.drkonqi.coredump.desktop || true
+    rm -rf /mnt/usr/share/applications/calamares.desktop || true  
+    rm -rf /mnt/usr/share/applications/org.kde.kdeconnect.sms.desktop || true
+    rm -rf /mnt/usr/share/applications/org.kde.akonadiimportwizard.desktop || true
+    rm -rf /mnt/usr/share/applications/org.kde.ktnef.desktop || true
+    rm -rf /mnt/usr/share/applications/org.kde.kmenuedit.desktop || true
+    rm -rf /mnt/usr/share/applications/nvidia* || true
+    rm -rf /mnt/usr/share/applications/assistant.desktop || true
+    rm -rf /mnt/usr/share/applications/qdbusviewer.desktop || true
+    rm -rf /mnt/usr/share/applications/linguist.desktop || true
+    rm -rf /mnt/usr/share/applications/designer.desktop || true
+    rm -rf /mnt/usr/share/applications/org.kde.sieveeditor.desktop || true
+    rm -rf /mnt/usr/share/applications/systemsettings.desktop || true
+    rm -rf /mnt/usr/share/applications/org.kde.pimpdataexporter.desktop || true
+    rm -rf /mnt/usr/share/applications/cups.desktop || true
+    rm -rf /mnt/usr/share/applications/org.gnome.FileRoller.desktop || true
 
   # Sends the install finished messages to the frontend
   if [ -f /tmp/failed_packages.log ]; then
