@@ -49,7 +49,7 @@ function open_installer() {
 
 function open_offline_installer() {
   const { exec } = require('child_process');
-  exec('sudo calamares', (err) => {
+  exec('sudo /etc/calamares/launch.sh', (err) => {
     if (err) {
       console.error('Error opening Calamares:', err.message);
       alert('Calamares could not be opened. Make sure it is installed.');
