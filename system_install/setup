@@ -210,7 +210,11 @@
   pacman-key --init &> /dev/null || echo "Warning: keyring init failed" >> /home/liveuser/Desktop/install.log
   pacman-key --populate archlinux manjaro &> /dev/null || echo "Warning: keyring populate failed" >> /home/liveuser/Desktop/install.log
   pacman -Sy --noconfirm archlinux-keyring 2>&1 >> /home/liveuser/Desktop/install.log || echo "Warning: failed to update keyring package" >> /home/liveuser/Desktop/install.log
-  # Refresh database to ensure package availability checks are accurate
+
+  pacman-key --recv-keys 4C1A9F3C131ACA95 --keyserver keyserver.ubuntu.com
+  pacman-key --lsign-key 4C1A9F3C131ACA95
+ 
+ # Refresh database to ensure package availability checks are accurate
   pacman -Sy --noconfirm &> /dev/null || true
 
   pacman -Sy --noconfirm kscreenlocker || true
@@ -271,6 +275,8 @@
   fi
   sed -i "s/#en_US.UTF-8/en_US.UTF-8/" /mnt/etc/locale.gen
   update_progress "76"
+
+  arch-chroot /mnt pacman-key --recv-keys 4C1A9F3C131ACA95 --keyserver keyserver.ubuntu.com && pacman-key --lsign-key 4C1A9F3C131ACA95 ||:
 
   # Passing custom locale to locale file
   if [ "$LOCALE" != "en_US.UTF-8" ]; then
