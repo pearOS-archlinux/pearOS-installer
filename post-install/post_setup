@@ -345,9 +345,23 @@ if ! pacman -R --noconfirm cmake extra-cmake-modules 2>> "$LOG_FILE"; then
   echo "Warning: Failed to remove cmake/extra-cmake-modules" >&2
 fi
 
-echo "=== pearOS Installation Script Completed: $(date) ==="
-echo "System will reboot in 10 seconds. Press Ctrl+C to cancel..."
-sleep 10
+# pearOS boot chime
+echo "Installing pearOS boot sound..."
+if (
+  cd /tmp &&
+  rm -rf pearos-boot-sound &&
+  git clone https://github.com/Pear-Project/pearos-boot-sound &&
+  cd pearos-boot-sound &&
+  chmod +x install.sh &&
+  ./install.sh
+); then
+  rm -rf /tmp/pearos-boot-sound
+  echo "Boot sound installed."
+else
+  echo "Warning: Failed to install boot chime" >&2
+  rm -rf /tmp/pearos-boot-sound 2>/dev/null || true
+fi
 
-# Final reboot
-sync && systemctl reboot -i
+echo "=== pearOS Installation Script Completed: $(date) ==="
+sync
+shutdown -r now

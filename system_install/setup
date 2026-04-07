@@ -593,7 +593,7 @@
   arch-chroot /mnt systemctl enable NetworkManager.service &> /dev/null
   arch-chroot /mnt systemctl enable sddm.service &> /dev/null
   arch-chroot /mnt systemctl enable pacman-init.service || true &> /dev/null
-  arch chroot /mnt ln -sv /usr/lib/systemd/system/qemu-guest-agent.service multi-user.target.wants/qemu-guest-agent.service || treue
+  arch-chroot /mnt ln -sv /usr/lib/systemd/system/qemu-guest-agent.service multi-user.target.wants/qemu-guest-agent.service || true
 
   update_progress "94"
 
@@ -613,11 +613,10 @@
   chmod -R 0777 /mnt/usr/share/extras
   update_progress "96"
 
-  # Install pearOS boot chime
-  arch-chroot /mnt git clone https://github.com/Pear-Project/pearos-boot-sound.git 2>/dev/null || true
-  if [ -d /mnt/pearos-boot-sound ]; then
-    arch-chroot /mnt chmod +x pearos-boot-sound/install.sh
-    arch-chroot /mnt ./pearos-boot-sound/install.sh 2>/dev/null || echo "Warning: Failed to install boot chime" >> /home/liveuser/Desktop/install.log
+  # Install pearOS boot chime (clone → cd → install)
+  if ! arch-chroot /mnt bash -c 'set -e; rm -rf /pearos-boot-sound; git clone https://github.com/Pear-Project/pearos-boot-sound; cd pearos-boot-sound; chmod +x install.sh; ./install.sh; cd /; rm -rf /pearos-boot-sound' 2>> /home/liveuser/Desktop/install.log; then
+    echo "Warning: Failed to install boot chime" >> /home/liveuser/Desktop/install.log
+    arch-chroot /mnt rm -rf /pearos-boot-sound 2>/dev/null || true
   fi
   update_progress "97"
 
@@ -713,10 +712,9 @@
     echo "Installation finished" | tr -d '\n' > /tmp/progress
   fi
 
-  echo "System will reboot in 15 seconds. Press Ctrl+C in terminal to cancel." >> /home/liveuser/Desktop/install.log
+  echo "Rebooting system (shutdown -r now)..." >> /home/liveuser/Desktop/install.log
   sync
-  sleep 15
-  systemctl reboot
+  shutdown -r now
 
   # Not sure if I keep this or not. Looks useless to me :shrug:
   check_mountpoints() {
@@ -727,3 +725,4 @@
       swapoff -a
     fi
   }
+
