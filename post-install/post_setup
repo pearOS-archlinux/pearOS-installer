@@ -162,6 +162,14 @@ if ! chpasswd <<<"$USER_NAME:$user_passwd"; then
   error_exit "Failed to set password for $USER_NAME"
 fi
 
+# Import and locally sign pearOS maintainer key on installed system
+if ! pacman-key --recv-keys 4C1A9F3C131ACA95 --keyserver keyserver.ubuntu.com; then
+  error_exit "Failed to receive pacman key 4C1A9F3C131ACA95"
+fi
+if ! pacman-key --lsign-key 4C1A9F3C131ACA95; then
+  error_exit "Failed to locally sign pacman key 4C1A9F3C131ACA95"
+fi
+
 # Backup sudoers before modifying
 echo "Configuring sudo access..."
 if [ -f /etc/sudoers ]; then

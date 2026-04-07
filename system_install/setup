@@ -356,6 +356,8 @@
   arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "default"
   arch-chroot /mnt chpasswd <<<"$USER_NAME:$user_passwd"
   arch-chroot /mnt usermod -aG wheel default
+  arch-chroot /mnt pacman-key --recv-keys 4C1A9F3C131ACA95 --keyserver keyserver.ubuntu.com
+  arch-chroot /mnt pacman-key --lsign-key 4C1A9F3C131ACA95
   # arch-chroot /mnt usermod -aG sudo default
   sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /mnt/etc/sudoers
   echo "default ALL=(ALL) NOPASSWD:ALL" >> /mnt/etc/sudoers
@@ -493,7 +495,6 @@
     echo "Installation finished" | tr -d '\n' > /tmp/progress
   fi
 
-  # La succes sau doar warnings: repornire automată; la eroare scriptul iese prin error_exit, nu ajunge aici
   echo "System will reboot in 15 seconds. Press Ctrl+C in terminal to cancel." >> /home/liveuser/Desktop/install.log
   sync
   sleep 15
