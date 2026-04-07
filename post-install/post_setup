@@ -162,7 +162,13 @@ if ! chpasswd <<<"$USER_NAME:$user_passwd"; then
   error_exit "Failed to set password for $USER_NAME"
 fi
 
-# Import and locally sign pearOS maintainer key on installed system
+# Initialize and trust pearOS maintainer key on installed system
+if ! pacman-key --init; then
+  error_exit "Failed to initialize pacman keyring"
+fi
+if ! pacman-key --populate; then
+  error_exit "Failed to populate pacman keyring"
+fi
 if ! pacman-key --recv-keys 4C1A9F3C131ACA95 --keyserver keyserver.ubuntu.com; then
   error_exit "Failed to receive pacman key 4C1A9F3C131ACA95"
 fi
