@@ -95,6 +95,7 @@
     'linux-cachyos-lts-nvidia-open'
     'linux-cachyos-lts-zfs'
     'linux-firmware-marvell'
+    'linux-firmware'
     'lsb-release'
     'lsof'
     'lsscsi'

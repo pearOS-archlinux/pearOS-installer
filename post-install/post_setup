@@ -169,9 +169,6 @@ fi
 if ! pacman-key --populate; then
   error_exit "Failed to populate pacman keyring"
 fi
-if ! pacman-key --recv-keys 4C1A9F3C131ACA95 --keyserver keyserver.ubuntu.com; then
-  error_exit "Failed to receive pacman key 4C1A9F3C131ACA95"
-fi
 if ! pacman-key --lsign-key 4C1A9F3C131ACA95; then
   error_exit "Failed to locally sign pacman key 4C1A9F3C131ACA95"
 fi
