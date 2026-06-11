@@ -606,6 +606,17 @@ hr {
   height: auto;
 }
 
+.install-choice-modal-content {
+  max-width: 340px;
+  height: auto;
+  min-height: 240px;
+}
+
+.install-choice-modal-content .agreement-modal-buttons button {
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
 .gradient {
   background: rgb(56,68,75);
   background: radial-gradient(circle, rgba(56,68,75,1) 0%, rgba(35,43,48,1) 100%);

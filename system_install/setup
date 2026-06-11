@@ -493,7 +493,7 @@
   sed -i "s/#en_US.UTF-8/en_US.UTF-8/" /mnt/etc/locale.gen
   update_progress "76"
 
-  arch-chroot /mnt pacman-key --recv-keys 4C1A9F3C131ACA95 --keyserver keyserver.ubuntu.com && pacman-key --lsign-key 4C1A9F3C131ACA95 ||:
+  arch-chroot /mnt bash -c 'pacman-key --recv-keys 4C1A9F3C131ACA95 --keyserver keyserver.ubuntu.com && pacman-key --lsign-key 4C1A9F3C131ACA95' ||:
 
   # Passing custom locale to locale file
   if [ "$LOCALE" != "en_US.UTF-8" ]; then

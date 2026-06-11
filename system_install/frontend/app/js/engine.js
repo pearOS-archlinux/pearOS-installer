@@ -57,6 +57,34 @@ function open_offline_installer() {
   });
 }
 
+function showInstallChoiceModal() {
+  var modal = document.getElementById('install-choice-modal');
+  if (modal) modal.classList.add('show');
+}
+
+function closeInstallChoiceModal() {
+  var modal = document.getElementById('install-choice-modal');
+  if (modal) modal.classList.remove('show');
+}
+
+function chooseInstallType(type) {
+  closeInstallChoiceModal();
+  if (type === 'offline') {
+    var menuList = document.querySelector('.ul_menu');
+    if (menuList) {
+      menuList.style.opacity = '0.3';
+      menuList.style.pointerEvents = 'none';
+    }
+    var contBtn = document.getElementById('menu-continue-btn');
+    if (contBtn) {
+      contBtn.disabled = true;
+    }
+    open_offline_installer();
+  } else {
+    open_installer();
+  }
+}
+
 // Menu checkbox functionality
 function initMenuCheckboxes() {
   var checkboxes = document.querySelectorAll('.menu_checkbox');
@@ -190,7 +218,11 @@ function handleMenuAction(action) {
       open_packup();
       break;
     case 'installer':
-      open_installer();
+      if (isAltPressed) {
+        open_offline_installer();
+      } else {
+        showInstallChoiceModal();
+      }
       break;
     case 'browser':
       open_browser();
@@ -216,7 +248,6 @@ function handleMenuContinue() {
       break;
     case 'installer':
       if (isAltPressed) {
-        // Feedback vizual: ascundem opțiunile din meniu și blocăm butonul Continue
         var menuList = document.querySelector('.ul_menu');
         if (menuList) {
           menuList.style.opacity = '0.3';
@@ -225,15 +256,10 @@ function handleMenuContinue() {
         var contBtn = document.getElementById('menu-continue-btn');
         if (contBtn) {
           contBtn.disabled = true;
-          contBtn.textContent = 'Starting Offline Installer…';
-        }
-        var hintEl = document.querySelector('.alt-hint');
-        if (hintEl) {
-          hintEl.style.visibility = 'hidden';
         }
         open_offline_installer();
       } else {
-        open_installer();
+        showInstallChoiceModal();
       }
       break;
     case 'browser':

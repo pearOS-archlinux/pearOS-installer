@@ -282,13 +282,31 @@ git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm
 # Setting pearOS plymouth theme
 #plymouth-set-default-theme -R pear-plymouth
 
-# Remove 'default' user. It can be very dangerous
-echo "Removing default user..."
+# Remove 'default' user on next boot via a systemd oneshot service.
+# We cannot delete the user directly here because the Electron post-install
+# app runs as 'default', keeping active processes and open file handles in
+# /home/default — userdel would fail with "cannot remove user default".
+echo "Scheduling removal of default user on next boot..."
 if id "default" &>/dev/null; then
-  if ! userdel -rf default; then
-    error_exit "Failed to remove default user"
+  cat > /etc/systemd/system/pearos-remove-default-user.service << 'UNIT'
+[Unit]
+Description=Remove pearOS default live user
+After=multi-user.target
+ConditionPathExists=/home/default
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/userdel -rf default
+ExecStartPost=/bin/systemctl disable pearos-remove-default-user.service
+ExecStartPost=/bin/rm -f /etc/systemd/system/pearos-remove-default-user.service
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+  if ! systemctl enable pearos-remove-default-user.service; then
+    error_exit "Failed to schedule removal of default user"
   fi
-  echo "Default user removed successfully"
+  echo "Default user will be removed on next boot"
 else
   echo "Default user does not exist, skipping..."
 fi
