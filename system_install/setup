@@ -15,6 +15,7 @@
   DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   BASE_PACKAGES=(
     'alsa-utils'
+    'mpv'
     'amd-ucode'
     'appmenu-gtk-module'
     'arch-install-scripts'
@@ -158,6 +159,7 @@
     'pearos-appmenu'
     'pearos-bootsound'
     'pearos-icons'
+    'pearos-muternvf'
     'pipewire'
     'pipewire-alsa'
     'pipewire-jack'
