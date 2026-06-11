@@ -154,6 +154,10 @@
     'pearos-todo'
     'pearos-window-borders'
     'pearos-zshconfig'
+    'pearos-dock'
+    'pearos-appmenu'
+    'pearos-bootsound'
+    'pearos-icons'
     'pipewire'
     'pipewire-alsa'
     'pipewire-jack'
@@ -613,13 +617,6 @@
   # Fix extras files permissions (fixes the theme-switcher bug)
   chmod -R 0777 /mnt/usr/share/extras
   update_progress "96"
-
-  # Install pearOS boot chime (clone → cd → install)
-  if ! arch-chroot /mnt bash -c 'set -e; rm -rf /pearos-boot-sound; git clone https://github.com/Pear-Project/pearos-boot-sound; cd pearos-boot-sound; chmod +x install.sh; ./install.sh; cd /; rm -rf /pearos-boot-sound' 2>> /home/liveuser/Desktop/install.log; then
-    echo "Warning: Failed to install boot chime" >> /home/liveuser/Desktop/install.log
-    arch-chroot /mnt rm -rf /pearos-boot-sound 2>/dev/null || true
-  fi
-  update_progress "97"
 
   chmod 0777 -R /mnt/usr/share/extras/
   chmod 0777 -R /mnt/usr/share/extras/*
