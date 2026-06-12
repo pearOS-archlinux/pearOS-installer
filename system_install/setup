@@ -265,8 +265,6 @@
   PREFIX=""
   multilib=true
   DESKTOP="None"
-  DESKTOP_PACKAGES+=("${DESKTOP_DEFAULTS[@]}")
-  DESKTOP_PACKAGES+=('plasma-nm')
 
   # Helper function to update progress (0-100)
   update_progress() {
@@ -599,7 +597,7 @@
   # Enable Network Manager, vbox additions and SDDM services
   arch-chroot /mnt systemctl enable NetworkManager.service &> /dev/null
   arch-chroot /mnt systemctl enable sddm.service &> /dev/null
-  arch-chroot /mnt systemctl enable pacman-init.service || true &> /dev/null
+  { arch-chroot /mnt systemctl enable pacman-init.service || true; } &> /dev/null
   arch-chroot /mnt ln -sv /usr/lib/systemd/system/qemu-guest-agent.service multi-user.target.wants/qemu-guest-agent.service || true
 
   update_progress "94"
@@ -620,9 +618,6 @@
   chmod -R 0777 /mnt/usr/share/extras
   update_progress "96"
 
-  chmod 0777 -R /mnt/usr/share/extras/
-  chmod 0777 -R /mnt/usr/share/extras/*
-
   # Check if the user installs pearOS in a VM, if yes, which, then enabled corresponding services
 #  if [ "$hypervisor" != "none" ]; then
 #    if [ "$hypervisor" = "oracle" ]; then
@@ -639,7 +634,7 @@
 
     # Add the grub theme to the configuration file
   echo "GRUB_THEME=\"/usr/share/grub/themes/pearOS/theme.txt\"" >> /mnt/etc/default/grub
-  sudo sed -i 's|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX="quiet splash loglevel=3"|' /mnt/etc/default/grub
+  sed -i 's|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX="quiet splash loglevel=3"|' /mnt/etc/default/grub
 
   if ! arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg &> /dev/null; then
     error_exit "Failed to generate GRUB configuration"

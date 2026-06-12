@@ -436,7 +436,6 @@ function select_disk() {
   checkInternetConnection(function(hasInternet) {
     if (!hasInternet) {
       alert('You need an active internet connection to install pearOS NiceCC0re on your device. Please connect to the internet and try again.');
-      window.location.href='';
       return;
     }
     

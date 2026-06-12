@@ -274,7 +274,10 @@ if [ -f /etc/sddm.conf ]; then
 fi
 
 # Installing yay helper
-git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm && rm -rf yay
+git clone https://aur.archlinux.org/yay.git /tmp/yay-build && \
+  chown -R default:users /tmp/yay-build && \
+  su -c "cd /tmp/yay-build && makepkg -si --noconfirm" default && \
+  rm -rf /tmp/yay-build
 
 # Installing plymouth
 #yay -S plymouth --noconfirm

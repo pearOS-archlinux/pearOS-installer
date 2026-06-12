@@ -11,13 +11,11 @@ const moveForward = () => {
   const activeTab = document.querySelector('.tab.active');
   const nextTab = activeTab.nextElementSibling;
   switchTab(activeTab, nextTab);
-  alert("Hello! I am an alert box!!");
 }
 
 const switchTab = (activeTab, tabToActivate) => {
   activeTab.classList.remove('active');
   tabToActivate.classList.add('active');
-  alert("Hello! I am an alert box!!");
   updateArrows(tabToActivate);
 }
 

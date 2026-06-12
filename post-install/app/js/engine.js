@@ -362,7 +362,7 @@ function select_language() {
                              window.location.href='lg/ru_RU/page_keymap.html';
                         } else if (strUser == "Czech (Czech Republic)") {
                             fs.writeFileSync('/tmp/locale', 'cs_CZ.UTF-8');
-                            window.location.href='lg/cs/page_keymap.html';
+                            window.location.href='lg/cs_CZ/page_keymap.html';
                           } else if (strUser == "Romanian (Romania)") {
                             fs.writeFileSync('/tmp/locale', 'ro_RO.UTF-8');
                               window.location.href='lg/ro_RO/page_keymap.html';
