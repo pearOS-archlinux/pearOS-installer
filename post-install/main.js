@@ -112,7 +112,29 @@ app.on('activate', function () {
 })
 
 
-const {ipcMain} = require('electron')
+const { ipcMain } = require('electron')
+const { spawn } = require('child_process')
+
 ipcMain.on('close-me', (evt, arg) => {
   app.quit()
+})
+
+ipcMain.on('run-post-setup', (event, cmdArgs) => {
+  const env = { ...process.env, PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' }
+  const proc = spawn('sudo', ['post_setup'].concat(cmdArgs), { env })
+
+  proc.stdout.on('data', d => {
+    if (!event.sender.isDestroyed()) event.sender.send('post-setup-output', d.toString())
+  })
+  proc.stderr.on('data', d => {
+    if (!event.sender.isDestroyed()) event.sender.send('post-setup-output', d.toString())
+  })
+  proc.on('close', code => {
+    if (event.sender.isDestroyed()) return
+    if (code === 0) event.sender.send('post-setup-done')
+    else event.sender.send('post-setup-error', 'Script exit code: ' + code + '\nCheck /home/default/Desktop/post-install.log')
+  })
+  proc.on('error', err => {
+    if (!event.sender.isDestroyed()) event.sender.send('post-setup-error', err.message)
+  })
 })

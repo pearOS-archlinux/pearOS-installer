@@ -28,5 +28,13 @@
     </div>
     <script src="../../js/engine.js"></script>
     <script src="../../aa/script.js"></script>
+
+    <div id="post-install-progress" style="position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:16px 24px;z-index:100;font-family:Inter,sans-serif;">
+      <div id="post-install-status" style="color:#ffffff;font-size:13px;margin-bottom:8px;min-height:18px;opacity:0.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+      <details style="cursor:pointer;">
+        <summary style="color:rgba(255,255,255,0.5);font-size:11px;list-style:none;">Show log</summary>
+        <pre id="post-install-log" style="color:rgba(255,255,255,0.7);font-size:10px;max-height:120px;overflow-y:auto;margin:8px 0 0 0;padding:0;background:none;white-space:pre-wrap;word-break:break-all;"></pre>
+      </details>
+    </div>
   </body>
 </html>

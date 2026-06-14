@@ -163,11 +163,13 @@ if ! chpasswd <<<"$USER_NAME:$user_passwd"; then
 fi
 
 # Initialize and trust pearOS maintainer key on installed system
-if ! pacman-key --init; then
-  error_exit "Failed to initialize pacman keyring"
+# timeout 120s: pacman-key --init can block for minutes on VMs due to low entropy
+echo "Initializing pacman keyring (may take up to 2 minutes)..."
+if ! timeout 120 pacman-key --init; then
+  echo "WARNING: pacman-key --init timed out or failed, continuing..." >&2
 fi
 if ! pacman-key --populate; then
-  error_exit "Failed to populate pacman keyring"
+  echo "WARNING: pacman-key --populate failed, continuing..." >&2
 fi
 if ! pacman-key --lsign-key 4C1A9F3C131ACA95; then
   error_exit "Failed to locally sign pacman key 4C1A9F3C131ACA95"

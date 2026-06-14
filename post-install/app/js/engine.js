@@ -474,7 +474,6 @@ function commit(){
                 fs.readFile('/tmp/hostname', 'utf-8', (err, hostname_data) => {
                   if (err) { console.error('Missing /tmp/hostname'); return; }
                   var hostname = (hostname_data || '').trim();
-                  const execSync = require("child_process").execSync;
 
         // Display selected settings from frontend before execution
         console.log('');
@@ -492,33 +491,50 @@ function commit(){
         console.log('Starting post-installation setup...');
         console.log('');
 
-        try {
-          if (isTestMode) {
+        if (isTestMode) {
             console.log('Mod test: post_setup nu rulează, nu se modifică sistemul.');
             require('electron').ipcRenderer.send('close-me');
             return;
           }
-          execSync(`sudo post_setup '${keymap.replace(/'/g, "'\\''")}' '${locale.replace(/'/g, "'\\''")}' '${timezone.replace(/'/g, "'\\''")}' '${password.replace(/'/g, "'\\''")}' '${fullname.replace(/'/g, "'\\''")}' '${username.replace(/'/g, "'\\''")}' '${hostname.replace(/'/g, "'\\''")}' `, { maxBuffer: 10 * 1024 * 1024 });
-          require('electron').ipcRenderer.send('close-me');
-        } catch (e) {
-          var errMsg = '';
-          try {
-            errMsg = fs.readFileSync('/tmp/post-install-error', 'utf8').trim();
-          } catch (_) {}
-          if (!errMsg) {
-            errMsg = (e.message || String(e)).trim();
-          }
-          var tab = document.querySelector('.tab.active');
-          if (tab) {
+
+          var ipcRenderer = require('electron').ipcRenderer;
+
+          // Clean up any previous listeners
+          ipcRenderer.removeAllListeners('post-setup-output');
+          ipcRenderer.removeAllListeners('post-setup-done');
+          ipcRenderer.removeAllListeners('post-setup-error');
+
+          ipcRenderer.on('post-setup-output', function(evt, line) {
+            var logEl = document.getElementById('post-install-log');
+            if (logEl) {
+              logEl.textContent += line;
+              logEl.scrollTop = logEl.scrollHeight;
+            }
+            var statusEl = document.getElementById('post-install-status');
+            if (statusEl) {
+              var trimmed = line.trim().replace(/^\+\s*/, '').replace(/^\++\s*/, '');
+              if (trimmed && !trimmed.startsWith('#') && trimmed.length > 2) {
+                statusEl.textContent = trimmed.substring(0, 100);
+              }
+            }
+          });
+
+          ipcRenderer.once('post-setup-done', function() {
+            ipcRenderer.send('close-me');
+          });
+
+          ipcRenderer.once('post-setup-error', function(evt, msg) {
+            var errMsg = msg;
+            try { errMsg = fs.readFileSync('/tmp/post-install-error', 'utf8').trim() || msg; } catch(_) {}
+            var container = document.getElementById('post-install-progress') || document.body;
             var errDiv = document.createElement('div');
-            errDiv.id = 'post-install-error';
-            errDiv.style.cssText = 'color: #ff6666; margin: 20px; padding: 15px; background: rgba(0,0,0,0.4); border-radius: 8px; white-space: pre-wrap; text-align: left; max-width: 90%;';
-            errDiv.innerHTML = '<strong>Post-install failed</strong>\n\n' + (errMsg || 'Unknown error.') + '\n\nCheck /home/default/Desktop/post-install.log for details.';
-            tab.appendChild(errDiv);
-          } else {
-            alert('Post-install failed: ' + (errMsg || e.message));
-          }
-        }
+            errDiv.style.cssText = 'color:#ff6666;margin:20px;padding:15px;background:rgba(0,0,0,0.6);border-radius:8px;white-space:pre-wrap;text-align:left;max-width:90%;font-size:13px;';
+            errDiv.innerHTML = '<strong>Post-install failed</strong>\n\n' + errMsg + '\n\nCheck /home/default/Desktop/post-install.log';
+            container.appendChild(errDiv);
+          });
+
+          var safeArg = function(s) { return s; };
+          ipcRenderer.send('run-post-setup', [keymap, locale, timezone, password, fullname, username, hostname]);
                 });
               });
             });
