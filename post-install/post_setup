@@ -255,7 +255,7 @@ fi
 
 # Remove useless packages and their desktop entries
 echo "Removing unnecessary packages..."
-if ! yes | LC_ALL=en_US.UTF-8 pacman -R electron npm plasma-sdk discover; then
+if ! yes | LC_ALL=en_US.UTF-8 pacman -R electron npm plasma-sdk discover pearos-livecd-desktop; then
   echo "WARNING: Some packages failed to remove" >&2
 fi
 
@@ -288,6 +288,7 @@ git clone https://aur.archlinux.org/yay.git /tmp/yay-build && \
 #plymouth-set-default-theme -R pear-plymouth
 
 # Remove 'default' user on next boot via a systemd oneshot service.
+# Must run BEFORE sddm.service so the user never appears on the login screen.
 # We cannot delete the user directly here because the Electron post-install
 # app runs as 'default', keeping active processes and open file handles in
 # /home/default — userdel would fail with "cannot remove user default".
@@ -296,22 +297,25 @@ if id "default" &>/dev/null; then
   cat > /etc/systemd/system/pearos-remove-default-user.service << 'UNIT'
 [Unit]
 Description=Remove pearOS default live user
-After=multi-user.target
+DefaultDependencies=no
+Before=sddm.service display-manager.service
+After=local-fs.target systemd-user-sessions.service
 ConditionPathExists=/home/default
 
 [Service]
 Type=oneshot
+RemainAfterExit=yes
 ExecStart=/usr/sbin/userdel -rf default
 ExecStartPost=/bin/systemctl disable pearos-remove-default-user.service
 ExecStartPost=/bin/rm -f /etc/systemd/system/pearos-remove-default-user.service
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=sysinit.target
 UNIT
   if ! systemctl enable pearos-remove-default-user.service; then
     error_exit "Failed to schedule removal of default user"
   fi
-  echo "Default user will be removed on next boot"
+  echo "Default user will be removed before SDDM starts on next boot"
 else
   echo "Default user does not exist, skipping..."
 fi
