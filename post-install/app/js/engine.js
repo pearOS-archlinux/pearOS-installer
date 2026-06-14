@@ -321,116 +321,34 @@ function list_zones() {
 }
 function select_language() {
   var e = document.getElementById("ddlViewBy");
-  if (e.options[e.selectedIndex] === undefined) { alert('You must choose one Language from the list'); } else {
-  var strUser = e.options[e.selectedIndex].text;
-  const fs = require('fs');
-  if (strUser == "Chinese (Simplified)") {
-      fs.writeFileSync('/tmp/locale', 'zh_CN.UTF-8');
-    window.location.href='lg/zh_CN/page_keymap.html';
-  } else if (strUser == "English (Australia)") {
-      fs.writeFileSync('/tmp/locale', 'en_AU.UTF-8');
-      window.location.href='lg/en_AU/page_keymap.html';
-    } else if (strUser == "English (Canada)") {
-        fs.writeFileSync('/tmp/locale', 'en_CA.UTF-8');
-      window.location.href='lg/en_CA/page_keymap.html';
-      } else if (strUser == "English (United States)") {
-          fs.writeFileSync('/tmp/locale', 'en_US.UTF-8');
-        window.location.href='lg/en_US/page_keymap.html';
-        } else if (strUser == "English (United Kingdom)") {
-            fs.writeFileSync('/tmp/locale', 'en_GB.UTF-8');
-            window.location.href='lg/en_GB/page_keymap.html';
-          } else if (strUser == "French (France)") {
-              fs.writeFileSync('/tmp/locale', 'fr_FR.UTF-8');
-              window.location.href='lg/fr_FR/page_keymap.html';
-            } else if (strUser == "German (Germany)") {
-                fs.writeFileSync('/tmp/locale', 'de_DE.UTF-8');
-                window.location.href='lg/de_DE/page_keymap.html';
-              } else if (strUser == "Italian (Italy)") {
-                  fs.writeFileSync('/tmp/locale', 'it_IT.UTF-8');
-                  window.location.href='lg/it_IT/page_keymap.html';
-                }  else if (strUser == "Japanese (Japan)") {
-                    fs.writeFileSync('/tmp/locale', 'ja_JP.UTF-8');
-                     window.location.href='lg/ja_JP/page_keymap.html';
-                  }  else if (strUser == "Portuguese (Brazil)") {
-                      fs.writeFileSync('/tmp/locale', 'pt_BR.UTF-8');
-                         window.location.href='lg/pt_BR/page_keymap.html';
-                    } else if (strUser == "Portuguese (Portugal)") {
-                        fs.writeFileSync('/tmp/locale', 'pt_PT.UTF-8');
-                           window.location.href='lg/pt_PT/page_keymap.html';
-                      } else if (strUser == "Russian (Russia)") {
-                          fs.writeFileSync('/tmp/locale', 'ru_RU.UTF-8');
-                             window.location.href='lg/ru_RU/page_keymap.html';
-                        } else if (strUser == "Czech (Czech Republic)") {
-                            fs.writeFileSync('/tmp/locale', 'cs_CZ.UTF-8');
-                            window.location.href='lg/cs_CZ/page_keymap.html';
-                          } else if (strUser == "Romanian (Romania)") {
-                            fs.writeFileSync('/tmp/locale', 'ro_RO.UTF-8');
-                              window.location.href='lg/ro_RO/page_keymap.html';
-                          } else if (strUser == "Spanish (Mexico)") {
-                              fs.writeFileSync('/tmp/locale', 'es_MX.UTF-8');
-                                 window.location.href='lg/es_MX/page_keymap.html';
-                            } else if (strUser == "Spanish (Spain)") {
-                                fs.writeFileSync('/tmp/locale', 'es_ES.UTF-8');
-                                   window.location.href='lg/es_ES/page_keymap.html';
-                              } else if (strUser == "Swedish (Sweden)") {
-                                  fs.writeFileSync('/tmp/locale', 'sv_SE.UTF-8');
-                                     window.location.href='lg/sv_SE/page_keymap.html';
-                                }
-                                
-                                 else if (strUser == '') {
-                                    alert('You must select one language from the list');
-                                }
+  var locale = e.value;
+  if (!locale) {
+    alert('You must select one language from the list');
+    return;
   }
+  const fs = require('fs');
+  fs.writeFileSync('/tmp/locale', locale);
+  // Derive folder name from locale code: "en_US.UTF-8" → "en_US"
+  var folder = locale.replace('.UTF-8', '');
+  window.location.href = 'lg/' + folder + '/page_keymap.html';
 }
 
 function select_keymap() {
   var e = document.getElementById("keymapList");
-  
-  if (e.options[e.selectedIndex] === undefined) {
+  var layout = e.value;
+  if (!layout) {
     alert('You must choose one Keyboard Layout from the list');
     return;
   }
-  
-  var strUser = e.options[e.selectedIndex].text;
   const fs = require('fs');
   const { exec } = require('child_process');
-  
-  // Map display names to layout codes
-  const layoutMap = {
-    "French": "fr",
-    "German": "de",
-    "Greek": "gr",
-    "Hungarian": "hu",
-    "Italian": "it",
-    "Polish": "pl",
-    "Russian": "ru",
-    "Spanish": "es",
-    "US": "us",
-    "United States": "us"
-  };
-  
-  const layout = layoutMap[strUser];
-  
-  if (layout) {
-    // Write to file for reference
-    fs.writeFileSync('/tmp/keymap', layout);
-    
-    // Apply the layout temporarily using setxkbmap
-    exec(`setxkbmap ${layout}`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error applying keyboard layout: ${error.message}`);
-        console.error(`stderr: ${stderr}`);
-        alert('Failed to apply keyboard layout. Check if setxkbmap is installed.');
-        return;
-      }
-    
-      console.log(`Keyboard layout applied successfully: ${layout}`);
-      // Navigate regardless of success/failure
-      window.location.href = 'page_timezone.html';
-    });
-  } else {
-    alert('Unknown keyboard layout selected');
-  }
+  fs.writeFileSync('/tmp/keymap', layout);
+  exec('setxkbmap ' + layout, (error) => {
+    if (error) {
+      console.error('Error applying keyboard layout:', error.message);
+    }
+    window.location.href = 'page_timezone.html';
+  });
 }
 
 
