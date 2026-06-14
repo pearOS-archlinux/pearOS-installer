@@ -3,36 +3,32 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
-    <title>pearOS NiceC0re Installer</title>
+    <title>Instalador pearOS NiceC0re</title>
   </head>
-  <body onload=list_zones();>
+  <body onload="list_zones();">
     <div class="flex-container">
       <div class="app">
-        <button onclick="window.location.href='page_keymap.html';" type="button" id="move-back-btn">
+        <button onclick="window.location.href=\'page_keymap.html\';" type="button" id="move-back-btn">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
           </svg>
         </button>
         <div class="tabs">
-          <!-- Country selection tab -->
           <div class="tab active">
-	    <img class="worldmap" src="../../resources/country.png"/>
-            <h1>Select Your Time Zone</h1>
+            <img class="worldmap" src="../../resources/country.png"/>
+            <h1>Selecione seu fuso horário</h1>
             <div class="countries">
               <select class="list" size=9 id="time_zones_list">
-                <option>Loading ... </option>
+                <option>Carregando...</option>
               </select>
             </div>
           </div>
-
-	</div>
-       <div class="movement-buttons"> <!-- nu umbla aici in rasa ta -->
-       <hr style="color:#ffffff">
-
-         <div class="arrow-button-container" >
-          <button onclick="select_timezone();" class="nav-button button" type="button" id="move-forward-btn">Continue</button>
-         </div>
-
+        </div>
+        <div class="movement-buttons">
+        <hr style="color:#ffffff">
+          <div class="arrow-button-container">
+            <button onclick="select_timezone();" class="nav-button button" type="button" id="move-forward-btn">Continuar</button>
+          </div>
         </div>
       </div>
     </div>

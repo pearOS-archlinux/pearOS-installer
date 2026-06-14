@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
-    <title>pearOS NiceC0re インストーラー</title>
+    <title>pearOS NiceC0re Telepítő</title>
   </head>
-  <body onload="list_zones();">
+  <body>
     <div class="flex-container">
       <div class="app">
-        <button onclick="window.location.href=\'page_keymap.html\';" type="button" id="move-back-btn">
+        <button onclick="window.location.href=\'../../index.html\';" type="button" id="move-back-btn">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
           </svg>
@@ -16,10 +16,18 @@
         <div class="tabs">
           <div class="tab active">
             <img class="worldmap" src="../../resources/country.png"/>
-            <h1>タイムゾーンを選択</h1>
+            <h1>Válassza ki a billentyűzetkiosztást</h1>
             <div class="countries">
-              <select class="list" size=9 id="time_zones_list">
-                <option>読み込み中...</option>
+              <select class="list" size=9 id="keymapList">
+                <option>US</option>
+                <option>French</option>
+                <option>German</option>
+                <option>Greek</option>
+                <option>Hungarian</option>
+                <option>Italian</option>
+                <option>Polish</option>
+                <option>Russian</option>
+                <option>Spanish</option>
               </select>
             </div>
           </div>
@@ -27,7 +35,7 @@
         <div class="movement-buttons">
         <hr style="color:#ffffff">
           <div class="arrow-button-container">
-            <button onclick="select_timezone();" class="nav-button button" type="button" id="move-forward-btn">続ける</button>
+            <button onclick="select_keymap();" class="nav-button button" type="button" id="move-forward-btn">Folytatás</button>
           </div>
         </div>
       </div>

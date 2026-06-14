@@ -3,51 +3,46 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
-    <title>pearOS NiceC0re Installer</title>
+    <title>pearOS NiceC0re Installationsprogram</title>
   </head>
   <body>
     <div class="flex-container">
       <div class="app">
-        <button onclick="window.location.href='page_timezone.html';" type="button" id="move-back-btn">
+        <button onclick="window.location.href=\'page_timezone.html\';" type="button" id="move-back-btn">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
           </svg>
         </button>
         <div class="tabs">
-
-<div class="tab active">
-  <br>
-  <h1>Create a Computer Account</h1>
-  <p align="center" class="description">Fill out the following informations to create your computer account.</p>
-  <div id="create_user">
-  <form>
-    <input type="text" id="full_name" name="full_name" class="textbox" placeholder="Fullständigt namn">
-    <input type="text" id="account_name" name="account_name" class="textbox" placeholder="Kontonamn">
-    <p class="account-name-hint">Detta kommer att vara namnet på din hem-mapp</p>
-    <input type="text" id="hostname" name="hostname" class="textbox" placeholder="Hostname" value="pearOS-machine">
-    <p class="account-name-hint">This will be your computer's network name</p>
-    <!-- temporarely untranslated -->
-    <div class="password-row">
-      <input type="password" id="password" name="password" class="textbox" placeholder="Lösenord">
-      <input type="password" id="password_confirm" name="password_confirm" class="textbox" placeholder="Verifiera lösenord">
-    </div>
-    <div id="password_check" class="password-check"></div>
-  </form>
-    </div>
-   <br>
-   <br>
-</div>
-
-       <div class="movement-buttons"> <!-- nu umbla aici in rasa ta -->
-       <hr style="color:#ffffff">
-
-         <div class="arrow-button-container" >
-          <button onclick="save_user();" class="nav-button button" type="button" id="move-forward-btn">Continue</button>
-         </div>
-
+          <div class="tab active">
+            <br>
+            <h1>Skapa ett datorkonto</h1>
+            <p align="center" class="description">Fyll i följande information för att skapa ditt konto.</p>
+            <div id="create_user">
+            <form>
+              <input type="text" id="full_name" name="full_name" class="textbox" placeholder="Fullständigt namn">
+              <input type="text" id="account_name" name="account_name" class="textbox" placeholder="Kontonamn">
+              <p class="account-name-hint">Det här blir namnet på din hemkatalog</p>
+              <input type="text" id="hostname" name="hostname" class="textbox" placeholder="Hostname" value="pearOS-machine">
+              <p class="account-name-hint">Det här blir datorns nätverksnamn</p>
+              <div class="password-row">
+                <input type="password" id="password" name="password" class="textbox" placeholder="Lösenord">
+                <input type="password" id="password_confirm" name="password_confirm" class="textbox" placeholder="Bekräfta lösenord">
+              </div>
+              <div id="password_check" class="password-check"></div>
+            </form>
+            </div>
+            <br><br>
+          </div>
+        </div>
+        <div class="movement-buttons">
+        <hr style="color:#ffffff">
+          <div class="arrow-button-container">
+            <button onclick="save_user();" class="nav-button button" type="button" id="move-forward-btn">Fortsätt</button>
+          </div>
         </div>
       </div>
     </div>
- </div>
+  </div>
   <script src="../../js/engine.js"></script>
 </html>

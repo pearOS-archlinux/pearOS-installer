@@ -3,22 +3,21 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
-    <title>pearOS NiceC0re Installer</title>
+    <title>pearOS NiceC0re 安装程序</title>
   </head>
   <body onload="display_settings();">
     <div class="flex-container">
       <div class="app">
-        <button onclick="window.location.href='page_user.html';" type="button" id="move-back-btn">
+        <button onclick="window.location.href=\'page_user.html\';" type="button" id="move-back-btn">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
           </svg>
         </button>
         <div class="tabs">
-
-<div class="tab active">
-  <h1>Terms and Conditions</h1>
-  <p align="center" class="description">Important: Use of your pearOS Computer, the pearOS software and related servoces is subject to these<br>Terms and Conditions. Please read them carefully</p>
-  <p align="left" class="license">
+          <div class="tab active">
+            <h1>条款与条件</h1>
+            <p align="center" class="description">重要提示：使用pearOS计算机、pearOS软件及相关服务须遵守这些条款与条件。请仔细阅读。</p>
+            <p align="left" class="license">
 <br>
 1. Scope of the Terms of Service
 <br>
@@ -170,20 +169,16 @@ Should individual provisions of these Terms of Service contradict the statutory 
 <br>
 The platform for online dispute resolution of the European Commission can be reached at: http://ec.europa.eu/consumers/odr. We are neither willing nor obliged to participate in a dispute resolution procedure before a consumer arbitration board.
   </p>
-   <br>
-   <br>
-</div>
-       <div class="movement-buttons"> <!-- nu umbla aici in rasa ta -->
-       <hr style="color:#ffffff">
-
-         <div class="arrow-button-container" >
-          <button onclick="window.location.href='page_finish.html';" class="nav-button button" type="button" id="move-forward-btn">Continue</button>
-         </div>
-
+          </div>
+        </div>
+        <div class="movement-buttons">
+        <hr style="color:#ffffff">
+          <div class="arrow-button-container">
+            <button onclick="commit();" class="nav-button button" type="button" id="move-forward-btn">继续</button>
+          </div>
         </div>
       </div>
     </div>
- </div>
   </body>
   <script src="../../js/engine.js"></script>
 </html>

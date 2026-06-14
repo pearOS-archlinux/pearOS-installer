@@ -3,22 +3,21 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
-    <title>Instalador de pearOS NiceC0re</title>
+    <title>pearOS NiceC0re Telepítő</title>
   </head>
   <body onload="display_settings();">
     <div class="flex-container">
       <div class="app">
-        <button onclick="window.location.href='page_user.html';" type="button" id="move-back-btn">
+        <button onclick="window.location.href=\'page_user.html\';" type="button" id="move-back-btn">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
           </svg>
         </button>
         <div class="tabs">
-
-<div class="tab active">
-  <h1>Términos y condiciones</h1>
-  <p align="center" class="description">Importante: El uso de su ordenador pearOS, el software pearOS y los servicios relacionados está sujeto a estos Términos y condiciones. Léalos detenidamente.</p>
-  <p align="left" class="license">
+          <div class="tab active">
+            <h1>Felhasználási feltételek</h1>
+            <p align="center" class="description">Fontos: A pearOS számítógép, a pearOS szoftver és a kapcsolódó szolgáltatások használatára ezek a Felhasználási feltételek vonatkoznak. Kérjük, olvassa el figyelmesen.</p>
+            <p align="left" class="license">
 <br>
 1. Scope of the Terms of Service
 <br>
@@ -170,20 +169,16 @@ Should individual provisions of these Terms of Service contradict the statutory 
 <br>
 The platform for online dispute resolution of the European Commission can be reached at: http://ec.europa.eu/consumers/odr. We are neither willing nor obliged to participate in a dispute resolution procedure before a consumer arbitration board.
   </p>
-   <br>
-   <br>
-</div>
-       <div class="movement-buttons"> <!-- nu umbla aici in rasa ta -->
-       <hr style="color:#ffffff">
-
-         <div class="arrow-button-container" >
-          <button onclick="window.location.href='page_finish.html';" class="nav-button button" type="button" id="move-forward-btn">Continuar</button>
-         </div>
-
+          </div>
+        </div>
+        <div class="movement-buttons">
+        <hr style="color:#ffffff">
+          <div class="arrow-button-container">
+            <button onclick="commit();" class="nav-button button" type="button" id="move-forward-btn">Folytatás</button>
+          </div>
         </div>
       </div>
     </div>
- </div>
   </body>
   <script src="../../js/engine.js"></script>
 </html>

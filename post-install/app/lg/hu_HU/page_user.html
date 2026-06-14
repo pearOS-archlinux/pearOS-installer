@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
-    <title>Installateur pearOS NiceC0re</title>
+    <title>pearOS NiceC0re Telepítő</title>
   </head>
   <body>
     <div class="flex-container">
@@ -16,18 +16,18 @@
         <div class="tabs">
           <div class="tab active">
             <br>
-            <h1>Créer un compte utilisateur</h1>
-            <p align="center" class="description">Remplissez les informations suivantes pour créer votre compte.</p>
+            <h1>Számítógép-fiók létrehozása</h1>
+            <p align="center" class="description">Töltse ki az alábbi adatokat fiókja létrehozásához.</p>
             <div id="create_user">
             <form>
-              <input type="text" id="full_name" name="full_name" class="textbox" placeholder="Nom complet">
-              <input type="text" id="account_name" name="account_name" class="textbox" placeholder="Nom d'utilisateur">
-              <p class="account-name-hint">Ce sera le nom de votre dossier personnel</p>
+              <input type="text" id="full_name" name="full_name" class="textbox" placeholder="Teljes név">
+              <input type="text" id="account_name" name="account_name" class="textbox" placeholder="Felhasználónév">
+              <p class="account-name-hint">Ez lesz a saját mappa neve</p>
               <input type="text" id="hostname" name="hostname" class="textbox" placeholder="Hostname" value="pearOS-machine">
-              <p class="account-name-hint">Ce sera le nom réseau de votre ordinateur</p>
+              <p class="account-name-hint">Ez lesz a számítógép hálózati neve</p>
               <div class="password-row">
-                <input type="password" id="password" name="password" class="textbox" placeholder="Mot de passe">
-                <input type="password" id="password_confirm" name="password_confirm" class="textbox" placeholder="Confirmer le mot de passe">
+                <input type="password" id="password" name="password" class="textbox" placeholder="Jelszó">
+                <input type="password" id="password_confirm" name="password_confirm" class="textbox" placeholder="Jelszó megerősítése">
               </div>
               <div id="password_check" class="password-check"></div>
             </form>
@@ -38,7 +38,7 @@
         <div class="movement-buttons">
         <hr style="color:#ffffff">
           <div class="arrow-button-container">
-            <button onclick="save_user();" class="nav-button button" type="button" id="move-forward-btn">Continuer</button>
+            <button onclick="save_user();" class="nav-button button" type="button" id="move-forward-btn">Folytatás</button>
           </div>
         </div>
       </div>

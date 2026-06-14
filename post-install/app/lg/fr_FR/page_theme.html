@@ -3,32 +3,27 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
-    <title>pearOS NiceC0re Installer</title>
+    <title>Installateur pearOS NiceC0re</title>
   </head>
-
   <body>
     <div class="flex-container">
       <div class="app">
         <div class="tabs">
-            <div class="tab active">
-                <br>
-                <h1>Choose your look</h1>
-                <p align="center" class="description">Select an appearance and see how the Dock, menus, buttons, and windows adjust depending on which<br>one you choose.<br><br>You can change this later in System Preferences.</p>
-            </div>
+          <div class="tab active">
+            <br>
+            <h1>Choisissez votre apparence</h1>
+            <p align="center" class="description">Sélectionnez une apparence et voyez comment le Dock, les menus, les boutons et les fenêtres s'ajustent selon votre choix.<br><br>Vous pouvez modifier cela ultérieurement dans les Préférences Système.</p>
+          </div>
         </div>
-
-       <div class="movement-buttons"> <!-- nu umbla aici in rasa ta -->
+        <div class="movement-buttons">
         <hr style="color:#ffffff">
-
-        <div class="arrow-button-container" >
-          <button class="nav-button button" type="button" id="move-back-btn">Back</button>
+          <div class="arrow-button-container">
+            <button class="nav-button button" type="button" id="move-back-btn">Retour</button>
+          </div>
+          <div class="arrow-button-container">
+            <button onclick="window.location.href=\'page_finish.html\';" class="nav-button button" type="button" id="move-forward-btn">Continuer</button>
+          </div>
         </div>
-
-         <div class="arrow-button-container" >
-          <button onclick="window.location.hef='page_finish.html';" class="nav-button button" type="button" id="move-forward-btn">Continue</button>
-         </div>
-        </div>
-
       </div>
     </div>
   </body>
