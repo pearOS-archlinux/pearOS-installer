@@ -236,7 +236,9 @@
     'zsh-history-substring-search'
     'zsh-syntax-highlighting'
     'kscreenlocker'
-  )
+    'make'
+    'electron'  
+)
 
   KERNEL_PRESET='linux-cachyos-lts'
 
