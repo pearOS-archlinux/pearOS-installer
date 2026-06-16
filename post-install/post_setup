@@ -24,6 +24,10 @@ error_exit() {
   exit 1
 }
 
+has_internet() {
+  ping -c 1 -W 3 8.8.8.8 &>/dev/null || curl -s --max-time 3 https://archlinux.org &>/dev/null
+}
+
 echo "=== pearOS Post-Install Script Started: $(date) ==="
 set -x
 
@@ -162,16 +166,21 @@ if ! chpasswd <<<"$USER_NAME:$user_passwd"; then
   error_exit "Failed to set password for $USER_NAME"
 fi
 
-# Sync system clock before GPG operations — a skewed clock causes "key created in the future"
-# errors that make pacman-key --lsign-key fail. timedatectl enables NTP and waits for sync.
-echo "Synchronizing system clock..."
-timedatectl set-ntp true
-for i in $(seq 1 10); do
-  timedatectl show | grep -q "NTPSynchronized=yes" && break
-  sleep 2
-done
-if ! timedatectl show | grep -q "NTPSynchronized=yes"; then
-  echo "WARNING: NTP sync did not complete in time, GPG key signing may fail" >&2
+# Sync system clock before GPG operations only if internet is available.
+# A skewed clock causes "key created in the future" GPG errors.
+echo "Checking internet connectivity..."
+if has_internet; then
+  echo "Internet available. Synchronizing system clock..."
+  timedatectl set-ntp true
+  for i in $(seq 1 10); do
+    timedatectl show | grep -q "NTPSynchronized=yes" && break
+    sleep 2
+  done
+  if ! timedatectl show | grep -q "NTPSynchronized=yes"; then
+    echo "WARNING: NTP sync did not complete in time, GPG key signing may fail" >&2
+  fi
+else
+  echo "No internet. Skipping NTP sync."
 fi
 
 # Initialize and trust pearOS maintainer key on installed system
@@ -287,11 +296,15 @@ if [ -f /etc/sddm.conf ]; then
   rm -f /etc/sddm.conf
 fi
 
-# Installing yay helper
-git clone https://aur.archlinux.org/yay.git /tmp/yay-build && \
-  chown -R default:users /tmp/yay-build && \
-  su -c "cd /tmp/yay-build && makepkg -si --noconfirm" default && \
-  rm -rf /tmp/yay-build
+# Installing yay helper (requires internet)
+if has_internet; then
+  git clone https://aur.archlinux.org/yay.git /tmp/yay-build && \
+    chown -R default:users /tmp/yay-build && \
+    su -c "cd /tmp/yay-build && makepkg -si --noconfirm" default && \
+    rm -rf /tmp/yay-build || echo "WARNING: yay installation failed, skipping" >&2
+else
+  echo "No internet. Skipping yay installation."
+fi
 
 # Installing plymouth
 #yay -S plymouth --noconfirm
@@ -346,39 +359,43 @@ if [ $? -ne 0 ]; then
   error_exit "Failed to write SDDM configuration"
 fi
 
-# Liquid Gel: instalam cmake și extra-cmake-modules, build, apoi le scoatem
-echo "Installing cmake and extra-cmake-modules for Liquid Gel build..."
-if ! pacman -S --noconfirm cmake extra-cmake-modules 2>> "$LOG_FILE"; then
-  echo "Warning: Failed to install cmake/extra-cmake-modules" >&2
-fi
+# Liquid Gel: requires internet to download source and packages
+if has_internet; then
+  echo "Installing cmake and extra-cmake-modules for Liquid Gel build..."
+  if ! pacman -S --noconfirm cmake extra-cmake-modules 2>> "$LOG_FILE"; then
+    echo "Warning: Failed to install cmake/extra-cmake-modules" >&2
+  fi
 
-echo "Downloading Liquid Gel"
-if git clone https://github.com/pearOS-archlinux/liquid-gel /tmp/liquid-gel 2>> "$LOG_FILE"; then
-  echo "Liquid Gel Downloaded..."
+  echo "Downloading Liquid Gel"
+  if git clone https://github.com/pearOS-archlinux/liquid-gel /tmp/liquid-gel 2>> "$LOG_FILE"; then
+    echo "Liquid Gel Downloaded..."
+  else
+    echo "Failed to download Liquid Gel" >&2
+  fi
+
+  if [ -d /tmp/liquid-gel ]; then
+    echo "Compiling Liquid Gel"
+    if ( cd /tmp/liquid-gel && mkdir -p build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr && make -j"$(nproc)" 2>> "$LOG_FILE" && make install 2>> "$LOG_FILE" ); then
+      echo "Liquid Gel Compiled..."
+    else
+      echo "Failed to Compile Liquid Gel - Build Failed" >&2
+      echo "Failed to install Liquid Gel" >&2
+    fi
+
+    echo "Cleanup Liquid Gel source"
+    if rm -rf /tmp/liquid-gel; then
+      echo "Finish cleanup"
+    else
+      echo "Failed to Cleanup files" >&2
+    fi
+  fi
+
+  echo "Removing cmake and extra-cmake-modules..."
+  if ! pacman -R --noconfirm cmake extra-cmake-modules 2>> "$LOG_FILE"; then
+    echo "Warning: Failed to remove cmake/extra-cmake-modules" >&2
+  fi
 else
-  echo "Failed to download Liquid Gel" >&2
-fi
-
-if [ -d /tmp/liquid-gel ]; then
-  echo "Compiling Liquid Gel"
-  if ( cd /tmp/liquid-gel && mkdir -p build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr && make -j"$(nproc)" 2>> "$LOG_FILE" && make install 2>> "$LOG_FILE" ); then
-    echo "Liquid Gel Compiled..."
-  else
-    echo "Failed to Compile Liquid Gel - Build Failed" >&2
-    echo "Failed to install Liquid Gel" >&2
-  fi
-
-  echo "Cleanup Liquid Gel source"
-  if rm -rf /tmp/liquid-gel; then
-    echo "Finish cleanup"
-  else
-    echo "Failed to Cleanup files" >&2
-  fi
-fi
-
-echo "Removing cmake and extra-cmake-modules..."
-if ! pacman -R --noconfirm cmake extra-cmake-modules 2>> "$LOG_FILE"; then
-  echo "Warning: Failed to remove cmake/extra-cmake-modules" >&2
+  echo "No internet. Skipping Liquid Gel installation."
 fi
 
 echo "=== pearOS Installation Script Completed: $(date) ==="

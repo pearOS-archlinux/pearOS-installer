@@ -15,7 +15,6 @@
   DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   BASE_PACKAGES=(
     'alsa-utils'
-    'mpv'
     'amd-ucode'
     'appmenu-gtk-module'
     'arch-install-scripts'
@@ -237,6 +236,7 @@
     'zsh-syntax-highlighting'
     'kscreenlocker'
     'make'
+    'mpv'
     'electron'  
 )
 
