@@ -162,6 +162,18 @@ if ! chpasswd <<<"$USER_NAME:$user_passwd"; then
   error_exit "Failed to set password for $USER_NAME"
 fi
 
+# Sync system clock before GPG operations — a skewed clock causes "key created in the future"
+# errors that make pacman-key --lsign-key fail. timedatectl enables NTP and waits for sync.
+echo "Synchronizing system clock..."
+timedatectl set-ntp true
+for i in $(seq 1 10); do
+  timedatectl show | grep -q "NTPSynchronized=yes" && break
+  sleep 2
+done
+if ! timedatectl show | grep -q "NTPSynchronized=yes"; then
+  echo "WARNING: NTP sync did not complete in time, GPG key signing may fail" >&2
+fi
+
 # Initialize and trust pearOS maintainer key on installed system
 # timeout 120s: pacman-key --init can block for minutes on VMs due to low entropy
 echo "Initializing pacman keyring (may take up to 2 minutes)..."
@@ -172,7 +184,7 @@ if ! pacman-key --populate; then
   echo "WARNING: pacman-key --populate failed, continuing..." >&2
 fi
 if ! pacman-key --lsign-key 4C1A9F3C131ACA95; then
-  error_exit "Failed to locally sign pacman key 4C1A9F3C131ACA95"
+  echo "WARNING: Failed to locally sign pacman key 4C1A9F3C131ACA95, continuing..." >&2
 fi
 
 # Backup sudoers before modifying
