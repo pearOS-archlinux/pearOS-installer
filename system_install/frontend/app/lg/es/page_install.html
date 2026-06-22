@@ -1,0 +1,41 @@
+<?
+?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
+    <title>Instalador de pearOS Nicec0re</title>
+  </head>
+  <body>
+    <div class="flex-container">
+      <div class="app page-install-wrapper">
+        <div class="tabs">
+          <div class="tab active">
+	    <img class="release-logo" height="350px" src="../../resources/nicec0re-logo-dark.png"/>
+	    <h1><b>pearOS NiceC0re</b></h1>
+	    <p align="center" class="setup-text">Para comenzar la instalación de pearOS Nicec0re, pulse en Continuar.</p>
+	  </div>
+
+       <div class="movement-buttons">
+        <div class="grid-container">
+          <button onclick="window.location.href='page_install_agreement.html';" class="install-button" id="move-forward-btn"> Continuar </button>
+        </div>
+
+
+      </div>
+    </div>
+  </body>
+  <script src="../../js/navbar.js"></script>
+  <script>
+    // Update navbar title to "Install pearOS NiceC0re" on install page
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        var appNameButton = document.getElementById('app-name-button');
+        if (appNameButton) {
+          appNameButton.innerHTML = '<b>Install pearOS NiceC0re</b>';
+        }
+      }, 100);
+    });
+  </script>
+</html>

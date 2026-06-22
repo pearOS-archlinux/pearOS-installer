@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
+    <title>Instalador de pearOS Nicec0re</title>
+  </head>
+  <body class="install-progress-page" onload="print_disk();">
+    <div class="flex-container">
+      <div class="app">
+        <div class="tabs">
+          <div class="tab active">
+	    <img class="release-logo-agreement" height="350px" src="../../resources/nicec0re-logo.png"/>
+	    <h1><b>pearOS NiceC0re</b></h1>
+	    <p align="center" class="setup-text" id="disk-install-text">pearOS Nicec0re será instalado en el disco:</p>
+
+      <ul id="disk_list" class="ul_menu_disk">
+      <form>
+
+	<p> Installer was unable to start. Make sure it is run from the pearOS installer utility, or nodeJS/electron is working.<p>
+	<p> Vaya, el instalador no ha podido arrancar. Confirma que lo has ejecutado desde la utilidad de instalación de pearOS y que nodeJS y electron están ejecutándose y funcionando.<p>
+
+      </form>
+      </ul>
+    <div class="tab">
+      <img class="release-logo" height="200px" src="../../resources/nicec0re-logo.png"/>
+      <h1>pearOS NiceC0re</h1>
+      <p align="center" class="setup-text">Seleccione el disco en el que quiere instalar pearOS Nicec0re</p>
+    </div>
+
+
+       <div class="movement-buttons">
+        <div class="grid-container-status">
+	  <button class="install-button-agreement" name="move-forward-btn" id="close-btn"> Cerrar </button>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+  </body>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/navbar.js"></script>
+</html>

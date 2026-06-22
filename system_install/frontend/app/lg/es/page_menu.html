@@ -1,0 +1,75 @@
+<?
+?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../css/assistant-styles.css">
+    <title>Instalador de pearOS Nicec0re</title>
+  </head>
+
+  <body onload="initMenuCheckboxes();">
+    <div class="flex-container">
+      <div class="menu">
+      <ul class="ul_menu">
+
+	<label class="menu_checkbox_label" ondblclick="handleMenuAction('packup')">
+	<input type="checkbox" class="menu_checkbox" id="menu_packup" value="packup" checked>
+	<img class="menu_logo" height=50px src="../../resources/packup-logo.png"></img>
+	<p class="menu_title"><b>Restaurar desde Time Machine</b></p>
+	<p class="menu_description">Si tienes una copia de seguridad de tu sistema que quieres restaurar</p>
+	</label>
+
+        <label class="menu_checkbox_label" ondblclick="handleMenuAction('installer')">
+	<input type="checkbox" class="menu_checkbox" id="menu_installer" value="installer">
+	<img class="menu_logo" height=50px src="../../resources/nicec0re-logo.png"></img>
+	<p class="menu_title" id="menu_installer_title" data-default-title="Instalar pearOS Nicec0re" data-alt-title="Instalación sin internet y Dual Boot"><b>Instalar PearOS Nicec0re</b></p>
+	<p class="menu_description" id="menu_installer_desc" data-default-desc="Use el instalador para actualizar o instalar pearOS Nicec0re." data-alt-desc="Use el instalador Calamares para instalación sin internet, particionado y dual boot.">Use el instalador para actualizar o instalar pearOS Nicec0re.</p>
+	</label>
+
+	<label class="menu_checkbox_label" ondblclick="handleMenuAction('browser')">
+	<input type="checkbox" class="menu_checkbox" id="menu_browser" value="browser">
+	<img class="menu_logo" height="50px" src="../../resources/firefox-logo.png"></img>
+	<p class="menu_title"><b>Navegador web</b></p>
+	<p class="menu_description">Navegue para buscar soporte</p>
+	</label>
+
+	<label class="menu_checkbox_label" ondblclick="handleMenuAction('gparted')">
+	<input type="checkbox" class="menu_checkbox" id="menu_gparted" value="gparted">
+	<img class="menu_logo" height="50px" src="../../resources/gparted.svg"></img>
+	<p class="menu_title"><b>GParted</b></p>
+	<p class="menu_description">Repare o borre discos usando GParted</p>
+	</label>
+
+        </ul>
+        <div class="movement-buttons">
+          <span class="alt-hint" style="margin-left: 12px; font-size: 12px; opacity: 0.8; color: #595959;">Presione ⌥ (Alt) para instalador sin internet y dual boot</span>
+          <button onclick="handleMenuContinue();" class="install-button-agreement" id="menu-continue-btn">Continue</button>
+        </div>
+      </div>
+    </div>
+    <div class="agreement-modal" id="install-choice-modal">
+      <div class="agreement-modal-content install-choice-modal-content">
+        <img class="agreement-modal-logo" src="../../resources/nicec0re-logo.png">
+        <p class="agreement-modal-text">Como desea instalar pearOS?</p>
+        <div class="agreement-modal-buttons">
+          <button class="install-button-agreement" onclick="chooseInstallType('offline')">Instalación sin internet &amp; Dual Boot</button>
+          <button class="install-button-agreement" style="background-color:#1d7adc;" onclick="chooseInstallType('online')">Instalación en linea (online)</button>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="../../js/engine.js"></script>
+  <script src="../../js/navbar.js"></script>
+  <script>
+    // Update navbar title to "Recovery" on menu page
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        var appNameButton = document.getElementById('app-name-button');
+        if (appNameButton) {
+          appNameButton.innerHTML = '<b>Recovery</b>';
+        }
+      }, 100);
+    });
+  </script>
+</html>
