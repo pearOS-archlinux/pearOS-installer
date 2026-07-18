@@ -351,6 +351,7 @@ hr {
 #move-back-btn svg {
   width: 40px;
   height: 40px;
+  cursor: pointer;
 }
 
 #move-back-btn svg path {
