@@ -1,562 +1,325 @@
-// Mod test: nu rulează post_setup și nu modifică sistemul (POST_INSTALL_TEST=1)
 var isTestMode = typeof process !== 'undefined' && process.env.POST_INSTALL_TEST === '1';
+var fs = require('fs');
+var path = require('path');
+var USERNAME_RE = /^[a-z][a-z0-9-]*$/;
+var MAX_USERNAME_LEN = 32;
+var reservedUsernames = [];
+try { reservedUsernames = fs.readFileSync(path.join(__dirname, '..', '..', 'reserved_usernames'), 'utf8').trim().split('\n'); } catch (e) {}
 
-function load_profile_pictures() {
-  const container = document.getElementById('profile-pictures-circle');
-  if (!container) {
-    console.log('Container profile-pictures-circle not found');
-    return;
-  }
+// ── Navigation ──────────────────────────────────────────────────────
+var STEPS = ['keymap', 'timezone', 'user', 'agreement', 'finish'];
 
-  const fs = require('fs');
-  const path = require('path');
-  
-  // Încearcă mai multe căi posibile pentru a găsi directorul profiles
-  let profilesPath;
-  
-  try {
-    // Metoda 1: __dirname (din app/js -> app/resources/profiles)
-    profilesPath = path.join(__dirname, '..', 'resources', 'profiles');
-    console.log('Trying path 1:', profilesPath);
-    
-    // Metoda 2: process.cwd() (directorul de lucru al aplicației)
-    if (!fs.existsSync(profilesPath)) {
-      profilesPath = path.join(process.cwd(), 'app', 'resources', 'profiles');
-      console.log('Trying path 2:', profilesPath);
-    }
-    
-    // Metoda 3: Din locația paginii HTML
-    if (!fs.existsSync(profilesPath)) {
-      try {
-        const url = window.location.href;
-        const urlPath = decodeURIComponent(url.replace(/^file:\/\//, ''));
-        const urlParts = urlPath.split(path.sep).filter(p => p);
-        const appIndex = urlParts.findIndex(part => part === 'app');
-        if (appIndex !== -1) {
-          const basePath = urlParts.slice(0, appIndex + 1).join(path.sep);
-          profilesPath = path.join(basePath, 'resources', 'profiles');
-          console.log('Trying path 3:', profilesPath);
-        }
-      } catch (e) {
-        console.error('Error calculating path from URL:', e);
-      }
-    }
-    
-    console.log('Final path:', profilesPath);
-    
-    // Dacă directorul nu există, nu face nimic
-    if (!fs.existsSync(profilesPath)) {
-      console.log('Profile pictures directory not found at:', profilesPath);
-      return;
-    }
-    
-    const files = fs.readdirSync(profilesPath);
-    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp'];
-    
-    const imageFiles = files.filter(file => {
-      const ext = path.extname(file).toLowerCase();
-      return imageExtensions.includes(ext);
-    });
-    
-    console.log('Found', imageFiles.length, 'image files');
-    
-    if (imageFiles.length === 0) {
-      console.log('No image files found in profile pictures directory');
-      return;
-    }
-    
-    container.innerHTML = '';
-    
-    imageFiles.forEach((file, index) => {
-      const item = document.createElement('div');
-      item.className = 'profile-picture-item';
-      item.dataset.imagePath = path.join(profilesPath, file);
-      item.dataset.imageName = file;
-      
-      const img = document.createElement('img');
-      // Folosește calea relativă pentru a încărca imaginea
-      // Din app/lg/ro_RO/page_user.html, calea către resources este ../../resources/
-      img.src = `../../resources/profiles/${file}`;
-      img.alt = file;
-      img.onerror = function() {
-        console.error('Error loading image:', img.src);
-        this.style.display = 'none';
-        item.innerHTML = '<span style="font-size: 12px; color: #999;">?</span>';
-      };
-      
-      item.appendChild(img);
-      
-      item.addEventListener('click', function() {
-        // Elimină selecția de la toate imaginile
-        document.querySelectorAll('.profile-picture-item').forEach(el => {
-          el.classList.remove('selected');
-        });
-        
-        // Adaugă selecția la imaginea curentă
-        this.classList.add('selected');
-        
-        // Salvează selecția
-        const fs = require('fs');
-        const imagePath = this.dataset.imagePath;
-        fs.writeFileSync('/tmp/profile_picture', imagePath);
-        
-        // În mod test nu copiem în /usr (inoffensiv)
-        if (!isTestMode) {
-          const { exec } = require('child_process');
-          const cmd1 = `sudo cp "${imagePath}" /usr/share/sddm/themes/pearOS/faces/.face.icon`;
-          const cmd2 = `sudo cp "${imagePath}" /usr/share/sddm/themes/pearOS-dark/faces/.face.icon`;
-          exec(cmd1, (error, stdout, stderr) => {
-            if (error) console.error(`Error copying to pearOS theme: ${error.message}`);
-            else console.log('Image copied to pearOS theme successfully');
-          });
-          exec(cmd2, (error, stdout, stderr) => {
-            if (error) console.error(`Error copying to pearOS-dark theme: ${error.message}`);
-            else console.log('Image copied to pearOS-dark theme successfully');
-          });
-        }
-        
-        // Verifică dacă toate datele sunt completate
-        checkFormValidity();
-      });
-      
-      container.appendChild(item);
-    });
-  } catch (error) {
-    console.error('Error loading profile pictures:', error);
-  }
+function getLng() {
+  return new URLSearchParams(window.location.search).get('lng') || 'en_US';
 }
 
+function go(delta) {
+  var current = document.body.dataset.step;
+  if (!current) return;
+  var idx = STEPS.indexOf(current);
+  if (idx === -1) return;
+  var next = idx + delta;
+  if (next < 0 || next >= STEPS.length) return;
+
+  if (delta === 1) {
+    if (current === 'keymap' && !saveKeymap()) return;
+    if (current === 'timezone' && !saveTimezone()) return;
+    if (current === 'user' && !saveUser()) return;
+  }
+
+  window.location.href = STEPS[next] + '.html?lng=' + getLng();
+}
+
+// ── Language selection (called from index.html) ─────────────────────
+function select_language() {
+  var e = document.getElementById('ddlViewBy');
+  var locale = e.value;
+  if (!locale) { alert('You must select one language from the list'); return; }
+  fs.writeFileSync('/tmp/locale', locale);
+  var folder = locale.replace('.UTF-8', '');
+  window.location.href = 'templates/keymap.html?lng=' + folder;
+}
+
+// ── Keymap ──────────────────────────────────────────────────────────
+function saveKeymap() {
+  var e = document.getElementById('keymapList');
+  var layout = e.value;
+  if (!layout) { alert('You must choose one Keyboard Layout from the list'); return false; }
+  fs.writeFileSync('/tmp/keymap', layout);
+  var exec = require('child_process').exec;
+  exec('setxkbmap ' + layout, function (err) {
+    if (err) console.error('Error applying keyboard layout:', err.message);
+  });
+  return true;
+}
+
+// ── Timezone ────────────────────────────────────────────────────────
+function saveTimezone() {
+  var e = document.getElementById('time_zones_list');
+  if (e.options[e.selectedIndex] === undefined) {
+    alert('You must choose one Time Zone from the list');
+    return false;
+  }
+  fs.writeFileSync('/tmp/timezone', e.options[e.selectedIndex].text);
+  return true;
+}
+
+function list_zones() {
+  var exec = require('child_process').exec;
+  var timezoneList = document.getElementById('time_zones_list');
+  if (!timezoneList) return;
+  timezoneList.innerHTML = '';
+  exec('find /usr/share/zoneinfo/posix -type f -or -type l | sort | cut -c27-', function (err, stdout) {
+    if (err) { timezoneList.innerHTML = '<option>Error loading timezones</option>'; return; }
+    stdout.trim().split('\n').filter(function (t) { return t.length > 0; }).forEach(function (tz) {
+      var opt = document.createElement('option');
+      opt.textContent = tz;
+      timezoneList.appendChild(opt);
+    });
+    timezoneList.disabled = false;
+  });
+}
+
+// ── User validation ─────────────────────────────────────────────────
+function validateUser() {
+  var fullName = document.getElementById('full_name');
+  var accountName = document.getElementById('account_name');
+  var hostname = document.getElementById('hostname');
+  var password = document.getElementById('password');
+  var passwordConfirm = document.getElementById('password_confirm');
+
+  if (!fullName || !fullName.value.trim()) { alert('Full name cannot be empty'); return false; }
+  if (!accountName || !accountName.value.trim()) { alert('Username cannot be empty'); return false; }
+  if (!USERNAME_RE.test(accountName.value)) {
+    alert('The username must start with a lowercase letter and contain only lowercase letters, digits, and hyphens.');
+    return false;
+  }
+  if (accountName.value.length > MAX_USERNAME_LEN) { alert('Username too long (max ' + MAX_USERNAME_LEN + ' chars)'); return false; }
+  if (reservedUsernames.indexOf(accountName.value) !== -1) { alert('This username is reserved'); return false; }
+  if (!password || !password.value) { alert('Password cannot be empty'); return false; }
+  if (password.value !== passwordConfirm.value) { alert('Passwords do not match'); return false; }
+  return true;
+}
+
+function saveUser() {
+  if (!validateUser()) return false;
+  var fullName = document.getElementById('full_name').value;
+  var userName = document.getElementById('account_name').value;
+  var hostname = document.getElementById('hostname').value || 'pearOS-machine';
+  var password = document.getElementById('password').value;
+  fs.writeFileSync('/tmp/fullname', "'" + fullName + "'");
+  fs.writeFileSync('/tmp/username', userName);
+  fs.writeFileSync('/tmp/hostname', hostname);
+  fs.writeFileSync('/tmp/password', password);
+  var selectedPicture = document.querySelector('.profile-picture-item.selected');
+  if (selectedPicture) fs.writeFileSync('/tmp/profile_picture', selectedPicture.dataset.imagePath);
+  return true;
+}
+
+// ── Password match indicator ────────────────────────────────────────
 function check_passwords_match() {
-  const password = document.getElementById("password");
-  const password_confirm = document.getElementById("password_confirm");
-  const passwordCheck = document.getElementById("password_check");
-  
-  if (password && password_confirm && passwordCheck) {
-    const checkMatch = () => {
-      const pass1 = password.value;
-      const pass2 = password_confirm.value;
-      
-      if (pass1 === '' && pass2 === '') {
-        passwordCheck.innerHTML = '';
-        passwordCheck.className = 'password-check';
-        return;
-      }
-      
-      if (pass1 === pass2 && pass1 !== '') {
-        passwordCheck.innerHTML = '<span class="password-check-icon">✓</span> Passwords match';
-        passwordCheck.className = 'password-check match';
-      } else if (pass2 !== '') {
-        passwordCheck.innerHTML = '<span class="password-check-icon">✗</span> Passwords do not match';
-        passwordCheck.className = 'password-check mismatch';
-      } else {
-        passwordCheck.innerHTML = '';
-        passwordCheck.className = 'password-check';
-      }
-    };
-    
-    password.removeEventListener('input', checkMatch);
-    password_confirm.removeEventListener('input', checkMatch);
-    
-    password.addEventListener('input', checkMatch);
-    password_confirm.addEventListener('input', checkMatch);
-  }
+  var password = document.getElementById('password');
+  var password_confirm = document.getElementById('password_confirm');
+  var passwordCheck = document.getElementById('password_check');
+  if (!password || !password_confirm || !passwordCheck) return;
+  var checkMatch = function () {
+    var p1 = password.value, p2 = password_confirm.value;
+    if (p1 === '' && p2 === '') { passwordCheck.innerHTML = ''; passwordCheck.className = 'password-check'; return; }
+    if (p1 === p2 && p1 !== '') { passwordCheck.innerHTML = '<span class="password-check-icon">\u2713</span> Passwords match'; passwordCheck.className = 'password-check match'; }
+    else if (p2 !== '') { passwordCheck.innerHTML = '<span class="password-check-icon">\u2717</span> Passwords do not match'; passwordCheck.className = 'password-check mismatch'; }
+    else { passwordCheck.innerHTML = ''; passwordCheck.className = 'password-check'; }
+  };
+  password.removeEventListener('input', checkMatch);
+  password_confirm.removeEventListener('input', checkMatch);
+  password.addEventListener('input', checkMatch);
+  password_confirm.addEventListener('input', checkMatch);
 }
 
-let profilePicturesLoaded = false;
-
-// Funcție pentru a verifica dacă toate datele sunt completate
+// ── Form validity (user page forward button) ────────────────────────
 function checkFormValidity() {
-  const fullName = document.getElementById('full_name');
-  const accountName = document.getElementById('account_name');
-  const hostname = document.getElementById('hostname');
-  const password = document.getElementById('password');
-  const passwordConfirm = document.getElementById('password_confirm');
-  const continueBtn = document.getElementById('move-forward-btn');
-  const selectedPicture = document.querySelector('.profile-picture-item.selected');
-  
+  var fullName = document.getElementById('full_name');
+  var accountName = document.getElementById('account_name');
+  var hostname = document.getElementById('hostname');
+  var password = document.getElementById('password');
+  var passwordConfirm = document.getElementById('password_confirm');
+  var continueBtn = document.getElementById('move-forward-btn');
+  var selectedPicture = document.querySelector('.profile-picture-item.selected');
   if (!continueBtn) return;
-  
-  // Verifică dacă toate câmpurile sunt completate
-  const allFieldsFilled = 
-    fullName && fullName.value.trim() !== '' &&
+  var ok = fullName && fullName.value.trim() !== '' &&
     accountName && accountName.value.trim() !== '' &&
     hostname && hostname.value.trim() !== '' &&
     password && password.value !== '' &&
     passwordConfirm && passwordConfirm.value !== '' &&
     password.value === passwordConfirm.value &&
     selectedPicture !== null;
-  
-  // Activează/dezactivează butonul
-  continueBtn.disabled = !allFieldsFilled;
-  if (allFieldsFilled) {
-    continueBtn.style.opacity = '1';
-    continueBtn.style.cursor = 'pointer';
-  } else {
-    continueBtn.style.opacity = '0.5';
-    continueBtn.style.cursor = 'not-allowed';
-  }
+  continueBtn.disabled = !ok;
+  continueBtn.style.opacity = ok ? '1' : '0.5';
+  continueBtn.style.cursor = ok ? 'pointer' : 'not-allowed';
+}
+
+// ── Profile pictures ────────────────────────────────────────────────
+var profilePicturesLoaded = false;
+
+function load_profile_pictures() {
+  var container = document.getElementById('profile-pictures-circle');
+  if (!container) return;
+  var profilesPath = path.join(__dirname, '..', 'resources', 'profiles');
+  if (!fs.existsSync(profilesPath)) return;
+  var imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp'];
+  var imageFiles = fs.readdirSync(profilesPath).filter(function (f) {
+    return imageExtensions.indexOf(path.extname(f).toLowerCase()) !== -1;
+  });
+  if (imageFiles.length === 0) return;
+  container.innerHTML = '';
+  imageFiles.forEach(function (file) {
+    var item = document.createElement('div');
+    item.className = 'profile-picture-item';
+    item.dataset.imagePath = path.join(profilesPath, file);
+    item.dataset.imageName = file;
+    var img = document.createElement('img');
+    img.src = '../resources/profiles/' + file;
+    img.alt = file;
+    img.onerror = function () { this.style.display = 'none'; item.innerHTML = '<span style="font-size:12px;color:#999;">?</span>'; };
+    item.appendChild(img);
+    item.addEventListener('click', function () {
+      document.querySelectorAll('.profile-picture-item').forEach(function (el) { el.classList.remove('selected'); });
+      this.classList.add('selected');
+      fs.writeFileSync('/tmp/profile_picture', this.dataset.imagePath);
+      if (!isTestMode) {
+        var exec = require('child_process').exec;
+        var src = this.dataset.imagePath;
+        exec('sudo cp "' + src + '" /usr/share/sddm/themes/pearOS/faces/.face.icon');
+        exec('sudo cp "' + src + '" /usr/share/sddm/themes/pearOS-dark/faces/.face.icon');
+      }
+      checkFormValidity();
+    });
+    container.appendChild(item);
+  });
 }
 
 function ensureProfilePicturesContainer() {
-  // Verifică dacă containerul există deja
-  let container = document.getElementById('profile-pictures-circle');
-  
-  if (!container) {
-    // Creează containerul dacă nu există
-    const createUser = document.getElementById('create_user');
-    if (createUser) {
-      const profileContainer = document.createElement('div');
-      profileContainer.className = 'profile-picture-container';
-      profileContainer.innerHTML = '<div id="profile-pictures-circle" class="profile-pictures-circle"></div>';
-      
-      // Inserează containerul înainte de formular (primul copil)
-      const form = createUser.querySelector('form');
-      if (form) {
-        createUser.insertBefore(profileContainer, form);
-      } else {
-        // Dacă nu există formular, adaugă la început
-        createUser.insertBefore(profileContainer, createUser.firstChild);
-      }
-      
-      container = document.getElementById('profile-pictures-circle');
-    }
-  }
-  
-  return container;
+  var container = document.getElementById('profile-pictures-circle');
+  if (container) return container;
+  var createUser = document.getElementById('create_user');
+  if (!createUser) return null;
+  var div = document.createElement('div');
+  div.className = 'profile-picture-container';
+  div.innerHTML = '<div id="profile-pictures-circle" class="profile-pictures-circle"></div>';
+  var form = createUser.querySelector('form');
+  if (form) createUser.insertBefore(div, form); else createUser.insertBefore(div, createUser.firstChild);
+  return document.getElementById('profile-pictures-circle');
 }
 
 function initProfilePictures() {
-  if (profilePicturesLoaded) {
-    return;
-  }
-  
-  // Asigură-te că containerul există
-  const container = ensureProfilePicturesContainer();
-  
-  if (container) {
-    profilePicturesLoaded = true;
-    load_profile_pictures();
-  } else {
-    // Dacă create_user nu există încă, așteaptă puțin
-    setTimeout(function() {
-      const container2 = ensureProfilePicturesContainer();
-      if (container2 && !profilePicturesLoaded) {
-        profilePicturesLoaded = true;
-        load_profile_pictures();
-      }
-    }, 500);
-  }
+  if (profilePicturesLoaded) return;
+  var container = ensureProfilePicturesContainer();
+  if (container) { profilePicturesLoaded = true; load_profile_pictures(); }
+  else setTimeout(function () {
+    var c2 = ensureProfilePicturesContainer();
+    if (c2 && !profilePicturesLoaded) { profilePicturesLoaded = true; load_profile_pictures(); }
+  }, 500);
 }
 
-// Așteaptă ca totul să fie complet încărcat
-window.addEventListener('load', function() {
+// ── Commit (finish page) ────────────────────────────────────────────
+function logSettings(cfg) {
+  console.log('');
+  console.log('==========================================');
+  console.log('  Selected Configuration Settings');
+  console.log('==========================================');
+  console.log('Keyboard Layout:     ' + cfg.keymap);
+  console.log('Locale:              ' + cfg.locale);
+  console.log('Timezone:            ' + cfg.timezone);
+  console.log('Full Name:           ' + cfg.fullname);
+  console.log('Username:            ' + cfg.username);
+  console.log('Hostname:            ' + cfg.hostname);
+  console.log('==========================================');
+  console.log('');
+}
+
+function commit() {
+  var r = function (f) {
+    try { return fs.readFileSync('/tmp/' + f, 'utf8').trim().replace(/^'|'$/g, ''); }
+    catch (e) { return ''; }
+  };
+  var cfg = {
+    keymap: r('keymap'), locale: r('locale'), timezone: r('timezone'),
+    fullname: r('fullname'), username: r('username'),
+    hostname: r('hostname') || 'pearOS-machine', password: r('password')
+  };
+  logSettings(cfg);
+  console.log('Starting post-installation setup...');
+
+  if (isTestMode) {
+    console.log('Test mode: post_setup not running, system unchanged.');
+    require('electron').ipcRenderer.send('close-me');
+    return;
+  }
+
+  var ipcRenderer = require('electron').ipcRenderer;
+  ipcRenderer.removeAllListeners('post-setup-output');
+  ipcRenderer.removeAllListeners('post-setup-done');
+  ipcRenderer.removeAllListeners('post-setup-error');
+
+  ipcRenderer.on('post-setup-output', function (evt, line) {
+    var logEl = document.getElementById('post-install-log');
+    if (logEl) { logEl.textContent += line; logEl.scrollTop = logEl.scrollHeight; }
+    var statusEl = document.getElementById('post-install-status');
+    if (statusEl) {
+      var trimmed = line.trim().replace(/^\+\s*/, '').replace(/^\++\s*/, '');
+      if (trimmed && !trimmed.startsWith('#') && trimmed.length > 2) statusEl.textContent = trimmed.substring(0, 100);
+    }
+  });
+
+  ipcRenderer.once('post-setup-done', function () { ipcRenderer.send('close-me'); });
+
+  ipcRenderer.once('post-setup-error', function (evt, msg) {
+    var errMsg = msg;
+    try { errMsg = fs.readFileSync('/tmp/post-install-error', 'utf8').trim() || msg; } catch (_) {}
+    var container = document.getElementById('post-install-progress') || document.body;
+    var errDiv = document.createElement('div');
+    errDiv.style.cssText = 'color:#ff6666;margin:20px;padding:15px;background:rgba(0,0,0,0.6);border-radius:8px;white-space:pre-wrap;text-align:left;max-width:90%;font-size:13px;';
+    errDiv.innerHTML = '<strong>Post-install failed</strong>\n\n' + errMsg + '\n\nCheck /home/default/Desktop/post-install.log';
+    container.appendChild(errDiv);
+  });
+
+  ipcRenderer.send('run-post-setup', [cfg.keymap, cfg.locale, cfg.timezone, cfg.password, cfg.fullname, cfg.username, cfg.hostname]);
+}
+
+// ── Init ────────────────────────────────────────────────────────────
+window.addEventListener('load', function () {
+  document.querySelectorAll('[data-nav]').forEach(function (btn) {
+    btn.addEventListener('click', function () { go(parseInt(this.dataset.nav, 10)); });
+  });
+
   setTimeout(check_passwords_match, 100);
   setTimeout(initProfilePictures, 300);
-  
-  // Adaugă event listeners pentru toate câmpurile DOAR pe pagina de user
-  setTimeout(function() {
-    const createUser = document.getElementById('create_user');
-    if (!createUser) return; // Nu suntem pe pagina de user
-    
-    const fullName = document.getElementById('full_name');
-    const accountName = document.getElementById('account_name');
-    const hostname = document.getElementById('hostname');
-    const password = document.getElementById('password');
-    const passwordConfirm = document.getElementById('password_confirm');
-    
-    if (fullName) fullName.addEventListener('input', checkFormValidity);
-    if (accountName) accountName.addEventListener('input', checkFormValidity);
-    if (hostname) hostname.addEventListener('input', checkFormValidity);
-    if (password) password.addEventListener('input', checkFormValidity);
-    if (passwordConfirm) passwordConfirm.addEventListener('input', checkFormValidity);
-    
-    // Verifică inițial
-    checkFormValidity();
-  }, 500);
+
+  var createUser = document.getElementById('create_user');
+  if (createUser) {
+    setTimeout(function () {
+      ['full_name', 'account_name', 'hostname', 'password', 'password_confirm'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener('input', checkFormValidity);
+      });
+      checkFormValidity();
+    }, 500);
+  }
 });
 
-// De asemenea, încercă când DOM-ul este gata
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(initProfilePictures, 200);
-  });
+  document.addEventListener('DOMContentLoaded', function () { setTimeout(initProfilePictures, 200); });
 } else {
-  // DOM-ul este deja gata
   setTimeout(initProfilePictures, 300);
 }
 
-function list_zones() {
-  const { exec } = require('child_process');
-  const timezoneList = document.getElementById("time_zones_list");
-  
-  if (!timezoneList) {
-    console.error("Timezone list element not found");
-    return;
-  }
-  
-  timezoneList.innerHTML = '';
-  
-  exec('find /usr/share/zoneinfo/posix -type f -or -type l | sort | cut -c27-', (err, stdout, stderr) => {
-    if (err) {
-      console.error("Error getting timezones:", err);
-      timezoneList.innerHTML = '<option>Error loading timezones</option>';
-      return;
-    }
-    
-    const timezones = stdout.trim().split('\n').filter(tz => tz.length > 0);
-    console.log("Found " + timezones.length + " timezones");
-    
-    timezones.forEach((timezone, index) => {
-      const option = document.createElement('option');
-      option.textContent = timezone;
-      timezoneList.appendChild(option);
-      
-      if (index === 0) {
-        timezoneList.disabled = false;
-      }
-    });
-    
-    console.log("Timezone list populated successfully");
-  });
-}
-function select_language() {
-  var e = document.getElementById("ddlViewBy");
-  var locale = e.value;
-  if (!locale) {
-    alert('You must select one language from the list');
-    return;
-  }
-  const fs = require('fs');
-  fs.writeFileSync('/tmp/locale', locale);
-  // Derive folder name from locale code: "en_US.UTF-8" → "en_US"
-  var folder = locale.replace('.UTF-8', '');
-  window.location.href = 'lg/' + folder + '/page_keymap.html';
-}
-
-function select_keymap() {
-  var e = document.getElementById("keymapList");
-  var layout = e.value;
-  if (!layout) {
-    alert('You must choose one Keyboard Layout from the list');
-    return;
-  }
-  const fs = require('fs');
-  const { exec } = require('child_process');
-  fs.writeFileSync('/tmp/keymap', layout);
-  exec('setxkbmap ' + layout, (error) => {
-    if (error) {
-      console.error('Error applying keyboard layout:', error.message);
-    }
-    window.location.href = 'page_timezone.html';
-  });
-}
-
-
-function select_timezone() {
-  var e = document.getElementById("time_zones_list");
-   if (e.options[e.selectedIndex] === undefined) { alert('You must choose one Time Zone from the list'); } else {
-       var strUser = e.options[e.selectedIndex].text;
-       const fs = require('fs');
-        fs.writeFileSync('/tmp/timezone', '' + strUser);
-        window.location.href='page_user.html';
-   }
-}
-
-function save_user(){
-	var fullName = document.getElementById("full_name").value;
-	var userName = document.getElementById("account_name").value;
-	var hostname = document.getElementById("hostname").value;
-	var password = document.getElementById("password").value;
-	var password_confirm = document.getElementById("password_confirm").value;
-	const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
-	const checkgex = userName.match(regex);
-	const fs = require('fs');
-
-    if(fullName == '') { alert("FullName cannot be empty"); } else { fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`); };
-    if(userName == '') { alert("Username cannot be empty"); } else { console.log("Username not empty. Continuing!");};
-    if(hostname == '') { alert("Hostname cannot be empty"); } else { console.log("Hostname not empty. Continuing!");};
-    if(password == '') { alert("Password cannot be empty"); } else if(password != '') { check_match();}
-    
-    // Salvează imaginea de profil selectată dacă există
-    const selectedPicture = document.querySelector('.profile-picture-item.selected');
-    if (selectedPicture) {
-      fs.writeFileSync('/tmp/profile_picture', selectedPicture.dataset.imagePath);
-    }
-}
-
-function check_match(){
-  var fullName = document.getElementById("full_name").value;
-  var userName = document.getElementById("account_name").value;
-  var hostname = document.getElementById("hostname").value;
-  var password = document.getElementById("password").value;
-  var password_confirm = document.getElementById("password_confirm").value;
-  const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
-  const checkgex = userName.match(regex);
-
-  if( password != password_confirm) {
-    alert("Passwords are not matching!");
-  } else {
-	checkchars();
-    }
-}
-
-function checkchars() {
-	var fullName = document.getElementById("full_name").value;
-	var userName = document.getElementById("account_name").value;
-	var hostname = document.getElementById("hostname").value;
-	const regex = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/g
-	const checkgex = userName.match(regex);
-
-	var password = document.getElementById("password").value;
-
-	if(checkgex == null) {
-  	alert("The username you inputed contains illegal characters. The username needs to check the following:\n - start with a lowercase (i.e.: alex)\n - does not start with a number (i.e.: 8alex8)\n - does not start with a character (i.e. -_alex_-)");
-	} else {
-	const fs = require('fs');
-      	if(fullName == '') { alert("FullName cannot be empty"); } else { fs.writeFileSync('/tmp/fullname', `'` + fullName + `'`); };
-	if(userName == '' || checkgex == null) { alert("username cannot be empty"); } else { fs.writeFileSync('/tmp/username', '' + userName); };
-	if(hostname == '') { hostname = 'pearOS-machine'; }
-	fs.writeFileSync('/tmp/hostname', '' + hostname);
-	fs.writeFileSync('/tmp/password', '' + password);
-	window.location.href='page_agreement.html';
-  }
-}
-
-function display_settings() {
-  const fs = require('fs');
-  
-  try {
-    const keymap = fs.readFileSync('/tmp/keymap', 'utf-8').trim();
-    const locale = fs.readFileSync('/tmp/locale', 'utf-8').trim();
-    const timezone = fs.readFileSync('/tmp/timezone', 'utf-8').trim();
-    const fullname = fs.readFileSync('/tmp/fullname', 'utf-8').trim().replace(/^'|'$/g, '');
-    const username = fs.readFileSync('/tmp/username', 'utf-8').trim();
-    const hostname = fs.readFileSync('/tmp/hostname', 'utf-8').trim();
-    
-    console.log('');
-    console.log('==========================================');
-    console.log('  Selected Configuration Settings');
-    console.log('==========================================');
-    console.log('Keyboard Layout:     ' + keymap);
-    console.log('Locale:              ' + locale);
-    console.log('Timezone:            ' + timezone);
-    console.log('Full Name:           ' + fullname);
-    console.log('Username:            ' + username);
-    console.log('Hostname:            ' + hostname);
-    console.log('==========================================');
-    console.log('');
-  } catch (err) {
-    console.error('Error reading settings:', err);
-  }
-}
-
-function commit(){
-  var fs = require('fs');
-
-    fs.readFile('/tmp/fullname', 'utf-8', (err, fn_data) => {
-      if (err) { console.error('Missing /tmp/fullname'); return; }
-      var fullname = (fn_data || '').trim().replace(/^'|'$/g, '');
-      fs.readFile('/tmp/username', 'utf-8', (err, usr_data) => {
-        if (err) { console.error('Missing /tmp/username'); return; }
-        var username = (usr_data || '').trim();
-        fs.readFile('/tmp/password', 'utf-8', (err, passwd_data) => {
-          if (err) { console.error('Missing /tmp/password'); return; }
-          var password = (passwd_data || '').trim();
-          fs.readFile('/tmp/keymap', 'utf-8', (err, kmap_data) => {
-            if (err) { console.error('Missing /tmp/keymap'); return; }
-            var keymap = (kmap_data || '').trim();
-            fs.readFile('/tmp/locale', 'utf-8', (err, locale_data) => {
-              if (err) { console.error('Missing /tmp/locale'); return; }
-              var locale = (locale_data || '').trim();
-              fs.readFile('/tmp/timezone', 'utf-8', (err, tzone_data) => {
-                if (err) { console.error('Missing /tmp/timezone'); return; }
-                var timezone = (tzone_data || '').trim();
-                fs.readFile('/tmp/hostname', 'utf-8', (err, hostname_data) => {
-                  if (err) { console.error('Missing /tmp/hostname'); return; }
-                  var hostname = (hostname_data || '').trim();
-
-        // Display selected settings from frontend before execution
-        console.log('');
-        console.log('==========================================');
-        console.log('  Selected Configuration Settings');
-        console.log('==========================================');
-        console.log('Keyboard Layout:     ' + keymap);
-        console.log('Locale:              ' + locale);
-        console.log('Timezone:            ' + timezone);
-        console.log('Full Name:           ' + fullname);
-        console.log('Username:            ' + username);
-        console.log('Hostname:            ' + hostname);
-        console.log('==========================================');
-        console.log('');
-        console.log('Starting post-installation setup...');
-        console.log('');
-
-        if (isTestMode) {
-            console.log('Mod test: post_setup nu rulează, nu se modifică sistemul.');
-            require('electron').ipcRenderer.send('close-me');
-            return;
-          }
-
-          var ipcRenderer = require('electron').ipcRenderer;
-
-          // Clean up any previous listeners
-          ipcRenderer.removeAllListeners('post-setup-output');
-          ipcRenderer.removeAllListeners('post-setup-done');
-          ipcRenderer.removeAllListeners('post-setup-error');
-
-          ipcRenderer.on('post-setup-output', function(evt, line) {
-            var logEl = document.getElementById('post-install-log');
-            if (logEl) {
-              logEl.textContent += line;
-              logEl.scrollTop = logEl.scrollHeight;
-            }
-            var statusEl = document.getElementById('post-install-status');
-            if (statusEl) {
-              var trimmed = line.trim().replace(/^\+\s*/, '').replace(/^\++\s*/, '');
-              if (trimmed && !trimmed.startsWith('#') && trimmed.length > 2) {
-                statusEl.textContent = trimmed.substring(0, 100);
-              }
-            }
-          });
-
-          ipcRenderer.once('post-setup-done', function() {
-            ipcRenderer.send('close-me');
-          });
-
-          ipcRenderer.once('post-setup-error', function(evt, msg) {
-            var errMsg = msg;
-            try { errMsg = fs.readFileSync('/tmp/post-install-error', 'utf8').trim() || msg; } catch(_) {}
-            var container = document.getElementById('post-install-progress') || document.body;
-            var errDiv = document.createElement('div');
-            errDiv.style.cssText = 'color:#ff6666;margin:20px;padding:15px;background:rgba(0,0,0,0.6);border-radius:8px;white-space:pre-wrap;text-align:left;max-width:90%;font-size:13px;';
-            errDiv.innerHTML = '<strong>Post-install failed</strong>\n\n' + errMsg + '\n\nCheck /home/default/Desktop/post-install.log';
-            container.appendChild(errDiv);
-          });
-
-          var safeArg = function(s) { return s; };
-          ipcRenderer.send('run-post-setup', [keymap, locale, timezone, password, fullname, username, hostname]);
-                });
-              });
-            });
-          });
-        });
-      });
-    });
-}
-
-// Banner vizual când rulezi în mod test
+// ── Test mode banner ────────────────────────────────────────────────
 if (isTestMode && typeof document !== 'undefined') {
-  function showTestModeBanner() {
+  (function showBanner() {
     if (document.getElementById('post-install-test-banner')) return;
     var b = document.createElement('div');
     b.id = 'post-install-test-banner';
     b.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#ff9800;color:#000;padding:6px;text-align:center;z-index:9999;font-size:12px;';
-    b.textContent = 'Mod test — nu se modifică sistemul.';
+    b.textContent = 'Test mode — system unchanged.';
     if (document.body) document.body.appendChild(b);
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', showTestModeBanner);
-  } else {
-    showTestModeBanner();
-  }
+  })();
 }
