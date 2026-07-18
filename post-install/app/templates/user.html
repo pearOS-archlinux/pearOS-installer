@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/assistant-styles.css">
+    <title data-i18n="user.pageTitle">pearOS NiceC0re Installer</title>
+  </head>
+  <body data-step="user">
+    <div class="flex-container">
+      <div class="app">
+        <div class="tabs">
+          <div class="tab active">
+            <br>
+            <h1 data-i18n="user.title">Create a Computer Account</h1>
+            <p align="center" class="description" data-i18n="user.description">Fill out the following informations to create your computer account.</p>
+            <div id="create_user">
+              <form>
+                <input type="text" id="full_name" name="full_name" class="textbox" data-i18n-attr="placeholder:user.fullNamePlaceholder" placeholder="Full Name">
+                <input type="text" id="account_name" name="account_name" class="textbox" data-i18n-attr="placeholder:user.accountNamePlaceholder" placeholder="Account Name">
+                <p class="account-name-hint" data-i18n="user.accountNameHint">This will be the name of your home folder</p>
+                <input type="text" id="hostname" name="hostname" class="textbox" data-i18n-attr="placeholder:user.hostnamePlaceholder" placeholder="Hostname" value="pearOS-machine">
+                <p class="account-name-hint" data-i18n="user.hostnameHint">This will be your computer's network name</p>
+                <div class="password-row">
+                  <input type="password" id="password" name="password" class="textbox" data-i18n-attr="placeholder:user.passwordPlaceholder" placeholder="Password">
+                  <input type="password" id="password_confirm" name="password_confirm" class="textbox" data-i18n-attr="placeholder:user.verifyPasswordPlaceholder" placeholder="Verify Password">
+                </div>
+                <div id="password_check" class="password-check"></div>
+              </form>
+            </div>
+            <br>
+            <br>
+          </div>
+        </div>
+        <div class="movement-buttons">
+          <hr style="color:#ffffff">
+          <div class="arrow-button-container">
+            <button data-nav="-1" type="button" id="move-back-btn">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+              </svg>
+            </button>
+          </div>
+          <div class="arrow-button-container">
+            <button data-nav="+1" class="nav-button button" type="button" id="move-forward-btn" data-i18n="user.continue">Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../js/engine.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script>i18n.load();</script>
+  </body>
+</html>

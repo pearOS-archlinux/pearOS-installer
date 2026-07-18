@@ -1,0 +1,6 @@
+{
+  "keymap": { "title": "选择键盘布局", "continue": "继续", "pageTitle": "pearOS NiceC0re 安装程序" },
+  "timezone": { "title": "选择时区", "continue": "继续", "pageTitle": "pearOS NiceC0re 安装程序" },
+  "user": { "title": "创建计算机账户", "description": "请填写以下信息以创建您的账户。", "continue": "继续", "pageTitle": "pearOS NiceC0re 安装程序", "fullNamePlaceholder": "全名", "accountNamePlaceholder": "账户名", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "密码", "verifyPasswordPlaceholder": "确认密码", "accountNameHint": "这将是您的主目录名称", "hostnameHint": "这将是您的计算机网络名称" },
+  "agreement": { "title": "条款与条件", "description": "重要提示：使用pearOS计算机、pearOS软件及相关服务须遵守这些条款与条件。请仔细阅读。", "continue": "继续", "pageTitle": "pearOS NiceC0re 安装程序" }
+}

@@ -1,0 +1,6 @@
+{
+  "keymap": { "title": "キーボードレイアウトを選択", "continue": "続ける", "pageTitle": "pearOS NiceC0re インストーラー" },
+  "timezone": { "title": "タイムゾーンを選択", "continue": "続ける", "pageTitle": "pearOS NiceC0re インストーラー" },
+  "user": { "title": "コンピュータアカウントを作成", "description": "アカウントを作成するには、以下の情報を入力してください。", "continue": "続ける", "pageTitle": "pearOS NiceC0re インストーラー", "fullNamePlaceholder": "フルネーム", "accountNamePlaceholder": "アカウント名", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "パスワード", "verifyPasswordPlaceholder": "パスワードを確認", "accountNameHint": "これがホームフォルダの名前になります", "hostnameHint": "これがコンピュータのネットワーク名になります" },
+  "agreement": { "title": "利用規約", "description": "重要：pearOSコンピュータ、pearOSソフトウェア、および関連サービスの使用は、これらの利用規約に従います。注意してお読みください。", "continue": "続ける", "pageTitle": "pearOS NiceC0re インストーラー" }
+}
