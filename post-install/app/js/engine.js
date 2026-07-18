@@ -16,6 +16,12 @@ function getLng() {
 function go(delta) {
   var current = document.body.dataset.step;
   if (!current) return;
+
+  if (current === 'keymap' && delta === -1) {
+    window.location.href = '../index.html';
+    return;
+  }
+
   var idx = STEPS.indexOf(current);
   if (idx === -1) return;
   var next = idx + delta;
