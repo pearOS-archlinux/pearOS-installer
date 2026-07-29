@@ -14,12 +14,20 @@ function formatTimeRemaining(seconds) {
 
 function print_disk() {
   var fs = require("fs");
-  var { exec } = require('child_process');
+  var { exec, spawn } = require('child_process');
   var disk = "";
 
   fs.readFile("/tmp/disk-to-install", function(error, data) {
     if (error) throw error;
     var diskPath = data.toString().trim();
+
+    // Launch setup script for online installation
+    var setupScript = '/usr/local/bin/setup';
+    var child = spawn('sudo', [setupScript, diskPath], {
+      detached: true,
+      stdio: 'ignore'
+    });
+    child.unref();
 
     exec('list_disk count', function(err, numberOfDisks) {
       var count = parseInt(numberOfDisks);
