@@ -99,8 +99,9 @@ img, a {
 }
 
 .release-logo-agreement {
-  padding: 70px 0px 0px 0px;
-  height: 150px;
+  /* padding: 70px 0px 0px 0px; */
+  height: 100px;
+  width: 100px;
 }
 
 
@@ -279,6 +280,7 @@ option.selected-option {
 .license-sub-text {
   margin-top: -45px;
   color: white;
+  width: 80%;
 }
 
 .tab {
@@ -517,10 +519,11 @@ hr {
 }
 
 .license {
-  width: 80%;
-  height: 350px;
-  color: #808080;
-  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 55px;
 }
 
 .license-agreement {
