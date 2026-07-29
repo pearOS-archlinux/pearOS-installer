@@ -1,0 +1,87 @@
+{
+  "common": {
+    "back": "Back",
+    "continue": "Continue",
+    "close": "Close",
+    "cancel": "Cancel",
+    "agree": "Agree",
+    "disagree": "Disagree",
+    "pearOSInstaller": "pearOS NiceC0re Installer",
+    "pageTitle": "pearOS NiceC0re Installer"
+  },
+  "menu": {
+    "recovery": "Recovery",
+    "restore": "Restore from Time Machine",
+    "restoreDesc": "If you have packup of your system that you want to restore",
+    "install": "Install pearOS NiceC0re",
+    "installDesc": "Use the attached installer to Upgrade or Install pearOS.",
+    "installAlt": "Offline Install & Dual Boot",
+    "installAltDesc": "Use the offline Calamares installer for manual partitioning and dual boot.",
+    "browser": "Web Browser",
+    "browserDesc": "Browse for support to get help with your Computer",
+    "gparted": "GParted",
+    "gpartedDesc": "Repair or erase a disk using GParted",
+    "altHint": "Hold \u2325 (Alt) for Offline installer & Dual Boot",
+    "howToInstall": "How would you like to install pearOS?",
+    "offlineInstall": "Offline Install & Dual Boot",
+    "onlineInstall": "Online Install",
+    "selectOption": "Please select an option"
+  },
+  "install": {
+    "title": "pearOS NiceC0re",
+    "description": "To setup the installation of pearOS NiceC0re, click Continue.",
+    "navbarTitle": "Install pearOS NiceC0re"
+  },
+  "agreement": {
+    "title": "Terms and Conditions",
+    "description": "Important: Use of your pearOS Computer, the pearOS software and related servoces is subject to these Terms and Conditions. Please read them carefully",
+    "continueText": "To continue installing the software, you must agree to the terms of the software license agreement",
+    "licenseNote": "A copy of the License will be saved on your system and can be found throught System Overview after installation. It is also posted at https://pearos.xyz/legal/license",
+    "modalText": "I have read and agree to the terms of the software license agreement.",
+    "mustAgree": "You must agree to the Terms and Conditions to install pearOS"
+  },
+  "disk": {
+    "selectText": "Select the disk where you want to install pearOS.",
+    "selectTextFull": "Select the disk where you want to install pearOS NiceC0re",
+    "installTextPrefix": "pearOS NiceC0re will be installed on the disk",
+    "eraseTitle": "This will ERASE the selected disk.",
+    "eraseWarning": "If you want to dual boot, go back one step and hold ALT while clicking Continue to open the offline & dual boot installer\n\nThank you for your understanding.",
+    "cannotInstallNODISK": "Cannot install on NODISK. Please select a valid disk.",
+    "noInternet": "You need an active internet connection to install pearOS NiceCC0re on your device. Please connect to the internet and try again."
+  },
+  "progress": {
+    "installFailed": "Installation Failed!",
+    "error": "Error:",
+    "checkLog": "Please check <b>/home/liveuser/Desktop/install.log</b> for details.<br>You may need to restart the installer or check your disk.",
+    "finishedWarnings": "Installation finished with {count} warnings.",
+    "warningsDetail": "Some packages failed to install. You can close this window (ALT+F4) and reboot,<br>or check the logs: <b>/home/liveuser/Desktop/install.log</b> and <b>/tmp/failed_packages.log</b>",
+    "finishedSuccess": "Installation finished successfully!",
+    "finishedReboot": "You can close this window (can use ALT+F4) and reboot<br>your new pearintosh, or check the log located on the desktop.",
+    "calculating": "Calculating...",
+    "estimatedTime": "Estimated time remaining:",
+    "close": "Close",
+    "unableToStart": "Installer was unable to start. Make sure it is run from the pearOS installer utility, or nodeJS/electron is working."
+  },
+  "navbar": {
+    "shutdown": "Shutdown",
+    "restart": "Restart",
+    "liveEnv": "Go to Live Environment",
+    "about": "About pearOS Installer",
+    "showLog": "Show Log",
+    "showDisks": "Show Disks",
+    "quit": "Quit pearOS Installer",
+    "aboutTitle": "About pearOS Installer",
+    "build": "Build:",
+    "buildValue": "2026.03.05 - dualboot",
+    "author": "Author:",
+    "authorValue": "Pear Software and Services",
+    "email": "Email:",
+    "emailValue": "alex@pear-software.com"
+  },
+  "index": {
+    "language": "Language",
+    "english": "English",
+    "romanian": "Romanian",
+    "czech": "Czech"
+  }
+}
