@@ -335,6 +335,17 @@ hr {
   bottom: 10px;
   width: 100%;
   text-align: right;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: flex;
+  justify-content: end;
+}
+
+.movement-buttons > :nth-last-child(n+2) {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .install-button {
