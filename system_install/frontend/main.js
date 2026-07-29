@@ -36,6 +36,9 @@ function showWindow () {
   mainWindow.setFullScreen(true)
   mainWindow.show()
   mainWindow.focus()
+  if (process.env.POST_INSTALL_TEST === '1') {
+    mainWindow.webContents.openDevTools()
+  }
 }
 
 function createWindow () {
