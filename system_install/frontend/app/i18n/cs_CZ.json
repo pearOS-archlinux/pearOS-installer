@@ -6,14 +6,14 @@
     "cancel": "Zrušit",
     "agree": "Souhlasím",
     "disagree": "Nesouhlasím",
-    "pearOSInstaller": "Instalátor pearOS NiceC0re",
-    "pageTitle": "Instalátor pearOS NiceC0re"
+    "pearOSInstaller": "Instalátor PearOS NiceC0re",
+    "pageTitle": "Instalátor PearOS NiceC0re"
   },
   "menu": {
     "recovery": "Obnovení",
     "restore": "Obnovení z Time Machine",
     "restoreDesc": "Pokud máte zálohu systému, kterou chcete obnovit",
-    "install": "Nainstalovat pearOS NiceC0re",
+    "install": "Nainstalovat PearOS NiceC0re",
     "installDesc": "Použijte přiložený instalátor k upgrade nebo instalaci pearOS.",
     "installAlt": "Offline instalace a Dual Boot",
     "installAltDesc": "Použijte offline instalátor Calamares pro ruční oddělení a dual boot.",
@@ -28,9 +28,9 @@
     "selectOption": "Vyberte možnost"
   },
   "install": {
-    "title": "pearOS NiceC0re",
-    "description": "Pro nastavení instalace pearOS NiceC0re klikněte na Pokračovat.",
-    "navbarTitle": "Nainstalovat pearOS NiceC0re"
+    "title": "PearOS NiceC0re",
+    "description": "Pro nastavení instalace PearOS NiceC0re klikněte na Pokračovat.",
+    "navbarTitle": "Nainstalovat PearOS NiceC0re"
   },
   "agreement": {
     "title": "Podmínky a ujednání",
@@ -42,12 +42,12 @@
   },
   "disk": {
     "selectText": "Vyberte disk, na který chcete nainstalovat pearOS.",
-    "selectTextFull": "Vyberte disk, na který chcete nainstalovat pearOS NiceC0re",
-    "installTextPrefix": "pearOS NiceC0re bude nainstalován na disk",
+    "selectTextFull": "Vyberte disk, na který chcete nainstalovat PearOS NiceC0re",
+    "installTextPrefix": "PearOS NiceC0re bude nainstalován na disk",
     "eraseTitle": "Toto SMAŽE vybraný disk.",
     "eraseWarning": "Pokud chcete dual boot, vraťte se o krok zpět a podržte ALT při kliknutí na Pokračovat pro otevření offline a dual boot instalátoru\n\nDěkujeme za pochopení.",
     "cannotInstallNODISK": "Nelze instalovat na NODISK. Vyberte platný disk.",
-    "noInternet": "Pro instalaci pearOS NiceC0re na vaše zařízení potřebujete aktivní připojení k internetu. Připojte se k internetu a zkuste to znovu."
+    "noInternet": "Pro instalaci PearOS NiceC0re na vaše zařízení potřebujete aktivní připojení k internetu. Připojte se k internetu a zkuste to znovu."
   },
   "progress": {
     "installFailed": "Instalace selhala!",

@@ -6,14 +6,14 @@
     "cancel": "Cancel",
     "agree": "Agree",
     "disagree": "Disagree",
-    "pearOSInstaller": "pearOS NiceC0re Installer",
-    "pageTitle": "pearOS NiceC0re Installer"
+    "pearOSInstaller": "PearOS NiceC0re Installer",
+    "pageTitle": "PearOS NiceC0re Installer"
   },
   "menu": {
     "recovery": "Recovery",
     "restore": "Restore from Time Machine",
     "restoreDesc": "If you have packup of your system that you want to restore",
-    "install": "Install pearOS NiceC0re",
+    "install": "Install PearOS NiceC0re",
     "installDesc": "Use the attached installer to Upgrade or Install pearOS.",
     "installAlt": "Offline Install & Dual Boot",
     "installAltDesc": "Use the offline Calamares installer for manual partitioning and dual boot.",
@@ -28,9 +28,9 @@
     "selectOption": "Please select an option"
   },
   "install": {
-    "title": "pearOS NiceC0re",
-    "description": "To setup the installation of pearOS NiceC0re, click Continue.",
-    "navbarTitle": "Install pearOS NiceC0re"
+    "title": "PearOS NiceC0re",
+    "description": "To setup the installation of PearOS NiceC0re, click Continue.",
+    "navbarTitle": "Install PearOS NiceC0re"
   },
   "agreement": {
     "title": "Terms and Conditions",
@@ -42,8 +42,8 @@
   },
   "disk": {
     "selectText": "Select the disk where you want to install pearOS.",
-    "selectTextFull": "Select the disk where you want to install pearOS NiceC0re",
-    "installTextPrefix": "pearOS NiceC0re will be installed on the disk",
+    "selectTextFull": "Select the disk where you want to install PearOS NiceC0re",
+    "installTextPrefix": "PearOS NiceC0re will be installed on the disk",
     "eraseTitle": "This will ERASE the selected disk.",
     "eraseWarning": "If you want to dual boot, go back one step and hold ALT while clicking Continue to open the offline & dual boot installer\n\nThank you for your understanding.",
     "cannotInstallNODISK": "Cannot install on NODISK. Please select a valid disk.",

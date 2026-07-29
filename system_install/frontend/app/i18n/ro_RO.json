@@ -6,14 +6,14 @@
     "cancel": "Anulează",
     "agree": "Sunt de acord",
     "disagree": "Nu sunt de acord",
-    "pearOSInstaller": "Instalator pearOS NiceC0re",
-    "pageTitle": "Instalator pearOS NiceC0re"
+    "pearOSInstaller": "Instalator PearOS NiceC0re",
+    "pageTitle": "Instalator PearOS NiceC0re"
   },
   "menu": {
     "recovery": "Recuperare",
     "restore": "Restaurare din Time Machine",
     "restoreDesc": "Dacă aveți o copie de siguranță a sistemului pe care doriți să o restaurați",
-    "install": "Instalează pearOS NiceC0re",
+    "install": "Instalează PearOS NiceC0re",
     "installDesc": "Utilizați instalatorul atașat pentru a actualiza sau instala pearOS.",
     "installAlt": "Instalare offline și Dual Boot",
     "installAltDesc": "Utilizați instalatorul offline Calamares pentru分区are manuală și dual boot.",
@@ -28,9 +28,9 @@
     "selectOption": "Selectați o opțiune"
   },
   "install": {
-    "title": "pearOS NiceC0re",
-    "description": "Pentru a configura instalarea pearOS NiceC0re, faceți clic pe Continuă.",
-    "navbarTitle": "Instalează pearOS NiceC0re"
+    "title": "PearOS NiceC0re",
+    "description": "Pentru a configura instalarea PearOS NiceC0re, faceți clic pe Continuă.",
+    "navbarTitle": "Instalează PearOS NiceC0re"
   },
   "agreement": {
     "title": "Termeni și condiții",
@@ -42,12 +42,12 @@
   },
   "disk": {
     "selectText": "Selectați discul pe care doriți să instalați pearOS.",
-    "selectTextFull": "Selectați discul pe care doriți să instalați pearOS NiceC0re",
-    "installTextPrefix": "pearOS NiceC0re va fi instalat pe discul",
+    "selectTextFull": "Selectați discul pe care doriți să instalați PearOS NiceC0re",
+    "installTextPrefix": "PearOS NiceC0re va fi instalat pe discul",
     "eraseTitle": "Acest lucru va ȘTERGE discul selectat.",
     "eraseWarning": "Dacă doriți dual boot, reveniți cu un pas și țineți ALT în timp ce faceți clic pe Continuă pentru a deschide instalatorul offline și dual boot\n\nVă mulțumim pentru înțelegere.",
     "cannotInstallNODISK": "Nu se poate instala pe NODISK. Selectați un disc valid.",
-    "noInternet": "Aveți nevoie de o conexiune la internet activă pentru a instala pearOS NiceC0re pe dispozitivul dvs. Conectați-vă la internet și încercați din nou."
+    "noInternet": "Aveți nevoie de o conexiune la internet activă pentru a instala PearOS NiceC0re pe dispozitivul dvs. Conectați-vă la internet și încercați din nou."
   },
   "progress": {
     "installFailed": "Instalarea a eșuat!",
