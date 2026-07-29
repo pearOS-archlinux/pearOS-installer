@@ -1,32 +1,28 @@
-<?
-?>
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="css/assistant-styles.css">
-    <title>pearOS NiceC0re Installer</title>
+    <title data-i18n="common.pageTitle">pearOS NiceC0re Installer</title>
   </head>
-  <body>
+  <body data-step="index">
     <div class="flex-container">
       <div class="app">
         <div class="tabs">
           <div class="tab active">
 	    <img class="worldmap" src="resources/languages-icon.png"/>
-            <h1>Language</h1>
+            <h1 data-i18n="index.language">Language</h1>
             <div class="countries">
               <select class="list" size=9 id="ddlViewBy">
-                <option selected>English</option>
-		            <option>Romanian</option>
-                <option>Czech</option>
+                <option value="en_US" selected data-i18n="index.english">English</option>
+		<option value="ro_RO" data-i18n="index.romanian">Romanian</option>
+                <option value="cs_CZ" data-i18n="index.czech">Czech</option>
               </select>
             </div>
 	</div>
-
-
 <div class="tab">
-  <h1>Terms and Conditions</h1>
-  <p align="center" class="description">Important: Use of your pearOS Computer, the pearOS software and related servoces is subject to these<br>Terms and Conditions. Please read them carefully</p>
+  <h1 data-i18n="agreement.title">Terms and Conditions</h1>
+  <p align="center" class="description" data-i18n="agreement.description">Important: Use of your pearOS Computer, the pearOS software and related servoces is subject to these Terms and Conditions. Please read them carefully</p>
   <p align="left" class="license">
 <br>
 1. Scope of the Terms of Service
@@ -47,7 +43,7 @@ The Terms of Service in their latest version can be accessed by the User at any 
 <br>
 2.1. Requirements
 <br>
-Requirement for the use of the Services that enable the User to contribute Content (“Interactive Services”) is the registration via the corresponding online registration form. The User can create the corresponding account free of charge by filling in the fields provided (e.g. Username, e-mail address), actively agreeing to these Terms of Service and being informed of the Privacy Policy by means of clicking on "Register". If Users make a typographical error or similar, they can correct their entries in the respective fields at any time before submitting the registration request. After registering via the online form, Users will receive a confirmation e-mail, with which Users can confirm their registration by logging in with the login information provided. With the activation of your account by Arch Linux, the Terms of Service come into effect (conclusion of the contract). There is no legal entitlement to activation or participation of the Services. The unrestricted domiciliary rights of Arch Linux apply.
+Requirement for the use of the Services that enable the User to contribute Content ("Interactive Services") is the registration via the corresponding online registration form. The User can create the corresponding account free of charge by filling in the fields provided (e.g. Username, e-mail address), actively agreeing to these Terms of Service and being informed of the Privacy Policy by means of clicking on "Register". If Users make a typographical error or similar, they can correct their entries in the respective fields at any time before submitting the registration request. After registering via the online form, Users will receive a confirmation e-mail, with which Users can confirm their registration by logging in with the login information provided. With the activation of your account by Arch Linux, the Terms of Service come into effect (conclusion of the contract). There is no legal entitlement to activation or participation of the Services. The unrestricted domiciliary rights of Arch Linux apply.
 <br>
 2.2. Change of the Platform
 <br>
@@ -69,7 +65,7 @@ The Interactive Services require a peaceful and respectful interaction among Use
 <br>
 3.4. Content and Conduct
 <br>
-If Users operate an account to Interactive Services in particular, if you upload packages, maintain a package, comment on a package or issue or merge request, file a package request, post material to the Arch Linux User Repository, forums or the wiki, IRC Channels or the Bulletin Board System, post links, or otherwise make (or allow any third party to make) material available (“Content”), Users are solely responsible for such Content, and any harm resulting from, that Content or the Users conduct.
+If Users operate an account to Interactive Services in particular, if you upload packages, maintain a package, comment on a package or issue or merge request, file a package request, post material to the Arch Linux User Repository, forums or the wiki, IRC Channels or the Bulletin Board System, post links, or otherwise make (or allow any third party to make) material available ("Content"), Users are solely responsible for such Content, and any harm resulting from, that Content or the Users conduct.
 <br>
 3.5. Violations
 <br>
@@ -95,7 +91,7 @@ Users acknowledge that contributions and topics can be recorded in search engine
 <br>
 3.7. Content Discretion
 <br>
-We reserve the right in our sole discretion to refuse, delete, modify or remove any User Content on our Services and to reclaim your Username or website’s URL due to prolonged inactivity. In addition, we have the right in our sole discretion, independent of legal claims, to impose the following sanctions against you as a User in case of violation of these Terms of Service:
+We reserve the right in our sole discretion to refuse, delete, modify or remove any User Content on our Services and to reclaim your Username or website's URL due to prolonged inactivity. In addition, we have the right in our sole discretion, independent of legal claims, to impose the following sanctions against you as a User in case of violation of these Terms of Service:
 <br>
     issuing a warning or
 <br>
@@ -113,7 +109,7 @@ The copyright for topics and contributions, as far as these are protectable by c
 <br>
 5.2. Contribution Licenses
 <br>
-In the case of a contribution of software to an Arch Linux Project via GitLab or otherwise, you agree to license the contribution under the Project’s license. If the Project does not state a license, you agree to license it under the terms of the GNU General Public License version 3. Users contributing software to the Arch Linux Services ensure that they are permitted to license the software under the respective license and indemnify Arch Linux from all liability resulting from any lack of permission in accordance with section 4. of these Terms of Service.
+In the case of a contribution of software to an Arch Linux Project via GitLab or otherwise, you agree to license the contribution under the Project's license. If the Project does not state a license, you agree to license it under the terms of the GNU General Public License version 3. Users contributing software to the Arch Linux Services ensure that they are permitted to license the software under the respective license and indemnify Arch Linux from all liability resulting from any lack of permission in accordance with section 4. of these Terms of Service.
 <br>
 5.3. Continuation of Rights
 <br>
@@ -129,7 +125,7 @@ Arch Linux is not responsible for the Content posted in the Interactive Services
 <br>
 7.2. Content Review
 <br>
-Arch Linux has not reviewed, and cannot review, all of the material, including computer software, posted to our Interactive Services, and cannot therefore be responsible for that material’s Content, use or effects. You are responsible for taking precautions as necessary to protect yourself and your computer systems from viruses, worms, Trojan horses, and other harmful or destructive Content. As soon as we become aware of unlawful Content or of a link to fee-based websites or services, we will remove the Content or the links or block access to them.
+Arch Linux has not reviewed, and cannot review, all of the material, including computer software, posted to our Interactive Services, and cannot therefore be responsible for that material's Content, use or effects. You are responsible for taking precautions as necessary to protect yourself and your computer systems from viruses, worms, Trojan horses, and other harmful or destructive Content. As soon as we become aware of unlawful Content or of a link to fee-based websites or services, we will remove the Content or the links or block access to them.
 <br>
 7.3. Limitation of Damage Claims
 <br>
@@ -185,10 +181,8 @@ The platform for online dispute resolution of the European Commission can be rea
 <div class="tab">
   <img class="release-logoooo" height="200px" src="resources/nicec0re-logo.png"/>
   <h1>pearOS NiceC0re</h1>
-  <p align="center" class="setup-text">Select the disk where you want to install pearOS NiceC0re</p>
-
+  <p align="center" class="setup-text" data-i18n="disk.selectTextFull">Select the disk where you want to install pearOS NiceC0re</p>
 </div>
-
 </div>
        <div class="movement-buttons">
          <div class="arrow-button-container" >
@@ -199,10 +193,21 @@ The platform for online dispute resolution of the European Commission can be rea
     </div>
   </body>
   <script src="js/engine.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/focus-fix.js"></script>
   <script>
-    // Initialize language selection when page loads
-    window.addEventListener('DOMContentLoaded', function() {
-      initLanguageSelection();
+    i18n.load(function() {
+      var selectElement = document.getElementById("ddlViewBy");
+      if (selectElement) {
+        selectElement.addEventListener('change', function() {
+          for (var i = 0; i < this.options.length; i++) {
+            this.options[i].removeAttribute('selected');
+          }
+          if (this.selectedIndex >= 0) {
+            this.options[this.selectedIndex].setAttribute('selected', 'selected');
+          }
+        });
+      }
     });
   </script>
 </html>
