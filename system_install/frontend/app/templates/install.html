@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/assistant-styles.css">
+    <title data-i18n="common.pageTitle">pearOS NiceC0re Installer</title>
+  </head>
+  <body data-step="install">
+    <div class="flex-container">
+      <div class="app page-install-wrapper">
+        <div class="tabs">
+          <div class="tab active">
+	    <img class="release-logo" height="350px" src="../resources/nicec0re-logo-dark.png"/>
+	    <h1><b data-i18n="install.title">pearOS NiceC0re</b></h1>
+	    <p align="center" class="setup-text" data-i18n="install.description">To setup the installation of pearOS NiceC0re, click Continue.</p>
+	  </div>
+       <div class="movement-buttons">
+        <div class="grid-container">
+          <button data-nav="1" class="install-button" id="move-forward-btn" data-i18n="common.continue"> Continue </button>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="../js/engine.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script src="../js/focus-fix.js"></script>
+  <script>
+    i18n.load(function() {
+      var appNameButton = document.getElementById('app-name-button');
+      if (appNameButton) appNameButton.innerHTML = '<b>' + i18n.get('install.navbarTitle') + '</b>';
+    });
+  </script>
+</html>
