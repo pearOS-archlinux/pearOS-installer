@@ -38,12 +38,7 @@
       var selectElement = document.getElementById("ddlViewBy");
       if (selectElement) {
         selectElement.addEventListener('change', function() {
-          for (var i = 0; i < this.options.length; i++) {
-            this.options[i].removeAttribute('selected');
-          }
-          if (this.selectedIndex >= 0) {
-            this.options[this.selectedIndex].setAttribute('selected', 'selected');
-          }
+          window.location.href = '?lng=' + this.value;
         });
       }
     });

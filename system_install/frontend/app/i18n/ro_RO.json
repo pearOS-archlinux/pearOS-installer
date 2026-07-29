@@ -1,0 +1,87 @@
+{
+  "common": {
+    "back": "Înapoi",
+    "continue": "Continuă",
+    "close": "Închide",
+    "cancel": "Anulează",
+    "agree": "Sunt de acord",
+    "disagree": "Nu sunt de acord",
+    "pearOSInstaller": "Instalator pearOS NiceC0re",
+    "pageTitle": "Instalator pearOS NiceC0re"
+  },
+  "menu": {
+    "recovery": "Recuperare",
+    "restore": "Restaurare din Time Machine",
+    "restoreDesc": "Dacă aveți o copie de siguranță a sistemului pe care doriți să o restaurați",
+    "install": "Instalează pearOS NiceC0re",
+    "installDesc": "Utilizați instalatorul atașat pentru a actualiza sau instala pearOS.",
+    "installAlt": "Instalare offline și Dual Boot",
+    "installAltDesc": "Utilizați instalatorul offline Calamares pentru分区are manuală și dual boot.",
+    "browser": "Browser web",
+    "browserDesc": "Navigați pentru asistență și ajutor pentru computerul dvs.",
+    "gparted": "GParted",
+    "gpartedDesc": "Reparați sau ștergeți un disc folosind GParted",
+    "altHint": "Țineți ⌥ (Alt) pentru instalare offline și Dual Boot",
+    "howToInstall": "Cum doriți să instalați pearOS?",
+    "offlineInstall": "Instalare offline și Dual Boot",
+    "onlineInstall": "Instalare online",
+    "selectOption": "Selectați o opțiune"
+  },
+  "install": {
+    "title": "pearOS NiceC0re",
+    "description": "Pentru a configura instalarea pearOS NiceC0re, faceți clic pe Continuă.",
+    "navbarTitle": "Instalează pearOS NiceC0re"
+  },
+  "agreement": {
+    "title": "Termeni și condiții",
+    "description": "Important: Utilizarea computerului pearOS, a software-ului pearOS și a serviciilor conexe este supusă acestor Termeni și Condiții. Vă rugăm să îi citiți cu atenție",
+    "continueText": "Pentru a continua instalarea software-ului, trebuie să fiți de acord cu termenii acordului de licență a software-ului",
+    "licenseNote": "O copie a Licenței va fi salvată pe sistemul dvs. și poate fi găsită în Prezentarea de ansamblu a sistemului după instalare. Este, de asemenea, publicată la https://pearos.xyz/legal/license",
+    "modalText": "Am citit și sunt de acord cu termenii acordului de licență a software-ului.",
+    "mustAgree": "Trebuie să fiți de acord cu Termenii și Condițiile pentru a instala pearOS"
+  },
+  "disk": {
+    "selectText": "Selectați discul pe care doriți să instalați pearOS.",
+    "selectTextFull": "Selectați discul pe care doriți să instalați pearOS NiceC0re",
+    "installTextPrefix": "pearOS NiceC0re va fi instalat pe discul",
+    "eraseTitle": "Acest lucru va ȘTERGE discul selectat.",
+    "eraseWarning": "Dacă doriți dual boot, reveniți cu un pas și țineți ALT în timp ce faceți clic pe Continuă pentru a deschide instalatorul offline și dual boot\n\nVă mulțumim pentru înțelegere.",
+    "cannotInstallNODISK": "Nu se poate instala pe NODISK. Selectați un disc valid.",
+    "noInternet": "Aveți nevoie de o conexiune la internet activă pentru a instala pearOS NiceC0re pe dispozitivul dvs. Conectați-vă la internet și încercați din nou."
+  },
+  "progress": {
+    "installFailed": "Instalarea a eșuat!",
+    "error": "Eroare:",
+    "checkLog": "Verificați <b>/home/liveuser/Desktop/install.log</b> pentru detalii.<br>Poate fi necesar să reporniți instalatorul sau să verificați discul.",
+    "finishedWarnings": "Instalarea s-a finalizat cu {count} avertismente.",
+    "warningsDetail": "Unele pachete nu s-au instalat. Puteți închide această fereastră (ALT+F4) și reporniți,<br>sau verificați jurnalele: <b>/home/liveuser/Desktop/install.log</b> și <b>/tmp/failed_packages.log</b>",
+    "finishedSuccess": "Instalarea s-a finalizat cu succes!",
+    "finishedReboot": "Puteți închide această fereastră (puteți folosi ALT+F4) și reporniți<br>noul pearintosh, sau verificați jurnalul de pe desktop.",
+    "calculating": "Se calculează...",
+    "estimatedTime": "Timp estimat rămas:",
+    "close": "Închide",
+    "unableToStart": "Instalatorul nu a putut porni. Asigurați-vă că este rulat din utilitarul de instalare pearOS sau că nodeJS/electron funcționează."
+  },
+  "navbar": {
+    "shutdown": "Oprire",
+    "restart": "Repornire",
+    "liveEnv": "Mergi la mediul Live",
+    "about": "Despre Instalatorul pearOS",
+    "showLog": "Afișează jurnalul",
+    "showDisks": "Afișează discurile",
+    "quit": "Ieși din Instalatorul pearOS",
+    "aboutTitle": "Despre Instalatorul pearOS",
+    "build": "Versiune:",
+    "buildValue": "2026.03.05 - dualboot",
+    "author": "Autor:",
+    "authorValue": "Pear Software and Services",
+    "email": "Email:",
+    "emailValue": "alex@pear-software.com"
+  },
+  "index": {
+    "language": "Limbă",
+    "english": "Engleză",
+    "romanian": "Română",
+    "czech": "Cehă"
+  }
+}

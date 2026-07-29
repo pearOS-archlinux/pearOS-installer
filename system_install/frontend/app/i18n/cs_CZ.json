@@ -1,0 +1,87 @@
+{
+  "common": {
+    "back": "Zpět",
+    "continue": "Pokračovat",
+    "close": "Zavřít",
+    "cancel": "Zrušit",
+    "agree": "Souhlasím",
+    "disagree": "Nesouhlasím",
+    "pearOSInstaller": "Instalátor pearOS NiceC0re",
+    "pageTitle": "Instalátor pearOS NiceC0re"
+  },
+  "menu": {
+    "recovery": "Obnovení",
+    "restore": "Obnovení z Time Machine",
+    "restoreDesc": "Pokud máte zálohu systému, kterou chcete obnovit",
+    "install": "Nainstalovat pearOS NiceC0re",
+    "installDesc": "Použijte přiložený instalátor k upgrade nebo instalaci pearOS.",
+    "installAlt": "Offline instalace a Dual Boot",
+    "installAltDesc": "Použijte offline instalátor Calamares pro ruční oddělení a dual boot.",
+    "browser": "Webový prohlížeč",
+    "browserDesc": "Procházejte pro podporu a pomoc s vaším počítačem",
+    "gparted": "GParted",
+    "gpartedDesc": "Opravte nebo vymažte disk pomocí GParted",
+    "altHint": "Podržte ⌥ (Alt) pro offline instalaci a Dual Boot",
+    "howToInstall": "Jak chcete nainstalovat pearOS?",
+    "offlineInstall": "Offline instalace a Dual Boot",
+    "onlineInstall": "Online instalace",
+    "selectOption": "Vyberte možnost"
+  },
+  "install": {
+    "title": "pearOS NiceC0re",
+    "description": "Pro nastavení instalace pearOS NiceC0re klikněte na Pokračovat.",
+    "navbarTitle": "Nainstalovat pearOS NiceC0re"
+  },
+  "agreement": {
+    "title": "Podmínky a ujednání",
+    "description": "Důležité: Používání vašeho počítače pearOS, softwaru pearOS a souvisejících služeb se řídí těmito podmínkami. Prosím, pečlivě si je přečtěte",
+    "continueText": "Pro pokračování v instalaci softwaru musíte souhlasit s podmínkami licenční smlouvy",
+    "licenseNote": "Kopie licence bude uložena ve vašem systému a najdete ji v Přehledu systému po instalaci. Je také zveřejněna na https://pearos.xyz/legal/license",
+    "modalText": "Přečetl jsem si a souhlasím s podmínkami licenční smlouvy.",
+    "mustAgree": "Pro instalaci pearOS musíte souhlasit s podmínkami a ujednáním"
+  },
+  "disk": {
+    "selectText": "Vyberte disk, na který chcete nainstalovat pearOS.",
+    "selectTextFull": "Vyberte disk, na který chcete nainstalovat pearOS NiceC0re",
+    "installTextPrefix": "pearOS NiceC0re bude nainstalován na disk",
+    "eraseTitle": "Toto SMAŽE vybraný disk.",
+    "eraseWarning": "Pokud chcete dual boot, vraťte se o krok zpět a podržte ALT při kliknutí na Pokračovat pro otevření offline a dual boot instalátoru\n\nDěkujeme za pochopení.",
+    "cannotInstallNODISK": "Nelze instalovat na NODISK. Vyberte platný disk.",
+    "noInternet": "Pro instalaci pearOS NiceC0re na vaše zařízení potřebujete aktivní připojení k internetu. Připojte se k internetu a zkuste to znovu."
+  },
+  "progress": {
+    "installFailed": "Instalace selhala!",
+    "error": "Chyba:",
+    "checkLog": "Zkontrolujte <b>/home/liveuser/Desktop/install.log</b> pro podrobnosti.<br>Možná budete muset restartovat instalátor nebo zkontrolovat disk.",
+    "finishedWarnings": "Instalace dokončena s {count} varováními.",
+    "warningsDetail": "Některé balíčky se nepodařilo nainstalovat. Můžete zavřít toto okno (ALT+F4) a restartovat,<br>nebo zkontrolovat logy: <b>/home/liveuser/Desktop/install.log</b> a <b>/tmp/failed_packages.log</b>",
+    "finishedSuccess": "Instalace byla úspěšně dokončena!",
+    "finishedReboot": "Můžete zavřít toto okno (ALT+F4) a restartovat<br>váš nový pearintosh, nebo zkontrolovat log na ploše.",
+    "calculating": "Výpočet...",
+    "estimatedTime": "Odhadovaný zbývající čas:",
+    "close": "Zavřít",
+    "unableToStart": "Instalátor se nepodařilo spustit. Ujistěte se, že je spuštěn z utilitáře pearOS installer, nebo že nodeJS/electron funguje."
+  },
+  "navbar": {
+    "shutdown": "Vypnout",
+    "restart": "Restartovat",
+    "liveEnv": "Přejít do Live prostředí",
+    "about": "O Instalátoru pearOS",
+    "showLog": "Zobrazit log",
+    "showDisks": "Zobrazit disky",
+    "quit": "Ukončit Instalátor pearOS",
+    "aboutTitle": "O Instalátoru pearOS",
+    "build": "Verze:",
+    "buildValue": "2026.03.05 - dualboot",
+    "author": "Autor:",
+    "authorValue": "Pear Software and Services",
+    "email": "Email:",
+    "emailValue": "alex@pear-software.com"
+  },
+  "index": {
+    "language": "Jazyk",
+    "english": "Angličtina",
+    "romanian": "Rumunština",
+    "czech": "Čeština"
+  }
+}
