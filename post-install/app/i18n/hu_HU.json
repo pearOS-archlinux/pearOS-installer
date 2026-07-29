@@ -1,0 +1,6 @@
+{
+  "keymap": { "title": "Válassza ki a billentyűzetkiosztást", "continue": "Folytatás", "pageTitle": "pearOS NiceC0re Telepítő" },
+  "timezone": { "title": "Válassza ki az időzónát", "continue": "Folytatás", "pageTitle": "pearOS NiceC0re Telepítő" },
+  "user": { "title": "Számítógép-fiók létrehozása", "description": "Töltse ki az alábbi adatokat fiókja létrehozásához.", "continue": "Folytatás", "pageTitle": "pearOS NiceC0re Telepítő", "fullNamePlaceholder": "Teljes név", "accountNamePlaceholder": "Felhasználónév", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "Jelszó", "verifyPasswordPlaceholder": "Jelszó megerősítése", "accountNameHint": "Ez lesz a saját mappa neve", "hostnameHint": "Ez lesz a számítógép hálózati neve" },
+  "agreement": { "title": "Felhasználási feltételek", "description": "Fontos: A pearOS számítógép, a pearOS szoftver és a kapcsolódó szolgáltatások használatára ezek a Felhasználási feltételek vonatkoznak. Kérjük, olvassa el figyelmesen.", "continue": "Folytatás", "pageTitle": "pearOS NiceC0re Telepítő" }
+}

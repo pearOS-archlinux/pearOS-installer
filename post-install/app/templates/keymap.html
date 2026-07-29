@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/assistant-styles.css">
+    <title data-i18n="keymap.pageTitle">pearOS NiceC0re Installer</title>
+  </head>
+  <body data-step="keymap">
+    <div class="flex-container">
+      <div class="app">
+        <div class="tabs">
+          <div class="tab active">
+            <img class="worldmap" src="../resources/country.png"/>
+            <h1 data-i18n="keymap.title">Select Your Keyboard Layout</h1>
+            <div class="countries">
+              <select class="list" size=9 id="keymapList">
+                <option value="us">US</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="el">Greek</option>
+                <option value="hu">Hungarian</option>
+                <option value="it">Italian</option>
+                <option value="pl">Polish</option>
+                <option value="ru">Russian</option>
+                <option value="es">Spanish</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="movement-buttons">
+          <hr style="color:#ffffff">
+          <div class="arrow-button-container">
+            <button data-nav="-1" type="button" id="move-back-btn">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+              </svg>
+            </button>
+          </div>
+          <div class="arrow-button-container">
+            <button data-nav="+1" class="nav-button button" type="button" id="move-forward-btn" data-i18n="keymap.continue">Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../js/engine.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script>i18n.load();</script>
+  </body>
+</html>

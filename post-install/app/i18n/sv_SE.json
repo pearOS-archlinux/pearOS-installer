@@ -1,0 +1,6 @@
+{
+  "keymap": { "title": "Välj tangentbordslayout", "continue": "Fortsätt", "pageTitle": "pearOS NiceC0re Installationsprogram" },
+  "timezone": { "title": "Välj din tidszon", "continue": "Fortsätt", "pageTitle": "pearOS NiceC0re Installationsprogram" },
+  "user": { "title": "Skapa ett datorkonto", "description": "Fyll i följande information för att skapa ditt konto.", "continue": "Fortsätt", "pageTitle": "pearOS NiceC0re Installationsprogram", "fullNamePlaceholder": "Fullständigt namn", "accountNamePlaceholder": "Kontonamn", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "Lösenord", "verifyPasswordPlaceholder": "Bekräfta lösenord", "accountNameHint": "Det här blir namnet på din hemkatalog", "hostnameHint": "Det här blir datorns nätverksnamn" },
+  "agreement": { "title": "Villkor och bestämmelser", "description": "Viktigt: Användningen av din pearOS-dator, pearOS-programvara och relaterade tjänster regleras av dessa Villkor och bestämmelser. Läs dem noggrant.", "continue": "Fortsätt", "pageTitle": "pearOS NiceC0re Installationsprogram" }
+}

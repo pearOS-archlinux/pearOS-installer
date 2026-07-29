@@ -1,0 +1,6 @@
+{
+  "keymap": { "title": "Sélectionnez votre disposition de clavier", "continue": "Continuer", "pageTitle": "Installateur pearOS NiceC0re" },
+  "timezone": { "title": "Sélectionnez votre fuseau horaire", "continue": "Continuer", "pageTitle": "Installateur pearOS NiceC0re" },
+  "user": { "title": "Créer un compte utilisateur", "description": "Remplissez les informations suivantes pour créer votre compte.", "continue": "Continuer", "pageTitle": "Installateur pearOS NiceC0re", "fullNamePlaceholder": "Nom complet", "accountNamePlaceholder": "Nom d'utilisateur", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "Mot de passe", "verifyPasswordPlaceholder": "Confirmer le mot de passe", "accountNameHint": "Ce sera le nom de votre dossier personnel", "hostnameHint": "Ce sera le nom réseau de votre ordinateur" },
+  "agreement": { "title": "Conditions d'utilisation", "description": "Important : L'utilisation de votre ordinateur pearOS, du logiciel pearOS et des services associés est soumise à ces Conditions d'utilisation. Veuillez les lire attentivement.", "continue": "Continuer", "pageTitle": "Installateur pearOS NiceC0re" }
+}

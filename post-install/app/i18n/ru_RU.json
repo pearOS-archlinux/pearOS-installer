@@ -1,0 +1,6 @@
+{
+  "keymap": { "title": "Выберите раскладку клавиатуры", "continue": "Продолжить", "pageTitle": "Установщик pearOS NiceC0re" },
+  "timezone": { "title": "Выберите часовой пояс", "continue": "Продолжить", "pageTitle": "Установщик pearOS NiceC0re" },
+  "user": { "title": "Создание учётной записи", "description": "Заполните следующие данные для создания учётной записи.", "continue": "Продолжить", "pageTitle": "Установщик pearOS NiceC0re", "fullNamePlaceholder": "Полное имя", "accountNamePlaceholder": "Имя пользователя", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "Пароль", "verifyPasswordPlaceholder": "Подтвердите пароль", "accountNameHint": "Это будет имя вашей домашней папки", "hostnameHint": "Это будет сетевое имя вашего компьютера" },
+  "agreement": { "title": "Условия использования", "description": "Важно: использование вашего компьютера pearOS, программного обеспечения pearOS и связанных служб регулируется настоящими Условиями использования. Пожалуйста, прочитайте их внимательно.", "continue": "Продолжить", "pageTitle": "Установщик pearOS NiceC0re" }
+}
