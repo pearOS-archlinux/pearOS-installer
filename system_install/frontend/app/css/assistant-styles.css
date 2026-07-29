@@ -346,6 +346,7 @@ hr {
   padding: 5px 10px 5px 10px;
   margin-left: auto;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .install-button-agreement {
@@ -358,6 +359,7 @@ hr {
   margin-left: auto;
   margin-right: 5px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .install-button-agreement:disabled,
@@ -408,6 +410,7 @@ hr {
   padding: 10px;
   transition: all 0.2s ease;
   left:10px;
+  cursor: pointer;
 }
 
 
@@ -596,6 +599,7 @@ hr {
   width: 100%;
   gap: 10px;
   margin-top: auto;
+  cursor: pointer;
 }
 
 .agreement-modal-buttons button {
@@ -604,6 +608,7 @@ hr {
   margin: 0;
   padding: 12px 20px;
   height: auto;
+  cursor: pointer;
 }
 
 .install-choice-modal-content {
@@ -615,6 +620,7 @@ hr {
 .install-choice-modal-content .agreement-modal-buttons button {
   padding: 10px 14px;
   font-size: 13px;
+  cursor: pointer;
 }
 
 .gradient {
@@ -781,6 +787,7 @@ hr {
   width: 90px;
   border-radius: 50px;
   margin: 0;
+  cursor: pointer;
 }
 
 .grid-container-status {
@@ -934,6 +941,7 @@ input[type="radio"]{
   border-radius: 0.3rem;
   padding-right: 0.3rem;
   height: 100%;
+  cursor: pointer;
 }
 
 .taskbar-button::-webkit-scrollbar {

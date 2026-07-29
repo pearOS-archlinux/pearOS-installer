@@ -1,34 +1,32 @@
 <!DOCTYPE html>
-<html>
+<!-- disk -->
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../css/assistant-styles.css">
-    <title data-i18n="common.pageTitle">pearOS NiceC0re Installer</title>
+    <title >pearOS NiceC0re disk</title>
   </head>
   <body data-step="disk">
     <div class="flex-container">
       <div class="app page-install-wrapper">
         <div class="tabs">
           <div class="tab active">
-	    <img class="release-logo-agreement" height="350px" src="../resources/nicec0re-logo.png"/>
-	    <h1><b>pearOS NiceC0re</b></h1>
-	    <p align="center" class="setup-text" id="disk-install-text" data-i18n="disk.selectText">Select the disk where you want to install pearOS.</p>
-      <ul id="disk_list" class="ul_menu_disk">
-      <form></form>
-      </ul>
-    <div class="tab">
-      <img class="release-logo" height="200px" src="../resources/nicec0re-logo.png"/>
-      <h1>pearOS NiceC0re</h1>
-      <p align="center" class="setup-text" data-i18n="disk.selectTextFull">Select the disk where you want to install pearOS NiceC0re</p>
-    </div>
-       <div class="movement-buttons">
-        <div class="grid-container-disk">
-          <button data-nav="-1" class="install-button-agreement" data-i18n="common.back"> Back </button>
-	  <button onclick="showEraseModal();" class="install-button-agreement" data-nav="1" id="move-forward-btn" data-i18n="common.continue"> Continue </button>
+            <img class="release-logo-agreement" height="350px" src="../resources/nicec0re-logo.png" alt="pearOS NiceC0re logo"/>
+            <h1><b>pearOS NiceC0re</b></h1>
+            <p align="center" class="setup-text" id="disk-install-text" data-i18n="disk.selectText">Select the disk where you want to install pearOS.</p>
+            <ul id="disk_list" class="ul_menu_disk">
+              <form></form>
+            </ul>
+          </div>
+        </div>
+        <div class="movement-buttons">
+          <div class="grid-container-disk">
+            <button data-nav="-1" class="install-button-agreement" data-i18n="common.back"> Back </button>
+            <button onclick="showEraseModal();" class="install-button-agreement" data-nav="1" id="move-forward-btn" data-i18n="common.continue"> Continue </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
     <div id="erase-modal" class="agreement-modal">
       <div class="agreement-modal-content" style="height: auto; max-height: 500px;">
         <img class="agreement-modal-logo" height="100px" src="../resources/nicec0re-logo.png"/>
