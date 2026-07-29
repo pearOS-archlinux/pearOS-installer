@@ -154,13 +154,9 @@ img, a {
   /* border-radius: 10px; */
   border-color: transparent;
   overflow-y: auto;
-  color: red;
+  color: #dedede;
   background: #040404;
   border-color: #383838;
-}
-
-.list:focus {
-  box-shadow: 0 0 1px 3px #57a2ff;
 }
 
 .list::-webkit-scrollbar {
