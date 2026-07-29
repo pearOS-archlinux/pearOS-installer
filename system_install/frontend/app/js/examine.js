@@ -1,3 +1,5 @@
-    setTimeout(function () {
-            location.href = "page_menu.html";;
-    }, 2000);
+function examineRedirect() {
+  setTimeout(function() {
+    location.href = "menu.html?lng=" + getLng();
+  }, 2000);
+}
