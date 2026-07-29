@@ -159,6 +159,10 @@ img, a {
   border-color: #383838;
 }
 
+.list > option {
+  cursor: pointer;
+}
+
 .list::-webkit-scrollbar {
   width: 15px;
 }
@@ -306,7 +310,9 @@ hr {
   background: none;
   background-size: 100% 100%;
   background-image: url(../resources/arrowbutton.png);
+  cursor: pointer;
 }
+
 .arrow-button:focus {
   background-image: url(../resources/arrowbuttonFocus.png);
 }

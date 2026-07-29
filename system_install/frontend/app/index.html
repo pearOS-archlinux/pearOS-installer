@@ -15,7 +15,7 @@
             <div class="countries">
               <label for="ddlViewBy" style="display: none;" data-i18n="index.language">Language</label>
               <select class="list" size=9 id="ddlViewBy">
-                <option value="en_US" selected data-i18n="index.english">English</option>
+                <option value="en_US" data-i18n="index.english">English</option>
 		            <option value="ro_RO" data-i18n="index.romanian">Romanian</option>
                 <option value="cs_CZ" data-i18n="index.czech">Czech</option>
               </select>
@@ -24,23 +24,27 @@
         </div>
        <div class="movement-buttons">
          <div class="arrow-button-container" >
-	   <button onclick="select_language();" class="arrow-button" id="move-forward-btn"></button>
+	          <button onclick="select_language();" class="arrow-button" id="move-forward-btn"></button>
          </div>
         </div>
       </div>
     </div>
   </body>
-  <script src="js/engine.js"></script>
   <script src="js/i18n.js"></script>
+  <script src="js/engine.js"></script>
   <script src="js/focus-fix.js"></script>
   <script>
-    i18n.load(function() {
-      var selectElement = document.getElementById("ddlViewBy");
-      if (selectElement) {
-        selectElement.addEventListener('change', function() {
-          window.location.href = '?lng=' + this.value;
-        });
-      }
+    i18n.load(() => {
+      const selectElement = document.getElementById("ddlViewBy");
+      if (!selectElement) return
+
+      const selected = Array.from(selectElement.options).find(x => x.value == i18n.lng)
+      selected.setAttribute('selected', 'selected');
+
+      selectElement.addEventListener('change', () => {
+        window.location.href = '?lng=' + selectElement.value;
+      })
+
     });
   </script>
 </html>

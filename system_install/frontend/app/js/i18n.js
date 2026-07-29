@@ -26,7 +26,8 @@ var i18n = (function () {
 
   function load(callback) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '../i18n/' + lng + '.json');
+    const basePath = window.location.pathname.includes('/templates/') ? '../i18n/' : 'i18n/'
+    xhr.open('GET', basePath + lng + '.json');
     xhr.onload = function () {
       if (xhr.status === 200) strings = JSON.parse(xhr.responseText);
       apply();
@@ -35,5 +36,9 @@ var i18n = (function () {
     xhr.send();
   }
 
-  return { load: load, get: resolve, lng: lng };
+  return {
+    load,
+    get: resolve,
+    lng
+  };
 })();
