@@ -145,6 +145,28 @@ function list_zones() {
     timezoneList.appendChild(opt);
   });
   timezoneList.disabled = false;
+  preselectUtcFromWindowsDetection();
+}
+
+// Dual-boot Windows keeps its hardware clock in local time, not UTC. If a
+// Windows install is detected, default the checkbox to unchecked so the
+// clock isn't off by the timezone offset in either OS after install.
+function preselectUtcFromWindowsDetection() {
+  var utcCheckbox = document.getElementById('utc_enabled');
+  if (!utcCheckbox) return;
+  var execSync = require('child_process').execSync;
+  var windowsDetected = false;
+  try {
+    var efiOut = execSync('efibootmgr 2>/dev/null', { timeout: 5000 }).toString();
+    if (/windows boot manager/i.test(efiOut)) windowsDetected = true;
+  } catch (e) {}
+  if (!windowsDetected) {
+    try {
+      var osProberOut = execSync('os-prober 2>/dev/null', { timeout: 15000 }).toString();
+      if (/windows/i.test(osProberOut)) windowsDetected = true;
+    } catch (e) {}
+  }
+  utcCheckbox.checked = !windowsDetected;
 }
 
 // ── User validation ─────────────────────────────────────────────────
