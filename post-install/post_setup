@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Setting useful variables
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DIR="/usr/share/pearOS-installer/post-install"
 installed=true
 hypervisor=$(systemd-detect-virt)
 
@@ -300,6 +300,30 @@ if [ -f "$PROFILE_PIC_FILE" ] && [ -s "$PROFILE_PIC_FILE" ]; then
       fi
       chown "$USER_NAME:users" "$USER_FACE" 2>/dev/null || true
       echo "Profile picture set for user $USER_NAME"
+    fi
+
+    # 1b. AccountsService (what SDDM's multi-user list actually reads: home
+    # directories are 0700 per login.defs HOME_MODE, so the sddm daemon user
+    # can't stat ~/.face.icon - /var/lib/AccountsService/icons is world-
+    # readable and is what qmlUserModel.icon resolves against first).
+    ACCOUNTSSERVICE_ICONS_DIR="/var/lib/AccountsService/icons"
+    ACCOUNTSSERVICE_USERS_DIR="/var/lib/AccountsService/users"
+    ACCOUNTSSERVICE_ICON="$ACCOUNTSSERVICE_ICONS_DIR/$USER_NAME"
+    if mkdir -p "$ACCOUNTSSERVICE_ICONS_DIR" "$ACCOUNTSSERVICE_USERS_DIR"; then
+      if cp -f "$PROFILE_PIC_SRC" "$ACCOUNTSSERVICE_ICON"; then
+        chmod 0644 "$ACCOUNTSSERVICE_ICON"
+        cat > "$ACCOUNTSSERVICE_USERS_DIR/$USER_NAME" << EOF
+[User]
+Icon=$ACCOUNTSSERVICE_ICON
+SystemAccount=false
+EOF
+        chmod 0600 "$ACCOUNTSSERVICE_USERS_DIR/$USER_NAME"
+        echo "Profile picture registered with AccountsService for $USER_NAME"
+      else
+        echo "WARNING: Failed to copy profile picture to $ACCOUNTSSERVICE_ICON" >&2
+      fi
+    else
+      echo "WARNING: Failed to create AccountsService directories" >&2
     fi
 
     # 2. Extras (global profile picture)
