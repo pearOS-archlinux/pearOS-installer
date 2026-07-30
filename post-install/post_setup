@@ -394,50 +394,42 @@ case "$THEME_MODE" in
     ;;
 esac
 echo "Theme mode to apply: $THEME_MODE"
-if [ -x "$THEME_SWITCHER" ] && [ -d /home/default ]; then
-  # Run the switcher as 'default', which has a live Plasma/DBus session
-  # (same environment the Settings app uses). Running it directly as the
-  # brand-new user (no session yet) only applies the theme partially, since
-  # some components in kde-theme-switch.sh rely on a running session.
-  DEFAULT_UID="$(id -u default)"
-  DEFAULT_RUNTIME_DIR="/run/user/$DEFAULT_UID"
-  if ! su - default -c "export XDG_RUNTIME_DIR='$DEFAULT_RUNTIME_DIR'; export DBUS_SESSION_BUS_ADDRESS='unix:path=$DEFAULT_RUNTIME_DIR/bus'; '$THEME_SWITCHER' --$THEME_MODE"; then
-    echo "WARNING: Failed to apply $THEME_MODE theme for default, continuing..." >&2
-  fi
+# kde-theme-switch.sh needs a real, running Plasma session (DBus, XDG_RUNTIME_DIR)
+# to fully apply itself (GTK/Kvantum/etc components run partially otherwise).
+# The new user has no session yet at this point in the script, so instead of
+# faking one, drop a one-shot autostart entry that runs the switcher on the
+# user's own first real login, then deletes itself (script + .desktop file).
+if [ -x "$THEME_SWITCHER" ] && [ -d "/home/$USER_NAME" ]; then
+  USER_HOME="/home/$USER_NAME"
+  AUTOSTART_DIR="$USER_HOME/.config/autostart"
+  SCRIPTS_DIR="$USER_HOME/.config/pearos-scripts"
+  FIRST_THEME_SCRIPT="$SCRIPTS_DIR/apply-first-theme.sh"
+  FIRST_THEME_DESKTOP="$AUTOSTART_DIR/pearos-first-theme.desktop"
 
-  if [ -d "/home/$USER_NAME" ]; then
-    echo "Copying theme configuration from default to $USER_NAME..."
-    for d in .config .local; do
-      if [ -d "/home/default/$d" ]; then
-        cp -a "/home/default/$d" "/home/$USER_NAME/" || echo "WARNING: Failed to copy $d from default" >&2
-      fi
-    done
-    # Never let the post-install wizard's own autostart entry reach the real user
-    rm -rf "/home/$USER_NAME/.config/autostart/xyz.pearos-post-install.desktop"
+  mkdir -p "$AUTOSTART_DIR" "$SCRIPTS_DIR"
 
-    # The GTK4/libadwaita symlinks written by kde-theme-switch.sh/libadwaita
-    # are absolute paths into default's $HOME (e.g. /home/default/.themes/...).
-    # Copied as-is they'd point at an account that gets deleted later, so
-    # relink them against the new user's own ~/.themes.
-    GTK_THEME_NAME="pearOS-Light"
-    [ "$THEME_MODE" = "dark" ] && GTK_THEME_NAME="pearOS-Dark"
-    NEWUSER_GTK4_THEME_DIR="/home/$USER_NAME/.themes/$GTK_THEME_NAME/gtk-4.0"
-    if [ -d "$NEWUSER_GTK4_THEME_DIR" ]; then
-      rm -rf "/home/$USER_NAME/.config/gtk-4.0/assets" "/home/$USER_NAME/.config/gtk-4.0/gtk.css" "/home/$USER_NAME/.config/gtk-4.0/gtk-dark.css"
-      ln -sf "$NEWUSER_GTK4_THEME_DIR/assets" "/home/$USER_NAME/.config/gtk-4.0/assets"
-      ln -sf "$NEWUSER_GTK4_THEME_DIR/gtk.css" "/home/$USER_NAME/.config/gtk-4.0/gtk.css"
-      ln -sf "$NEWUSER_GTK4_THEME_DIR/gtk-dark.css" "/home/$USER_NAME/.config/gtk-4.0/gtk-dark.css"
-    fi
+  cat > "$FIRST_THEME_SCRIPT" << EOF
+#!/bin/bash
+"$THEME_SWITCHER" --$THEME_MODE
+rm -f "$FIRST_THEME_DESKTOP"
+rm -f "\$0"
+EOF
+  chmod +x "$FIRST_THEME_SCRIPT"
 
-    chown -R "$USER_NAME:users" "/home/$USER_NAME/.config" "/home/$USER_NAME/.local" 2>/dev/null || true
-  fi
+  cat > "$FIRST_THEME_DESKTOP" << EOF
+[Desktop Entry]
+Type=Application
+Exec=bash "$FIRST_THEME_SCRIPT"
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
+Name=pearOS First Theme Setup
+EOF
+
+  chown -R "$USER_NAME:users" "$AUTOSTART_DIR" "$SCRIPTS_DIR" 2>/dev/null || true
+  echo "Scheduled theme application for $USER_NAME on first login"
 else
-  echo "Theme switcher or /home/default missing, falling back to applying theme directly on $USER_NAME" >&2
-  if [ -x "$THEME_SWITCHER" ] && [ -d "/home/$USER_NAME" ]; then
-    if ! su - "$USER_NAME" -c "$THEME_SWITCHER --$THEME_MODE"; then
-      echo "WARNING: Failed to apply $THEME_MODE theme for $USER_NAME, continuing..." >&2
-    fi
-  fi
+  echo "Theme switcher not found or $USER_NAME home missing, skipping theme sync" >&2
 fi
 
 # Remove useless packages and their desktop entries
