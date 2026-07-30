@@ -52,7 +52,7 @@ var LOCALE_CODE_RE = /^[a-z]{2,3}_[A-Z]{2}$/;
 function list_languages() {
   var select = document.getElementById('ddlViewBy');
   if (!select) return;
-  var i18nDir = path.join(__dirname, '..', 'i18n');
+  var i18nDir = path.join(__dirname, 'i18n');
   var files = [];
   try { files = fs.readdirSync(i18nDir); } catch (e) {}
 
