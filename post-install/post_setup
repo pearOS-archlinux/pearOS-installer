@@ -31,28 +31,33 @@ has_internet() {
 echo "=== pearOS Post-Install Script Started: $(date) ==="
 set -x
 
-if [ "$#" -ne 7 ]; then
+if [ "$#" -ne 9 ]; then
   echo "KEYMAP=$1"
   echo "LOCALE=$2"
   echo "ZONE=$3"
-  echo "user_passwd=$4"
+  echo "user_passwd=(hidden)"
   echo "FULL_NAME=$5"
   echo "USER_NAME=$6"
   echo "HOST_NAME=$7"
+  echo "UTC_ENABLED=$8"
+  echo "THEME_MODE=$9"
   echo " ^ The above list represents your selected configurations."
-  echo "Invalid number of arguments (expected 7)." > "$ERROR_FILE"
+  echo "Invalid number of arguments (expected 9)." > "$ERROR_FILE"
   exit 2
 fi
 
 # Various settings for the installation process
 KEYMAP="$1" # us
 LOCALE="$2" # en_US.UTF-8
-utc_enabled=false # true | false
 ZONE="$3" # Europe/Bucharest
+set +x
 user_passwd="$4" # user password: pear
+set -x
 FULL_NAME="$5" # Full Name
 USER_NAME="$6" # username (to log into your system)
 HOST_NAME="$7" # hostname for the system
+utc_enabled="$8" # true | false, from UI checkbox
+THEME_MODE="$9" # dark | light, chosen on the "Choose Your Look" page
 
 # Check the username
 if printf "%s" "$USER_NAME" | grep -Eoq "^[a-z][a-z0-9-]*$" \
@@ -69,6 +74,63 @@ if printf "%s" "$USER_NAME" | grep -Eoq "^[a-z][a-z0-9-]*$" \
 # Remove the script from the autostart
 echo "Removing autostart entry..."
 rm -rf /etc/skel/.config/autostart/xyz.pearos-post-install.desktop
+
+# ── Security-critical: create the real user + lock down 'default' ──────
+# Done FIRST, before any config step below (keymap, locale, timezone,
+# hostname, grub-mkconfig, ...). 'default' has passwordless root
+# (NOPASSWD:ALL) + autologin from the base install; if account creation
+# and 'default' removal were scheduled only near the end of this script,
+# any earlier failure (bad keymap, locale.gen quirk, grub.cfg generation
+# failing because /boot isn't mounted, etc.) would abort the script before
+# ever locking the device down, leaving every shipped device permanently
+# unauthenticated root on every boot.
+
+echo "Creating user $USER_NAME..."
+if ! useradd -m -g users -G wheel -s /bin/bash -c "$FULL_NAME" "$USER_NAME"; then
+  error_exit "Failed to create user: $USER_NAME"
+fi
+
+echo "User $USER_NAME created successfully with sudo access"
+
+set +x
+if ! chpasswd <<<"$USER_NAME:$user_passwd"; then
+  set -x
+  error_exit "Failed to set password for $USER_NAME"
+fi
+set -x
+
+# Remove 'default' user on next boot via a systemd oneshot service.
+# Must run BEFORE sddm.service so the user never appears on the login screen.
+# We cannot delete the user directly here because the Electron post-install
+# app runs as 'default', keeping active processes and open file handles in
+# /home/default — userdel would fail with "cannot remove user default".
+echo "Scheduling removal of default user on next boot..."
+if id "default" &>/dev/null; then
+  cat > /etc/systemd/system/pearos-remove-default-user.service << 'UNIT'
+[Unit]
+Description=Remove pearOS default live user
+DefaultDependencies=no
+Before=sddm.service display-manager.service
+After=local-fs.target systemd-user-sessions.service
+ConditionPathExists=/home/default
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/userdel -rf default
+ExecStartPost=/bin/systemctl disable pearos-remove-default-user.service
+ExecStartPost=/bin/rm -f /etc/systemd/system/pearos-remove-default-user.service
+
+[Install]
+WantedBy=sysinit.target
+UNIT
+  if ! systemctl enable pearos-remove-default-user.service; then
+    error_exit "Failed to schedule removal of default user"
+  fi
+  echo "Default user will be removed before SDDM starts on next boot"
+else
+  echo "Default user does not exist, skipping..."
+fi
 
 # Set/load the keymap
 echo "Setting keymap to $KEYMAP..."
@@ -154,18 +216,6 @@ if ! grub-mkconfig -o /boot/grub/grub.cfg; then
   error_exit "Failed to generate grub configuration"
 fi
 
-# Add user to wheel and sudoers
-echo "Creating user $USER_NAME..."
-if ! useradd -m -g users -G wheel -s /bin/bash "$USER_NAME"; then
-  error_exit "Failed to create user: $USER_NAME"
-fi
-
-echo "User $USER_NAME created successfully with sudo access"
-
-if ! chpasswd <<<"$USER_NAME:$user_passwd"; then
-  error_exit "Failed to set password for $USER_NAME"
-fi
-
 # Sync system clock before GPG operations only if internet is available.
 # A skewed clock causes "key created in the future" GPG errors.
 echo "Checking internet connectivity..."
@@ -207,8 +257,22 @@ if ! sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /etc/sudoers; then
 fi
 
 echo "Adding user to wheel group..."
-if ! echo "$USER_NAME   ALL=(ALL) ALL" | tee /etc/sudoers; then
+if ! echo "$USER_NAME   ALL=(ALL) ALL" | tee -a /etc/sudoers; then
   error_exit "Failed to add user to wheel group in sudoers"
+fi
+if ! visudo -c -f /etc/sudoers; then
+  error_exit "Sudoers file is invalid after modification"
+fi
+
+# NOPASSWD for specific pearOS apps (avoids password prompt for these only)
+echo "Configuring passwordless sudo for pearOS apps..."
+cat > /etc/sudoers.d/pearos-apps << EOF
+$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/pearos-appstore, /usr/bin/pearos-welcome
+EOF
+chmod 0440 /etc/sudoers.d/pearos-apps
+if ! visudo -c -f /etc/sudoers.d/pearos-apps; then
+  rm -f /etc/sudoers.d/pearos-apps
+  error_exit "Invalid sudoers.d/pearos-apps file, removed"
 fi
 
 # Profile picture: ~/.face.icon for new user and SDDM themes (critical for login screen)
@@ -216,6 +280,16 @@ echo "Setting profile picture (avatar)..."
 PROFILE_PIC_FILE="/tmp/profile_picture"
 if [ -f "$PROFILE_PIC_FILE" ] && [ -s "$PROFILE_PIC_FILE" ]; then
   PROFILE_PIC_SRC="$(cat "$PROFILE_PIC_FILE" | tr -d '\n\r')"
+  # Only accept pictures bundled with the app (app/resources/profiles) -
+  # this file is attacker-writable /tmp state, so resolve symlinks/.. and
+  # reject anything outside the whitelisted directory before this root
+  # script copies it anywhere (avoids leaking arbitrary root-readable files).
+  PROFILE_PICS_DIR="$(realpath -m "$DIR/app/resources/profiles")"
+  PROFILE_PIC_SRC="$(realpath -e "$PROFILE_PIC_SRC" 2>/dev/null)"
+  case "$PROFILE_PIC_SRC" in
+    "$PROFILE_PICS_DIR"/*) ;;
+    *) echo "Rejected profile picture path outside $PROFILE_PICS_DIR" >&2; PROFILE_PIC_SRC="" ;;
+  esac
   if [ -n "$PROFILE_PIC_SRC" ] && [ -f "$PROFILE_PIC_SRC" ] && [ -r "$PROFILE_PIC_SRC" ]; then
     # 1. New user's home avatar
     USER_HOME="/home/$USER_NAME"
@@ -274,6 +348,36 @@ if ! chmod -R 0777 /usr/share/extras; then
   echo "WARNING: Failed to set permissions on /usr/share/extras" >&2
 fi
 
+# Apply the dark/light look chosen on the "Choose Your Look" page to the
+# newly created user (cosmetic, non-fatal on failure).
+echo "Applying theme preference for $USER_NAME..."
+THEME_SWITCHER="/usr/share/extras/system-settings/themeswitcher/kde-theme-switch.sh"
+THEME_STATE_FILE="/usr/share/extras/system-settings/themeswitcher/state"
+case "$THEME_MODE" in
+  dark|light) ;;
+  *)
+    # Defensive fallback if THEME_MODE wasn't 'dark'/'light' (shouldn't
+    # happen - the UI always sends one of the two): reuse whatever 'default'
+    # had, same detection the theme switcher uses internally.
+    THEME_MODE="light"
+    if [ -f "$THEME_STATE_FILE" ]; then
+      saved_mode="$(tr '[:upper:]' '[:lower:]' < "$THEME_STATE_FILE" | tr -d '\n\r\t ')"
+      [ "$saved_mode" = "dark" ] && THEME_MODE="dark"
+    elif [ -d /home/default ]; then
+      default_scheme="$(su - default -c 'kreadconfig6 --file kdeglobals --group General --key ColorScheme' 2>/dev/null || echo "")"
+      echo "$default_scheme" | grep -qi "dark" && THEME_MODE="dark"
+    fi
+    ;;
+esac
+if [ -x "$THEME_SWITCHER" ] && [ -d "/home/$USER_NAME" ]; then
+  echo "Theme mode to apply: $THEME_MODE"
+  if ! su - "$USER_NAME" -c "$THEME_SWITCHER --$THEME_MODE"; then
+    echo "WARNING: Failed to apply $THEME_MODE theme for $USER_NAME, continuing..." >&2
+  fi
+else
+  echo "Theme switcher not found or $USER_NAME home missing, skipping theme sync" >&2
+fi
+
 # Remove useless packages and their desktop entries
 echo "Removing unnecessary packages..."
 if ! yes | LC_ALL=en_US.UTF-8 pacman -R electron npm plasma-sdk discover pearos-livecd-desktop; then
@@ -311,39 +415,6 @@ fi
 
 # Setting pearOS plymouth theme
 #plymouth-set-default-theme -R pear-plymouth
-
-# Remove 'default' user on next boot via a systemd oneshot service.
-# Must run BEFORE sddm.service so the user never appears on the login screen.
-# We cannot delete the user directly here because the Electron post-install
-# app runs as 'default', keeping active processes and open file handles in
-# /home/default — userdel would fail with "cannot remove user default".
-echo "Scheduling removal of default user on next boot..."
-if id "default" &>/dev/null; then
-  cat > /etc/systemd/system/pearos-remove-default-user.service << 'UNIT'
-[Unit]
-Description=Remove pearOS default live user
-DefaultDependencies=no
-Before=sddm.service display-manager.service
-After=local-fs.target systemd-user-sessions.service
-ConditionPathExists=/home/default
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/usr/sbin/userdel -rf default
-ExecStartPost=/bin/systemctl disable pearos-remove-default-user.service
-ExecStartPost=/bin/rm -f /etc/systemd/system/pearos-remove-default-user.service
-
-[Install]
-WantedBy=sysinit.target
-UNIT
-  if ! systemctl enable pearos-remove-default-user.service; then
-    error_exit "Failed to schedule removal of default user"
-  fi
-  echo "Default user will be removed before SDDM starts on next boot"
-else
-  echo "Default user does not exist, skipping..."
-fi
 
 # Fixing the SDDM theme
 echo "Configuring SDDM theme..."

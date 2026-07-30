@@ -1,6 +1,45 @@
 {
-  "keymap": { "title": "Selecione o layout do teclado", "continue": "Continuar", "pageTitle": "Instalador pearOS NiceC0re" },
-  "timezone": { "title": "Selecione seu fuso horário", "continue": "Continuar", "pageTitle": "Instalador pearOS NiceC0re" },
-  "user": { "title": "Criar uma conta de computador", "description": "Preencha as informações abaixo para criar sua conta.", "continue": "Continuar", "pageTitle": "Instalador pearOS NiceC0re", "fullNamePlaceholder": "Nome completo", "accountNamePlaceholder": "Nome da conta", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "Senha", "verifyPasswordPlaceholder": "Confirmar senha", "accountNameHint": "Este será o nome da sua pasta pessoal", "hostnameHint": "Este será o nome de rede do seu computador" },
-  "agreement": { "title": "Termos e Condições", "description": "Importante: O uso do seu computador pearOS, do software pearOS e dos serviços relacionados está sujeito a estes Termos e Condições. Por favor, leia-os com atenção.", "continue": "Continuar", "pageTitle": "Instalador pearOS NiceC0re" }
+  "_meta": {
+    "displayName": "Portuguese (Brazil)"
+  },
+  "keymap": {
+    "title": "Selecione o layout do teclado",
+    "continue": "Continuar",
+    "pageTitle": "Instalador pearOS NiceC0re"
+  },
+  "timezone": {
+    "title": "Selecione seu fuso horário",
+    "continue": "Continuar",
+    "pageTitle": "Instalador pearOS NiceC0re",
+    "utcLabel": "O relogio de hardware esta em UTC (recomendado, exceto em dual-boot com Windows)"
+  },
+  "user": {
+    "title": "Criar uma conta de computador",
+    "description": "Preencha as informações abaixo para criar sua conta.",
+    "continue": "Continuar",
+    "pageTitle": "Instalador pearOS NiceC0re",
+    "fullNamePlaceholder": "Nome completo",
+    "accountNamePlaceholder": "Nome da conta",
+    "hostnamePlaceholder": "Hostname",
+    "passwordPlaceholder": "Senha",
+    "verifyPasswordPlaceholder": "Confirmar senha",
+    "accountNameHint": "Este será o nome da sua pasta pessoal",
+    "hostnameHint": "Este será o nome de rede do seu computador"
+  },
+  "agreement": {
+    "title": "Termos e Condições",
+    "description": "Importante: O uso do seu computador pearOS, do software pearOS e dos serviços relacionados está sujeito a estes Termos e Condições. Por favor, leia-os com atenção.",
+    "continue": "Continuar",
+    "pageTitle": "Instalador pearOS NiceC0re"
+  },
+  "look": {
+    "title": "Escolha sua aparencia",
+    "description": "Escolha como o pearOS deve parecer. Voce pode mudar isso depois.",
+    "lightLabel": "Claro",
+    "darkLabel": "Escuro",
+    "continue": "Continuar",
+    "pageTitle": "Instalador pearOS NiceC0re",
+    "noteMain": "Selecione uma aparencia clara ou escura e veja como o Dock, os menus, os botoes e as janelas se ajustam conforme sua escolha.",
+    "noteChange": "Voce pode alterar isso depois nas Preferencias do Sistema."
+  }
 }

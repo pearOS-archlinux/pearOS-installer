@@ -1,6 +1,45 @@
 {
-  "keymap": { "title": "キーボードレイアウトを選択", "continue": "続ける", "pageTitle": "pearOS NiceC0re インストーラー" },
-  "timezone": { "title": "タイムゾーンを選択", "continue": "続ける", "pageTitle": "pearOS NiceC0re インストーラー" },
-  "user": { "title": "コンピュータアカウントを作成", "description": "アカウントを作成するには、以下の情報を入力してください。", "continue": "続ける", "pageTitle": "pearOS NiceC0re インストーラー", "fullNamePlaceholder": "フルネーム", "accountNamePlaceholder": "アカウント名", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "パスワード", "verifyPasswordPlaceholder": "パスワードを確認", "accountNameHint": "これがホームフォルダの名前になります", "hostnameHint": "これがコンピュータのネットワーク名になります" },
-  "agreement": { "title": "利用規約", "description": "重要：pearOSコンピュータ、pearOSソフトウェア、および関連サービスの使用は、これらの利用規約に従います。注意してお読みください。", "continue": "続ける", "pageTitle": "pearOS NiceC0re インストーラー" }
+  "_meta": {
+    "displayName": "Japanese (Japan)"
+  },
+  "keymap": {
+    "title": "キーボードレイアウトを選択",
+    "continue": "続ける",
+    "pageTitle": "pearOS NiceC0re インストーラー"
+  },
+  "timezone": {
+    "title": "タイムゾーンを選択",
+    "continue": "続ける",
+    "pageTitle": "pearOS NiceC0re インストーラー",
+    "utcLabel": "ハードウェアクロックはUTCに設定されています（Windowsとのデュアルブートでない限り推奨）"
+  },
+  "user": {
+    "title": "コンピュータアカウントを作成",
+    "description": "アカウントを作成するには、以下の情報を入力してください。",
+    "continue": "続ける",
+    "pageTitle": "pearOS NiceC0re インストーラー",
+    "fullNamePlaceholder": "フルネーム",
+    "accountNamePlaceholder": "アカウント名",
+    "hostnamePlaceholder": "Hostname",
+    "passwordPlaceholder": "パスワード",
+    "verifyPasswordPlaceholder": "パスワードを確認",
+    "accountNameHint": "これがホームフォルダの名前になります",
+    "hostnameHint": "これがコンピュータのネットワーク名になります"
+  },
+  "agreement": {
+    "title": "利用規約",
+    "description": "重要：pearOSコンピュータ、pearOSソフトウェア、および関連サービスの使用は、これらの利用規約に従います。注意してお読みください。",
+    "continue": "続ける",
+    "pageTitle": "pearOS NiceC0re インストーラー"
+  },
+  "look": {
+    "title": "デザインを選ぶ",
+    "description": "pearOSの見た目を選択してください。後でいつでも変更できます。",
+    "lightLabel": "ライト",
+    "darkLabel": "ダーク",
+    "continue": "続ける",
+    "pageTitle": "pearOS NiceC0re インストーラー",
+    "noteMain": "ライトまたはダークの外観を選択すると、Dock、メニュー、ボタン、ウィンドウが選択に応じて変化します。",
+    "noteChange": "後でシステム環境設定からいつでも変更できます。"
+  }
 }

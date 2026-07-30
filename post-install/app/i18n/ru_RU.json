@@ -1,6 +1,45 @@
 {
-  "keymap": { "title": "Выберите раскладку клавиатуры", "continue": "Продолжить", "pageTitle": "Установщик pearOS NiceC0re" },
-  "timezone": { "title": "Выберите часовой пояс", "continue": "Продолжить", "pageTitle": "Установщик pearOS NiceC0re" },
-  "user": { "title": "Создание учётной записи", "description": "Заполните следующие данные для создания учётной записи.", "continue": "Продолжить", "pageTitle": "Установщик pearOS NiceC0re", "fullNamePlaceholder": "Полное имя", "accountNamePlaceholder": "Имя пользователя", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "Пароль", "verifyPasswordPlaceholder": "Подтвердите пароль", "accountNameHint": "Это будет имя вашей домашней папки", "hostnameHint": "Это будет сетевое имя вашего компьютера" },
-  "agreement": { "title": "Условия использования", "description": "Важно: использование вашего компьютера pearOS, программного обеспечения pearOS и связанных служб регулируется настоящими Условиями использования. Пожалуйста, прочитайте их внимательно.", "continue": "Продолжить", "pageTitle": "Установщик pearOS NiceC0re" }
+  "_meta": {
+    "displayName": "Russian (Russia)"
+  },
+  "keymap": {
+    "title": "Выберите раскладку клавиатуры",
+    "continue": "Продолжить",
+    "pageTitle": "Установщик pearOS NiceC0re"
+  },
+  "timezone": {
+    "title": "Выберите часовой пояс",
+    "continue": "Продолжить",
+    "pageTitle": "Установщик pearOS NiceC0re",
+    "utcLabel": "Aппаратные часы установлены на UTC (рекомендуется, если не используется двойная загрузка с Windows)"
+  },
+  "user": {
+    "title": "Создание учётной записи",
+    "description": "Заполните следующие данные для создания учётной записи.",
+    "continue": "Продолжить",
+    "pageTitle": "Установщик pearOS NiceC0re",
+    "fullNamePlaceholder": "Полное имя",
+    "accountNamePlaceholder": "Имя пользователя",
+    "hostnamePlaceholder": "Hostname",
+    "passwordPlaceholder": "Пароль",
+    "verifyPasswordPlaceholder": "Подтвердите пароль",
+    "accountNameHint": "Это будет имя вашей домашней папки",
+    "hostnameHint": "Это будет сетевое имя вашего компьютера"
+  },
+  "agreement": {
+    "title": "Условия использования",
+    "description": "Важно: использование вашего компьютера pearOS, программного обеспечения pearOS и связанных служб регулируется настоящими Условиями использования. Пожалуйста, прочитайте их внимательно.",
+    "continue": "Продолжить",
+    "pageTitle": "Установщик pearOS NiceC0re"
+  },
+  "look": {
+    "title": "Vyberite vneshniy vid",
+    "description": "Vyberite, kak dolzhen vyglyadet pearOS. Vy smozhete izmenit eto pozzhe.",
+    "lightLabel": "Svetlaya",
+    "darkLabel": "Temnaya",
+    "continue": "Prodolzhit",
+    "pageTitle": "Ustanovshchik pearOS NiceC0re",
+    "noteMain": "Vyberite svetloe ili temnoe oformlenie i posmotrite, kak Dock, menyu, knopki i okna izmenyatsya v zavisimosti ot vybora.",
+    "noteChange": "Vy mozhete izmenit eto pozzhe v Nastroykakh sistemy."
+  }
 }

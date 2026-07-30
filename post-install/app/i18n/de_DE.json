@@ -1,6 +1,45 @@
 {
-  "keymap": { "title": "Wählen Sie Ihr Tastaturlayout aus", "continue": "Fortsetzen", "pageTitle": "pearOS NiceC0re Installer" },
-  "timezone": { "title": "Wählen Sie Ihre Zeitzone aus", "continue": "Fortsetzen", "pageTitle": "pearOS NiceC0re Installer" },
-  "user": { "title": "Erstellen Sie ein Computerkonto", "description": "Füllen Sie die folgenden Informationen aus, um Ihr Computerkonto zu erstellen.", "continue": "Fortsetzen", "pageTitle": "pearOS NiceC0re Installer", "fullNamePlaceholder": "Vollständiger Name", "accountNamePlaceholder": "Kontobezeichnung", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "Passwort", "verifyPasswordPlaceholder": "Passwort bestätigen", "accountNameHint": "Dies wird der Name Ihres Home-Ordners sein", "hostnameHint": "Dies wird der Name Ihres Computers im Netzwerk sein" },
-  "agreement": { "title": "Allgemeine Geschäftsbedingungen", "description": "Wichtig: Die Nutzung Ihres pearOS-Computers, der pearOS-Software und der zugehörigen Dienste unterliegt diesen Allgemeinen Geschäftsbedingungen. Bitte lesen Sie sie sorgfältig.", "continue": "Fortsetzen", "pageTitle": "pearOS NiceC0re Installer" }
+  "_meta": {
+    "displayName": "German (Germany)"
+  },
+  "keymap": {
+    "title": "Wählen Sie Ihr Tastaturlayout aus",
+    "continue": "Fortsetzen",
+    "pageTitle": "pearOS NiceC0re Installer"
+  },
+  "timezone": {
+    "title": "Wählen Sie Ihre Zeitzone aus",
+    "continue": "Fortsetzen",
+    "pageTitle": "pearOS NiceC0re Installer",
+    "utcLabel": "Die Hardware-Uhr ist auf UTC eingestellt (empfohlen, ausser bei Dual-Boot mit Windows)"
+  },
+  "user": {
+    "title": "Erstellen Sie ein Computerkonto",
+    "description": "Füllen Sie die folgenden Informationen aus, um Ihr Computerkonto zu erstellen.",
+    "continue": "Fortsetzen",
+    "pageTitle": "pearOS NiceC0re Installer",
+    "fullNamePlaceholder": "Vollständiger Name",
+    "accountNamePlaceholder": "Kontobezeichnung",
+    "hostnamePlaceholder": "Hostname",
+    "passwordPlaceholder": "Passwort",
+    "verifyPasswordPlaceholder": "Passwort bestätigen",
+    "accountNameHint": "Dies wird der Name Ihres Home-Ordners sein",
+    "hostnameHint": "Dies wird der Name Ihres Computers im Netzwerk sein"
+  },
+  "agreement": {
+    "title": "Allgemeine Geschäftsbedingungen",
+    "description": "Wichtig: Die Nutzung Ihres pearOS-Computers, der pearOS-Software und der zugehörigen Dienste unterliegt diesen Allgemeinen Geschäftsbedingungen. Bitte lesen Sie sie sorgfältig.",
+    "continue": "Fortsetzen",
+    "pageTitle": "pearOS NiceC0re Installer"
+  },
+  "look": {
+    "title": "Wahle dein Aussehen",
+    "description": "Wahle, wie pearOS aussehen soll. Du kannst dies jederzeit spaeter aendern.",
+    "lightLabel": "Hell",
+    "darkLabel": "Dunkel",
+    "continue": "Weiter",
+    "pageTitle": "pearOS NiceC0re Installer",
+    "noteMain": "Wahle ein helles oder dunkles Erscheinungsbild und sieh, wie sich Dock, Menus, Schaltflachen und Fenster je nach Wahl anpassen.",
+    "noteChange": "Du kannst dies spaeter in den Systemeinstellungen aendern."
+  }
 }

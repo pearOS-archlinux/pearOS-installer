@@ -1,6 +1,45 @@
 {
-  "keymap": { "title": "Vyberte rozložení klávesnice", "continue": "Pokračovat", "pageTitle": "Instalátor pearOS NiceC0re" },
-  "timezone": { "title": "Vyberte své časové pásmo", "continue": "Pokračovat", "pageTitle": "Instalátor pearOS NiceC0re" },
-  "user": { "title": "Vytvořte uživatelský účet počítače", "description": "Vyplňte následující údaje pro vytvoření uživatelského účtu.", "continue": "Pokračovat", "pageTitle": "Instalátor pearOS NiceC0re", "fullNamePlaceholder": "Celé jméno", "accountNamePlaceholder": "Uživatelské jméno", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "Heslo", "verifyPasswordPlaceholder": "Ověřit heslo", "accountNameHint": "Toto bude název vaší domovské složky", "hostnameHint": "This will be your computer's network name" },
-  "agreement": { "title": "Podmínky použití", "description": "Důležité: Používání vašeho počítače pearOS, softwaru pearOS a souvisejících služeb se řídí těmito Podmínkami použití. Prosíme, přečtěte si je pečlivě.", "continue": "Pokračovat", "pageTitle": "Instalátor pearOS NiceC0re" }
+  "_meta": {
+    "displayName": "Czech (Czech Republic)"
+  },
+  "keymap": {
+    "title": "Vyberte rozložení klávesnice",
+    "continue": "Pokračovat",
+    "pageTitle": "Instalátor pearOS NiceC0re"
+  },
+  "timezone": {
+    "title": "Vyberte své časové pásmo",
+    "continue": "Pokračovat",
+    "pageTitle": "Instalátor pearOS NiceC0re",
+    "utcLabel": "Hardwarove hodiny jsou nastaveny na UTC (doporuceno, pokud nemate dual-boot s Windows)"
+  },
+  "user": {
+    "title": "Vytvořte uživatelský účet počítače",
+    "description": "Vyplňte následující údaje pro vytvoření uživatelského účtu.",
+    "continue": "Pokračovat",
+    "pageTitle": "Instalátor pearOS NiceC0re",
+    "fullNamePlaceholder": "Celé jméno",
+    "accountNamePlaceholder": "Uživatelské jméno",
+    "hostnamePlaceholder": "Hostname",
+    "passwordPlaceholder": "Heslo",
+    "verifyPasswordPlaceholder": "Ověřit heslo",
+    "accountNameHint": "Toto bude název vaší domovské složky",
+    "hostnameHint": "This will be your computer's network name"
+  },
+  "agreement": {
+    "title": "Podmínky použití",
+    "description": "Důležité: Používání vašeho počítače pearOS, softwaru pearOS a souvisejících služeb se řídí těmito Podmínkami použití. Prosíme, přečtěte si je pečlivě.",
+    "continue": "Pokračovat",
+    "pageTitle": "Instalátor pearOS NiceC0re"
+  },
+  "look": {
+    "title": "Vyberte si vzhled",
+    "description": "Vyberte, jak ma pearOS vypadat. Muzete to kdykoli pozdeji zmenit.",
+    "lightLabel": "Svetly",
+    "darkLabel": "Tmavy",
+    "continue": "Pokracovat",
+    "pageTitle": "Instalator pearOS NiceC0re",
+    "noteMain": "Vyberte svetly nebo tmavy vzhled a podivejte se, jak se Dock, nabidky, tlacitka a okna prizpusobi podle vaseho vyberu.",
+    "noteChange": "Muzete to pozdeji zmenit v Systemovych predvolbach."
+  }
 }

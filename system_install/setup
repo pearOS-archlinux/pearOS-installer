@@ -332,7 +332,6 @@
     else
       sgdisk -n 1:0:+512M -n 2:0:0 -t 1:ef00 -t 2:8300 "$DISK" &> /dev/null
     fi
-    mkfs.fat -F32 "$BOOT_PART" &> /dev/null
   # Partition creating, for LEGACY systems, with swap memory check.
   else
     ROOT_PART="${DISK}${PREFIX}1"
@@ -347,6 +346,19 @@
     fi
   fi
   update_progress "8"
+
+  # Make the kernel re-read the new partition table before touching the
+  # new partitions - without this, mkfs/mount below can race the kernel
+  # and silently target stale/nonexistent device nodes (seen intermittently
+  # on some disks, especially USB/slow media).
+  partprobe "$DISK" &> /dev/null
+  udevadm settle
+
+  if $UEFI; then
+    if ! mkfs.fat -F32 "$BOOT_PART" &> /dev/null; then
+      error_exit "Failed to create FAT32 filesystem on $BOOT_PART"
+    fi
+  fi
 
   # Make the ext4 filesystem
   if ! mkfs."$FILE_SYSTEM" "$ROOT_PART" &> /dev/null; then
@@ -364,7 +376,9 @@
   # If the system is UEFI enabled, the boot partition gets mounted
   if $UEFI; then
     mkdir /mnt/boot
-    mount "$BOOT_PART" /mnt/boot
+    if ! mount "$BOOT_PART" /mnt/boot; then
+      error_exit "Failed to mount $BOOT_PART to /mnt/boot"
+    fi
   fi
 
   # More variables

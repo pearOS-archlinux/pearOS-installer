@@ -7,7 +7,16 @@ var reservedUsernames = [];
 try { reservedUsernames = fs.readFileSync(path.join(__dirname, '..', '..', 'reserved_usernames'), 'utf8').trim().split('\n'); } catch (e) {}
 
 // ── Navigation ──────────────────────────────────────────────────────
-var STEPS = ['keymap', 'timezone', 'user', 'agreement', 'finish'];
+var STEPS = ['keymap', 'timezone', 'user', 'look', 'agreement', 'finish'];
+
+// Apply the previously chosen dark/light look to the wizard window itself
+// (not just the future desktop session), on every page, immediately.
+function applyWizardTheme() {
+  var mode = 'light';
+  try { mode = fs.readFileSync('/tmp/theme_mode', 'utf8').trim(); } catch (e) {}
+  document.body.classList.toggle('dark-mode', mode === 'dark');
+}
+applyWizardTheme();
 
 function getLng() {
   return new URLSearchParams(window.location.search).get('lng') || 'en_US';
@@ -31,12 +40,45 @@ function go(delta) {
     if (current === 'keymap' && !saveKeymap()) return;
     if (current === 'timezone' && !saveTimezone()) return;
     if (current === 'user' && !saveUser()) return;
+    if (current === 'look' && !saveLook()) return;
   }
 
   window.location.href = STEPS[next] + '.html?lng=' + getLng();
 }
 
 // ── Language selection (called from index.html) ─────────────────────
+var LOCALE_CODE_RE = /^[a-z]{2,3}_[A-Z]{2}$/;
+
+function list_languages() {
+  var select = document.getElementById('ddlViewBy');
+  if (!select) return;
+  var i18nDir = path.join(__dirname, '..', 'i18n');
+  var files = [];
+  try { files = fs.readdirSync(i18nDir); } catch (e) {}
+
+  var languages = files
+    .filter(function (f) { return f.endsWith('.json'); })
+    .map(function (f) { return f.slice(0, -5); })
+    .filter(function (code) { return LOCALE_CODE_RE.test(code); })
+    .map(function (code) {
+      var displayName = code;
+      try {
+        var data = JSON.parse(fs.readFileSync(path.join(i18nDir, code + '.json'), 'utf8'));
+        if (data._meta && data._meta.displayName) displayName = data._meta.displayName;
+      } catch (e) {}
+      return { code: code, displayName: displayName };
+    })
+    .sort(function (a, b) { return a.displayName.localeCompare(b.displayName); });
+
+  select.innerHTML = '';
+  languages.forEach(function (lang) {
+    var opt = document.createElement('option');
+    opt.value = lang.code + '.UTF-8';
+    opt.textContent = lang.displayName;
+    select.appendChild(opt);
+  });
+}
+
 function select_language() {
   var e = document.getElementById('ddlViewBy');
   var locale = e.value;
@@ -67,23 +109,42 @@ function saveTimezone() {
     return false;
   }
   fs.writeFileSync('/tmp/timezone', e.options[e.selectedIndex].text);
+  var utcCheckbox = document.getElementById('utc_enabled');
+  fs.writeFileSync('/tmp/utc_enabled', (utcCheckbox && utcCheckbox.checked) ? 'true' : 'false');
   return true;
 }
 
+// Curated list of representative time zones (one per region/major city)
+// instead of dumping all ~600 IANA entries.
+var COMMON_TIMEZONES = [
+  'Africa/Cairo', 'Africa/Johannesburg', 'Africa/Lagos', 'Africa/Nairobi',
+  'America/Anchorage', 'America/Argentina/Buenos_Aires', 'America/Bogota',
+  'America/Chicago', 'America/Denver', 'America/Los_Angeles', 'America/Mexico_City',
+  'America/New_York', 'America/Sao_Paulo', 'America/Toronto', 'America/Vancouver',
+  'Asia/Bangkok', 'Asia/Dubai', 'Asia/Hong_Kong', 'Asia/Istanbul', 'Asia/Jakarta',
+  'Asia/Jerusalem', 'Asia/Kolkata', 'Asia/Seoul', 'Asia/Shanghai', 'Asia/Singapore',
+  'Asia/Tokyo',
+  'Atlantic/Reykjavik',
+  'Australia/Melbourne', 'Australia/Perth', 'Australia/Sydney',
+  'Europe/Amsterdam', 'Europe/Athens', 'Europe/Berlin', 'Europe/Bucharest',
+  'Europe/Budapest', 'Europe/Dublin', 'Europe/Helsinki', 'Europe/Lisbon',
+  'Europe/London', 'Europe/Madrid', 'Europe/Moscow', 'Europe/Paris',
+  'Europe/Prague', 'Europe/Rome', 'Europe/Stockholm', 'Europe/Vienna',
+  'Europe/Warsaw', 'Europe/Zurich',
+  'Pacific/Auckland', 'Pacific/Honolulu',
+  'UTC'
+];
+
 function list_zones() {
-  var exec = require('child_process').exec;
   var timezoneList = document.getElementById('time_zones_list');
   if (!timezoneList) return;
   timezoneList.innerHTML = '';
-  exec('find /usr/share/zoneinfo/posix -type f -or -type l | sort | cut -c27-', function (err, stdout) {
-    if (err) { timezoneList.innerHTML = '<option>Error loading timezones</option>'; return; }
-    stdout.trim().split('\n').filter(function (t) { return t.length > 0; }).forEach(function (tz) {
-      var opt = document.createElement('option');
-      opt.textContent = tz;
-      timezoneList.appendChild(opt);
-    });
-    timezoneList.disabled = false;
+  COMMON_TIMEZONES.forEach(function (tz) {
+    var opt = document.createElement('option');
+    opt.textContent = tz;
+    timezoneList.appendChild(opt);
   });
+  timezoneList.disabled = false;
 }
 
 // ── User validation ─────────────────────────────────────────────────
@@ -119,6 +180,38 @@ function saveUser() {
   fs.writeFileSync('/tmp/password', password);
   var selectedPicture = document.querySelector('.profile-picture-item.selected');
   if (selectedPicture) fs.writeFileSync('/tmp/profile_picture', selectedPicture.dataset.imagePath);
+  return true;
+}
+
+// ── Choose Your Look (light/dark) ───────────────────────────────────
+function detectDefaultLookMode() {
+  try {
+    var state = fs.readFileSync('/usr/share/extras/system-settings/themeswitcher/state', 'utf8').trim().toLowerCase();
+    if (state === 'dark' || state === 'light') return state;
+  } catch (e) {}
+  return 'light';
+}
+
+function initLookPicker() {
+  var options = document.querySelectorAll('.look-option');
+  if (!options.length) return;
+  var preselect = detectDefaultLookMode();
+  options.forEach(function (opt) {
+    if (opt.dataset.mode === preselect) opt.classList.add('selected');
+    opt.addEventListener('click', function () {
+      options.forEach(function (o) { o.classList.remove('selected'); });
+      opt.classList.add('selected');
+      var mode = opt.dataset.mode === 'dark' ? 'dark' : 'light';
+      fs.writeFileSync('/tmp/theme_mode', mode);
+      document.body.classList.toggle('dark-mode', mode === 'dark');
+    });
+  });
+}
+
+function saveLook() {
+  var selected = document.querySelector('.look-option.selected');
+  var mode = (selected && selected.dataset.mode === 'dark') ? 'dark' : 'light';
+  fs.writeFileSync('/tmp/theme_mode', mode);
   return true;
 }
 
@@ -192,10 +285,10 @@ function load_profile_pictures() {
       this.classList.add('selected');
       fs.writeFileSync('/tmp/profile_picture', this.dataset.imagePath);
       if (!isTestMode) {
-        var exec = require('child_process').exec;
+        var execFile = require('child_process').execFile;
         var src = this.dataset.imagePath;
-        exec('sudo cp "' + src + '" /usr/share/sddm/themes/pearOS/faces/.face.icon');
-        exec('sudo cp "' + src + '" /usr/share/sddm/themes/pearOS-dark/faces/.face.icon');
+        execFile('sudo', ['cp', src, '/usr/share/sddm/themes/pearOS/faces/.face.icon']);
+        execFile('sudo', ['cp', src, '/usr/share/sddm/themes/pearOS-dark/faces/.face.icon']);
       }
       checkFormValidity();
     });
@@ -238,6 +331,7 @@ function logSettings(cfg) {
   console.log('Full Name:           ' + cfg.fullname);
   console.log('Username:            ' + cfg.username);
   console.log('Hostname:            ' + cfg.hostname);
+  console.log('Look:                ' + cfg.themeMode);
   console.log('==========================================');
   console.log('');
 }
@@ -250,7 +344,9 @@ function commit() {
   var cfg = {
     keymap: r('keymap'), locale: r('locale'), timezone: r('timezone'),
     fullname: r('fullname'), username: r('username'),
-    hostname: r('hostname') || 'pearOS-machine', password: r('password')
+    hostname: r('hostname') || 'pearOS-machine', password: r('password'),
+    utcEnabled: r('utc_enabled') === 'true' ? 'true' : 'false',
+    themeMode: r('theme_mode') === 'dark' ? 'dark' : 'light'
   };
   logSettings(cfg);
   console.log('Starting post-installation setup...');
@@ -288,7 +384,7 @@ function commit() {
     container.appendChild(errDiv);
   });
 
-  ipcRenderer.send('run-post-setup', [cfg.keymap, cfg.locale, cfg.timezone, cfg.password, cfg.fullname, cfg.username, cfg.hostname]);
+  ipcRenderer.send('run-post-setup', [cfg.keymap, cfg.locale, cfg.timezone, cfg.password, cfg.fullname, cfg.username, cfg.hostname, cfg.utcEnabled, cfg.themeMode]);
 }
 
 // ── Init ────────────────────────────────────────────────────────────

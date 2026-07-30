@@ -678,3 +678,162 @@ label {
   font-weight: bold;
   border: 2px solid white;
 }
+
+/* ── Choose Your Look (light/dark picker) ───────────────────────────── */
+.look-picker {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  padding: 20px;
+}
+
+.look-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 14px;
+  border: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.look-option:hover {
+  border-color: #57a2ff;
+  box-shadow: 0 0 10px rgba(87, 162, 255, 0.3);
+}
+
+.look-option.selected {
+  border-color: #0570fb;
+  box-shadow: 0 0 15px rgba(5, 112, 251, 0.5);
+}
+
+.look-preview {
+  width: 160px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.look-preview-light {
+  background: linear-gradient(160deg, #e8ecf3 0%, #cfd8e6 100%);
+}
+
+.look-preview-dark {
+  background: linear-gradient(160deg, #2b2f38 0%, #15171c 100%);
+}
+
+.look-preview-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+}
+
+.look-preview-light .look-preview-bar {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.look-preview-dark .look-preview-bar {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.look-preview-dock {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 16px;
+  border-radius: 8px;
+}
+
+.look-preview-light .look-preview-dock {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.look-preview-dark .look-preview-dock {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.look-option span {
+  font-family: "Sen";
+  font-size: 14px;
+  color: #333;
+}
+
+.look-note {
+  max-width: 420px;
+  margin: 10px auto 0;
+  padding: 0 20px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #818181;
+  text-align: center;
+}
+
+/* ── Dark mode (applies to the wizard window itself, live) ──────────── */
+body.dark-mode .app {
+  background-color: #1e1f24;
+  transition: background-color 0.3s ease;
+}
+
+body.dark-mode h1 {
+  color: #f2f2f2;
+}
+
+body.dark-mode .description,
+body.dark-mode .look-note,
+body.dark-mode .account-name-hint,
+body.dark-mode .profile-picture-container h2 {
+  color: #9a9aa2;
+}
+
+body.dark-mode .look-option span {
+  color: #e6e6e6;
+}
+
+body.dark-mode #create_user .textbox,
+body.dark-mode .list {
+  background-color: #2a2b31;
+  border-color: #3d3e46;
+  color: #f2f2f2;
+}
+
+body.dark-mode #create_user .textbox::placeholder {
+  color: #7a7a82;
+}
+
+body.dark-mode .list::-webkit-scrollbar-track {
+  background-color: #2a2b31;
+  border-left: 1px solid #3d3e46;
+}
+
+body.dark-mode .list::-webkit-scrollbar-thumb {
+  background-color: #55565f;
+}
+
+body.dark-mode option {
+  background-color: #2a2b31;
+  color: #f2f2f2;
+}
+
+body.dark-mode .button,
+body.dark-mode .nav-button {
+  background-color: #3a3b42;
+  color: #f2f2f2;
+}
+
+body.dark-mode #move-back-btn svg path {
+  fill: #57a2ff;
+}
+
+body.dark-mode .license {
+  color: #b0b0b8;
+}

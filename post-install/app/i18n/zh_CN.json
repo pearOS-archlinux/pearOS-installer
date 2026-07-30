@@ -1,6 +1,45 @@
 {
-  "keymap": { "title": "选择键盘布局", "continue": "继续", "pageTitle": "pearOS NiceC0re 安装程序" },
-  "timezone": { "title": "选择时区", "continue": "继续", "pageTitle": "pearOS NiceC0re 安装程序" },
-  "user": { "title": "创建计算机账户", "description": "请填写以下信息以创建您的账户。", "continue": "继续", "pageTitle": "pearOS NiceC0re 安装程序", "fullNamePlaceholder": "全名", "accountNamePlaceholder": "账户名", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "密码", "verifyPasswordPlaceholder": "确认密码", "accountNameHint": "这将是您的主目录名称", "hostnameHint": "这将是您的计算机网络名称" },
-  "agreement": { "title": "条款与条件", "description": "重要提示：使用pearOS计算机、pearOS软件及相关服务须遵守这些条款与条件。请仔细阅读。", "continue": "继续", "pageTitle": "pearOS NiceC0re 安装程序" }
+  "_meta": {
+    "displayName": "Chinese (Simplified)"
+  },
+  "keymap": {
+    "title": "选择键盘布局",
+    "continue": "继续",
+    "pageTitle": "pearOS NiceC0re 安装程序"
+  },
+  "timezone": {
+    "title": "选择时区",
+    "continue": "继续",
+    "pageTitle": "pearOS NiceC0re 安装程序",
+    "utcLabel": "硬件时钟设置为 UTC（除非双启动 Windows，否则推荐）"
+  },
+  "user": {
+    "title": "创建计算机账户",
+    "description": "请填写以下信息以创建您的账户。",
+    "continue": "继续",
+    "pageTitle": "pearOS NiceC0re 安装程序",
+    "fullNamePlaceholder": "全名",
+    "accountNamePlaceholder": "账户名",
+    "hostnamePlaceholder": "Hostname",
+    "passwordPlaceholder": "密码",
+    "verifyPasswordPlaceholder": "确认密码",
+    "accountNameHint": "这将是您的主目录名称",
+    "hostnameHint": "这将是您的计算机网络名称"
+  },
+  "agreement": {
+    "title": "条款与条件",
+    "description": "重要提示：使用pearOS计算机、pearOS软件及相关服务须遵守这些条款与条件。请仔细阅读。",
+    "continue": "继续",
+    "pageTitle": "pearOS NiceC0re 安装程序"
+  },
+  "look": {
+    "title": "选择外观",
+    "description": "选择 pearOS 的外观。以后可以随时更改。",
+    "lightLabel": "浅色",
+    "darkLabel": "深色",
+    "continue": "继续",
+    "pageTitle": "pearOS NiceC0re 安装程序",
+    "noteMain": "选择浅色或深色外观，查看程序坞、菜单、按钮和窗口如何随之调整。",
+    "noteChange": "您以后可以在系统偏好设置中更改此项。"
+  }
 }

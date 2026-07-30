@@ -1,6 +1,45 @@
 {
-  "keymap": { "title": "Selectați aspectul tastaturii dvs.", "continue": "Continuare", "pageTitle": "Instalare pearOS NiceC0re" },
-  "timezone": { "title": "Selectați fusul orar", "continue": "Continuare", "pageTitle": "Instalare pearOS NiceC0re" },
-  "user": { "title": "Creati un cont local", "description": "Completați următoarele informații pentru a vă crea contul local.", "continue": "Continuare", "pageTitle": "Instalare pearOS NiceC0re", "fullNamePlaceholder": "Nume complet", "accountNamePlaceholder": "Nume de utilizator", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "Parola", "verifyPasswordPlaceholder": "Verificare parola", "accountNameHint": "Acesta va fi numele folderului tău home", "hostnameHint": "This will be your computer's network name" },
-  "agreement": { "title": "Termeni și condiții", "description": "Important: Utilizarea computerului pearOS, a software-ului pear OS și a serviciilor aferente se supune acestor Termeni și condiții. Vă rugăm să le citiți cu atenție ", "continue": "Continuare", "pageTitle": "Instalare pearOS NiceC0re" }
+  "_meta": {
+    "displayName": "Romanian (Romania)"
+  },
+  "keymap": {
+    "title": "Selectați aspectul tastaturii dvs.",
+    "continue": "Continuare",
+    "pageTitle": "Instalare pearOS NiceC0re"
+  },
+  "timezone": {
+    "title": "Selectați fusul orar",
+    "continue": "Continuare",
+    "pageTitle": "Instalare pearOS NiceC0re",
+    "utcLabel": "Ceasul hardware este setat la UTC (recomandat, exceptand dual-boot cu Windows)"
+  },
+  "user": {
+    "title": "Creati un cont local",
+    "description": "Completați următoarele informații pentru a vă crea contul local.",
+    "continue": "Continuare",
+    "pageTitle": "Instalare pearOS NiceC0re",
+    "fullNamePlaceholder": "Nume complet",
+    "accountNamePlaceholder": "Nume de utilizator",
+    "hostnamePlaceholder": "Hostname",
+    "passwordPlaceholder": "Parola",
+    "verifyPasswordPlaceholder": "Verificare parola",
+    "accountNameHint": "Acesta va fi numele folderului tău home",
+    "hostnameHint": "This will be your computer's network name"
+  },
+  "agreement": {
+    "title": "Termeni și condiții",
+    "description": "Important: Utilizarea computerului pearOS, a software-ului pear OS și a serviciilor aferente se supune acestor Termeni și condiții. Vă rugăm să le citiți cu atenție ",
+    "continue": "Continuare",
+    "pageTitle": "Instalare pearOS NiceC0re"
+  },
+  "look": {
+    "title": "Alege aspectul",
+    "description": "Alege cum sa arate pearOS. Poti schimba oricand mai tarziu.",
+    "lightLabel": "Deschis",
+    "darkLabel": "Intunecat",
+    "continue": "Continua",
+    "pageTitle": "Instalator pearOS NiceC0re",
+    "noteMain": "Alege un aspect deschis sau intunecat si vezi cum se ajusteaza Dock-ul, meniurile, butoanele si ferestrele in functie de alegerea ta.",
+    "noteChange": "Poti schimba asta mai tarziu din System Preferences."
+  }
 }

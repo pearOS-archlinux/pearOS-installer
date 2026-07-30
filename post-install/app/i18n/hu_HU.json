@@ -1,6 +1,45 @@
 {
-  "keymap": { "title": "Válassza ki a billentyűzetkiosztást", "continue": "Folytatás", "pageTitle": "pearOS NiceC0re Telepítő" },
-  "timezone": { "title": "Válassza ki az időzónát", "continue": "Folytatás", "pageTitle": "pearOS NiceC0re Telepítő" },
-  "user": { "title": "Számítógép-fiók létrehozása", "description": "Töltse ki az alábbi adatokat fiókja létrehozásához.", "continue": "Folytatás", "pageTitle": "pearOS NiceC0re Telepítő", "fullNamePlaceholder": "Teljes név", "accountNamePlaceholder": "Felhasználónév", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "Jelszó", "verifyPasswordPlaceholder": "Jelszó megerősítése", "accountNameHint": "Ez lesz a saját mappa neve", "hostnameHint": "Ez lesz a számítógép hálózati neve" },
-  "agreement": { "title": "Felhasználási feltételek", "description": "Fontos: A pearOS számítógép, a pearOS szoftver és a kapcsolódó szolgáltatások használatára ezek a Felhasználási feltételek vonatkoznak. Kérjük, olvassa el figyelmesen.", "continue": "Folytatás", "pageTitle": "pearOS NiceC0re Telepítő" }
+  "_meta": {
+    "displayName": "Hungarian (Hungary)"
+  },
+  "keymap": {
+    "title": "Válassza ki a billentyűzetkiosztást",
+    "continue": "Folytatás",
+    "pageTitle": "pearOS NiceC0re Telepítő"
+  },
+  "timezone": {
+    "title": "Válassza ki az időzónát",
+    "continue": "Folytatás",
+    "pageTitle": "pearOS NiceC0re Telepítő",
+    "utcLabel": "A hardveres ora UTC-re van allitva (ajanlott, kiveve Windows dual-boot eseten)"
+  },
+  "user": {
+    "title": "Számítógép-fiók létrehozása",
+    "description": "Töltse ki az alábbi adatokat fiókja létrehozásához.",
+    "continue": "Folytatás",
+    "pageTitle": "pearOS NiceC0re Telepítő",
+    "fullNamePlaceholder": "Teljes név",
+    "accountNamePlaceholder": "Felhasználónév",
+    "hostnamePlaceholder": "Hostname",
+    "passwordPlaceholder": "Jelszó",
+    "verifyPasswordPlaceholder": "Jelszó megerősítése",
+    "accountNameHint": "Ez lesz a saját mappa neve",
+    "hostnameHint": "Ez lesz a számítógép hálózati neve"
+  },
+  "agreement": {
+    "title": "Felhasználási feltételek",
+    "description": "Fontos: A pearOS számítógép, a pearOS szoftver és a kapcsolódó szolgáltatások használatára ezek a Felhasználási feltételek vonatkoznak. Kérjük, olvassa el figyelmesen.",
+    "continue": "Folytatás",
+    "pageTitle": "pearOS NiceC0re Telepítő"
+  },
+  "look": {
+    "title": "Valaszd ki a kinezetet",
+    "description": "Valaszd ki, hogyan nezzen ki a pearOS. Kesobb barmikor megvaltoztathatod.",
+    "lightLabel": "Vilagos",
+    "darkLabel": "Sotet",
+    "continue": "Folytatas",
+    "pageTitle": "pearOS NiceC0re telepito",
+    "noteMain": "Valassz vilagos vagy sotet megjelenest, es nezd meg, hogyan alkalmazkodik a Dock, a menuk, a gombok es az ablakok a valasztasodhoz.",
+    "noteChange": "Ezt kesobb barmikor megvaltoztathatod a Rendszerbeallitasokban."
+  }
 }

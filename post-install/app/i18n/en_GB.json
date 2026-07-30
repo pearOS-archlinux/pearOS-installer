@@ -1,6 +1,45 @@
 {
-  "keymap": { "title": "Select Your Keyboard Layout", "continue": "Continue", "pageTitle": "pearOS NiceC0re Installer" },
-  "timezone": { "title": "Select Your Time Zone", "continue": "Continue", "pageTitle": "pearOS NiceC0re Installer" },
-  "user": { "title": "Create a Computer Account", "description": "Fill out the following informations to create your computer account.", "continue": "Continue", "pageTitle": "pearOS NiceC0re Installer", "fullNamePlaceholder": "Full Name", "accountNamePlaceholder": "Account Name", "hostnamePlaceholder": "Hostname", "passwordPlaceholder": "Password", "verifyPasswordPlaceholder": "Verify Password", "accountNameHint": "This will be the name of your home folder", "hostnameHint": "This will be your computer's network name" },
-  "agreement": { "title": "Terms and Conditions", "description": "Important: Use of your pearOS Computer, the pearOS software and related servoces is subject to these Terms and Conditions. Please read them carefully", "continue": "Continue", "pageTitle": "pearOS NiceC0re Installer" }
+  "_meta": {
+    "displayName": "English (United Kingdom)"
+  },
+  "keymap": {
+    "title": "Select Your Keyboard Layout",
+    "continue": "Continue",
+    "pageTitle": "pearOS NiceC0re Installer"
+  },
+  "timezone": {
+    "title": "Select Your Time Zone",
+    "continue": "Continue",
+    "pageTitle": "pearOS NiceC0re Installer",
+    "utcLabel": "Hardware clock is set to UTC (recommended unless dual-booting Windows)"
+  },
+  "user": {
+    "title": "Create a Computer Account",
+    "description": "Fill out the following informations to create your computer account.",
+    "continue": "Continue",
+    "pageTitle": "pearOS NiceC0re Installer",
+    "fullNamePlaceholder": "Full Name",
+    "accountNamePlaceholder": "Account Name",
+    "hostnamePlaceholder": "Hostname",
+    "passwordPlaceholder": "Password",
+    "verifyPasswordPlaceholder": "Verify Password",
+    "accountNameHint": "This will be the name of your home folder",
+    "hostnameHint": "This will be your computer's network name"
+  },
+  "agreement": {
+    "title": "Terms and Conditions",
+    "description": "Important: Use of your pearOS Computer, the pearOS software and related servoces is subject to these Terms and Conditions. Please read them carefully",
+    "continue": "Continue",
+    "pageTitle": "pearOS NiceC0re Installer"
+  },
+  "look": {
+    "title": "Choose Your Look",
+    "description": "Select how pearOS should look. You can change this anytime later.",
+    "lightLabel": "Light",
+    "darkLabel": "Dark",
+    "continue": "Continue",
+    "pageTitle": "pearOS NiceC0re Installer",
+    "noteMain": "Select a light or dark appearance and see how the Dock, menus, buttons, and windows adjust depending on which one you choose.",
+    "noteChange": "You can change this later in System Preferences."
+  }
 }
