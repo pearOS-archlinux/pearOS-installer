@@ -135,7 +135,7 @@
     'openvpn'
     'orca'
     'os-prober'
-    'pafari'
+    'seafari'
     'partclone'
     'parted'
     'partimage'
@@ -451,7 +451,10 @@
 
   pacman-key --recv-keys 4C1A9F3C131ACA95 --keyserver keyserver.ubuntu.com
   pacman-key --lsign-key 4C1A9F3C131ACA95
- 
+
+  pacman-key -a "$DIR/inled-archive.key" || echo "Warning: failed to import inled key" >> /home/liveuser/Desktop/install.log
+  pacman-key --lsign-key 89F828A9675B63CD0077CE9965AA57CF36E2018F || echo "Warning: failed to lsign inled key" >> /home/liveuser/Desktop/install.log
+
  # Refresh database to ensure package availability checks are accurate
   pacman -Sy --noconfirm &> /dev/null || true
 
@@ -515,6 +518,9 @@
   update_progress "76"
 
   arch-chroot /mnt bash -c 'pacman-key --recv-keys 4C1A9F3C131ACA95 --keyserver keyserver.ubuntu.com && pacman-key --lsign-key 4C1A9F3C131ACA95' ||:
+
+  cp "$DIR/inled-archive.key" /mnt/root/inled-archive.key
+  arch-chroot /mnt bash -c 'pacman-key -a /root/inled-archive.key && pacman-key --lsign-key 89F828A9675B63CD0077CE9965AA57CF36E2018F' ||:
 
   # Passing custom locale to locale file
   if [ "$LOCALE" != "en_US.UTF-8" ]; then
@@ -598,6 +604,9 @@
   arch-chroot /mnt pacman-key --populate
   arch-chroot /mnt pacman-key --recv-keys 4C1A9F3C131ACA95 --keyserver keyserver.ubuntu.com
   arch-chroot /mnt pacman-key --lsign-key 4C1A9F3C131ACA95
+  arch-chroot /mnt pacman-key -a /root/inled-archive.key
+  arch-chroot /mnt pacman-key --lsign-key 89F828A9675B63CD0077CE9965AA57CF36E2018F
+  rm -f /mnt/root/inled-archive.key
   # arch-chroot /mnt usermod -aG sudo default
   sed -i 's/# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /mnt/etc/sudoers
   echo "default ALL=(ALL) NOPASSWD:ALL" >> /mnt/etc/sudoers

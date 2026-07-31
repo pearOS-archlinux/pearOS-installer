@@ -245,6 +245,12 @@ fi
 if ! pacman-key --lsign-key 4C1A9F3C131ACA95; then
   echo "WARNING: Failed to locally sign pacman key 4C1A9F3C131ACA95, continuing..." >&2
 fi
+if ! pacman-key -a "$DIR/inled-archive.key"; then
+  echo "WARNING: Failed to import inled pacman key, continuing..." >&2
+fi
+if ! pacman-key --lsign-key 89F828A9675B63CD0077CE9965AA57CF36E2018F; then
+  echo "WARNING: Failed to locally sign inled pacman key, continuing..." >&2
+fi
 
 # Backup sudoers before modifying
 echo "Configuring sudo access..."
