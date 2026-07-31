@@ -125,7 +125,7 @@ function updateMenuCheckboxState(checkbox) {
   }
 }
 
-// Alt (⌥) state for Offline Install & Dual Boot
+// Alt (⌥) state: default install is offline, hold Alt to choose Online Install
 var isAltPressed = false;
 
 function updateInstallerAltUI() {
@@ -219,9 +219,9 @@ function handleMenuAction(action) {
       break;
     case 'installer':
       if (isAltPressed) {
-        open_offline_installer();
-      } else {
         showInstallChoiceModal();
+      } else {
+        open_offline_installer();
       }
       break;
     case 'browser':
@@ -248,18 +248,9 @@ function handleMenuContinue() {
       break;
     case 'installer':
       if (isAltPressed) {
-        var menuList = document.querySelector('.ul_menu');
-        if (menuList) {
-          menuList.style.opacity = '0.3';
-          menuList.style.pointerEvents = 'none';
-        }
-        var contBtn = document.getElementById('menu-continue-btn');
-        if (contBtn) {
-          contBtn.disabled = true;
-        }
-        open_offline_installer();
-      } else {
         showInstallChoiceModal();
+      } else {
+        open_offline_installer();
       }
       break;
     case 'browser':
