@@ -449,10 +449,10 @@
   pacman-key --populate archlinux manjaro &> /dev/null || echo "Warning: keyring populate failed" >> /home/liveuser/Desktop/install.log
   pacman -Sy --noconfirm archlinux-keyring 2>&1 >> /home/liveuser/Desktop/install.log || echo "Warning: failed to update keyring package" >> /home/liveuser/Desktop/install.log
 
-  pacman-key -a "$DIR/pearos.gpg" || echo "Warning: failed to import pearos keyring" >> /home/liveuser/Desktop/install.log
+  pacman-key -a "/usr/share/extras/keys/pearos.gpg" || echo "Warning: failed to import pearos keyring" >> /home/liveuser/Desktop/install.log
   pacman-key --lsign-key 4C1A9F3C131ACA95 || echo "Warning: failed to lsign pearos key" >> /home/liveuser/Desktop/install.log
 
-  pacman-key -a "$DIR/inled-archive.key" || echo "Warning: failed to import inled key" >> /home/liveuser/Desktop/install.log
+  pacman-key -a "/usr/share/extras/keys/inled-archive.key" || echo "Warning: failed to import inled key" >> /home/liveuser/Desktop/install.log
   pacman-key --lsign-key 89F828A9675B63CD0077CE9965AA57CF36E2018F || echo "Warning: failed to lsign inled key" >> /home/liveuser/Desktop/install.log
 
  # Refresh database to ensure package availability checks are accurate
@@ -517,10 +517,10 @@
   sed -i "s/#en_US.UTF-8/en_US.UTF-8/" /mnt/etc/locale.gen
   update_progress "76"
 
-  cp "$DIR/pearos.gpg" /mnt/root/pearos.gpg
+  cp "/usr/share/extras/keys/pearos.gpg" /mnt/root/pearos.gpg
   arch-chroot /mnt bash -c 'pacman-key -a /root/pearos.gpg && pacman-key --lsign-key 4C1A9F3C131ACA95' ||:
 
-  cp "$DIR/inled-archive.key" /mnt/root/inled-archive.key
+  cp "/usr/share/extras/keys/inled-archive.key" /mnt/root/inled-archive.key
   arch-chroot /mnt bash -c 'pacman-key -a /root/inled-archive.key && pacman-key --lsign-key 89F828A9675B63CD0077CE9965AA57CF36E2018F' ||:
 
   # Passing custom locale to locale file
