@@ -316,6 +316,19 @@ function load_profile_pictures() {
     });
     container.appendChild(item);
   });
+
+  var firstItem = container.querySelector('.profile-picture-item');
+  if (firstItem) {
+    firstItem.classList.add('selected');
+    fs.writeFileSync('/tmp/profile_picture', firstItem.dataset.imagePath);
+    if (!isTestMode) {
+      var execFile = require('child_process').execFile;
+      var src = firstItem.dataset.imagePath;
+      execFile('sudo', ['cp', src, '/usr/share/sddm/themes/pearOS/faces/.face.icon']);
+      execFile('sudo', ['cp', src, '/usr/share/sddm/themes/pearOS-dark/faces/.face.icon']);
+    }
+    checkFormValidity();
+  }
 }
 
 function ensureProfilePicturesContainer() {
