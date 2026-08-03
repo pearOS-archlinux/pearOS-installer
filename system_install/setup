@@ -30,6 +30,7 @@
     'brltty'
     'btrfs-progs'
     'chwd'
+    'chwd-db'
     'ckbcomp'
     'clonezilla'
     'cloud-init'
@@ -629,6 +630,9 @@
   arch-chroot /mnt ln -sv /usr/lib/systemd/system/qemu-guest-agent.service multi-user.target.wants/qemu-guest-agent.service || true
 
   update_progress "94"
+
+  # Autodetect and install GPU/wifi drivers with chwd
+  arch-chroot /mnt chwd --autoconfigure 2>>/home/liveuser/Desktop/install.log || echo "Warning: chwd autoconfigure failed" >> /home/liveuser/Desktop/install.log
 
   # Enabling auto-login for 'default' user :
   echo "[Autologin]" > /mnt/etc/sddm.conf
