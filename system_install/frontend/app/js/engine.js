@@ -250,6 +250,15 @@ function handleMenuContinue() {
       if (isAltPressed) {
         showInstallChoiceModal();
       } else {
+        var contBtn = document.getElementById('menu-continue-btn');
+        if (contBtn) {
+          contBtn.disabled = true;
+          contBtn.classList.add('disabled');
+          setTimeout(function() {
+            contBtn.disabled = false;
+            contBtn.classList.remove('disabled');
+          }, 10000);
+        }
         open_offline_installer();
       }
       break;

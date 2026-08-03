@@ -171,7 +171,6 @@ ipcMain.on('app-action', (event, action) => {
 
 app.on('ready', () => {
   console.log('[system_install] App ready')
-  exec('killall plasmashell 2>/dev/null', (err) => { if (err) {} })
   powerSaveBlockerId = powerSaveBlocker.start('prevent-display-sleep')
   console.log('[system_install] Power save blocker started, ID:', powerSaveBlockerId)
   createWindow()
